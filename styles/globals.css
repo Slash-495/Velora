@@ -2,22 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-background text-text-primary antialiased;
+    /* Subtle glowing radial gradient at the top for a premium feel */
+    background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 60%);
+    background-attachment: fixed;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer components {
+  /* Reusable Button Styles */
+  .btn-base {
+    @apply inline-flex items-center justify-center font-medium transition-all duration-300 ease-smooth rounded-xl select-none;
+  }
+
+  .btn-primary {
+    @apply btn-base px-6 py-3 bg-primary text-white shadow-lg hover:bg-primary/90 hover:shadow-glow-primary hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply btn-base px-6 py-3 bg-surface border border-card text-text-primary hover:border-primary/50 hover:bg-card hover:-translate-y-0.5 active:translate-y-0;
+  }
+  
+  .btn-glow {
+    @apply btn-base px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white shadow-glow-primary hover:shadow-glow-accent hover:-translate-y-0.5 active:translate-y-0 relative overflow-hidden;
+  }
+
+  /* Reusable Card Styles */
+  .card-premium {
+    @apply bg-card/50 backdrop-blur-md border border-white/5 rounded-2xl shadow-card-elevation transition-all duration-300 ease-smooth hover:border-white/10 hover:shadow-glow-primary hover:-translate-y-1;
+  }
+  
+  .card-glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-card-elevation transition-all duration-300 ease-smooth hover:bg-white/10;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-text-primary via-white to-text-secondary;
+  }
+  
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .glass-panel {
+    @apply bg-surface/60 backdrop-blur-lg border-y border-white/5;
+  }
 }

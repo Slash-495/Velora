@@ -2,23 +2,55 @@ import { Container } from "@/components/ui/Container";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center">
-      <Container className="text-center">
-        <h1 className="text-5xl font-bold text-foreground mb-6 tracking-tight">
-          Welcome to <span className="text-blue-600">Velora</span>
+    <main className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Decorative background blur elements */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] -z-10" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] -z-10" />
+
+      <Container className="text-center z-10 animate-fade-in">
+        <h1 className="text-6xl sm:text-7xl font-bold mb-6 tracking-tight">
+          Welcome to <span className="text-gradient-primary">Velora</span>
         </h1>
-        <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-8">
-          A clean, scalable foundation for your next modern SaaS application. Built with Next.js 15, TypeScript, and TailwindCSS.
+        <p className="text-xl sm:text-2xl text-text-secondary max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+          A premium, scalable foundation for your next modern SaaS application. Designed with elegance and purpose.
         </p>
-        <div className="flex gap-4 justify-center">
-          <button className="px-6 py-3 bg-foreground text-background rounded-lg font-medium hover:bg-foreground/90 transition-colors">
-            Get Started
+        
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <button className="btn-glow">
+            Start Building
           </button>
-          <button className="px-6 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700">
-            Documentation
+          <button className="btn-secondary">
+            Read Documentation
           </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div className="card-premium p-8">
+            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6">
+              <span className="text-primary text-xl">✨</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-text-primary">Premium Design</h3>
+            <p className="text-text-muted leading-relaxed">Carefully crafted components with subtle glassmorphism and modern aesthetics.</p>
+          </div>
+          
+          <div className="card-premium p-8">
+            <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center mb-6">
+              <span className="text-secondary text-xl">⚡</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-text-primary">High Performance</h3>
+            <p className="text-text-muted leading-relaxed">Built on Next.js 15 App Router for blazing fast loading times and SEO optimization.</p>
+          </div>
+          
+          <div className="card-premium p-8">
+            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6">
+              <span className="text-primary text-xl">🛠️</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-3 text-text-primary">Scalable Architecture</h3>
+            <p className="text-text-muted leading-relaxed">Clean folder structure and absolute imports designed for growing teams and features.</p>
+          </div>
         </div>
       </Container>
     </main>
   );
 }
+
