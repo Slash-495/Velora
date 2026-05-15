@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon } from "lucide-react";
 import { Container } from "./Container";
 
 const navLinks = [
   { name: "Features", href: "#" },
   { name: "Templates", href: "#" },
-  { name: "Pricing", href: "#" },
-  { name: "About", href: "#" },
+  { name: "Job Tracker", href: "#" },
+  { name: "AI Tools", href: "#" },
 ];
 
 export function Navbar() {
@@ -56,21 +56,32 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden md:flex items-center">
-          <Link href="#" className="btn-glow py-2.5 px-5 text-sm">
+        {/* Desktop Right Side */}
+        <div className="hidden md:flex items-center gap-5">
+          <button className="text-text-muted hover:text-text-primary transition-colors" aria-label="Toggle Theme">
+            <Moon className="w-5 h-5" />
+          </button>
+          <Link href="#" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
+            Sign In
+          </Link>
+          <Link href="#" className="btn-glow py-2 px-4 text-sm rounded-xl">
             Get Started
           </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-text-secondary hover:text-text-primary transition-colors"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <button className="text-text-muted hover:text-text-primary transition-colors" aria-label="Toggle Theme">
+            <Moon className="w-5 h-5" />
+          </button>
+          <button
+            className="text-text-secondary hover:text-text-primary transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </Container>
 
       {/* Mobile Nav Overlay */}
@@ -94,10 +105,17 @@ export function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-white/5">
+              <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
                 <Link
                   href="#"
-                  className="btn-glow w-full"
+                  className="text-center font-medium text-text-secondary hover:text-text-primary py-2 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="#"
+                  className="btn-glow w-full rounded-xl"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Get Started
