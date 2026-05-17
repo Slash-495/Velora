@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { motion } from "framer-motion";
 import { Sparkles, FileText, Briefcase, CheckCircle2, ChevronRight, BarChart3, Bot, ArrowRight } from "lucide-react";
 import { Features } from "@/components/Features";
+import { CTA } from "@/components/CTA";
 
 export default function Home() {
   return (
@@ -233,6 +234,7 @@ export default function Home() {
       </Container>
     </main>
       <Features />
+      <CTA />
     </>
   );
 }
