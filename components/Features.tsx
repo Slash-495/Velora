@@ -10,7 +10,7 @@ import {
   Sparkles, 
   LayoutTemplate,
   ChevronRight,
-  Bot
+  Briefcase
 } from "lucide-react";
 
 const features = [
@@ -76,18 +76,41 @@ const features = [
     )
   },
   {
-    id: "ai-suggestions",
-    title: "AI Suggestions",
-    description: "Get smart recommendations to highlight your best achievements.",
-    icon: Bot,
+    id: "resume-workspace",
+    title: "Resume Workspace",
+    description: "Organize and manage all your tailored resumes in one place.",
+    icon: Briefcase,
     className: "md:col-span-1 md:row-span-1",
     content: (
-      <div className="absolute right-4 bottom-4 w-3/4 bg-primary/10 border border-primary/20 p-3 rounded-xl rounded-br-none backdrop-blur-sm transform transition-transform group-hover:-translate-y-1">
-        <div className="flex items-start gap-2">
-          <Bot className="w-3 h-3 text-primary mt-0.5" />
-          <div className="space-y-1.5 flex-1">
-            <div className="w-full h-1.5 bg-primary/40 rounded" />
-            <div className="w-[80%] h-1.5 bg-primary/20 rounded" />
+      <div className="absolute -right-2 -bottom-2 w-[85%] bg-white/5 border border-white/10 p-3 rounded-tl-2xl rounded-tr-md rounded-bl-md backdrop-blur-md transform transition-transform group-hover:-translate-y-2 group-hover:-translate-x-2 shadow-2xl">
+        <div className="space-y-2">
+          {/* SDE Track Preview */}
+          <div className="flex items-center justify-between bg-white/5 p-1.5 rounded-md">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-5 bg-white/10 rounded-sm border border-white/10 flex flex-col items-center justify-center gap-[1px]">
+                 <div className="w-2 h-[1px] bg-white/20 rounded-full" />
+                 <div className="w-2.5 h-[1px] bg-white/20 rounded-full" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-medium text-text-primary leading-none">SDE Track</span>
+                <span className="text-[7px] text-text-muted leading-none mt-0.5">Backend Resume</span>
+              </div>
+            </div>
+            <span className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 py-0.5 rounded border border-green-400/20">98 ATS</span>
+          </div>
+          {/* Data Analyst Preview */}
+          <div className="flex items-center justify-between bg-white/5 p-1.5 rounded-md">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-5 bg-white/10 rounded-sm border border-white/10 flex flex-col items-center justify-center gap-[1px]">
+                 <div className="w-2 h-[1px] bg-white/20 rounded-full" />
+                 <div className="w-2 h-[1px] bg-white/20 rounded-full" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] font-medium text-text-primary leading-none">Data Analyst</span>
+                <span className="text-[7px] text-text-muted leading-none mt-0.5">SQL Resume</span>
+              </div>
+            </div>
+            <span className="text-[7px] font-bold text-green-400 bg-green-400/10 px-1 py-0.5 rounded border border-green-400/20">92 ATS</span>
           </div>
         </div>
       </div>

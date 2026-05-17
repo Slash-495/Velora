@@ -155,21 +155,75 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Top Widget 2: AI Suggestion */}
+            {/* Top Widget 2: Resume Workspace */}
             <motion.div 
               animate={{ y: [0, -6, 0] }}
               transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 2 }}
-              className="absolute top-[20%] right-[-5%] card-premium p-4 max-w-[200px] bg-surface/90 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl"
+              className="absolute top-[12%] right-[-5%] sm:right-[-12%] card-premium p-4 w-[260px] bg-surface/90 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl"
             >
-              <div className="flex items-start gap-3">
-                <div className="p-1.5 rounded-lg bg-secondary/20 text-secondary shrink-0">
-                  <Bot className="w-4 h-4" />
+              <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/5">
+                <div className="p-2 rounded-lg bg-primary/20 text-primary-glow shrink-0">
+                  <Briefcase className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold text-text-primary mb-1">AI Suggestion</h4>
-                  <p className="text-[10px] text-text-muted leading-relaxed">
-                    Highlight your Next.js experience to better match the "Frontend Engineer" role at Acme Corp.
-                  </p>
+                  <h4 className="text-xs font-semibold text-text-primary mb-0.5">Resume Workspace</h4>
+                  <p className="text-[9px] text-text-muted leading-tight">Organize and manage tailored resumes</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                {/* SDE Track */}
+                <div className="group flex items-center justify-between p-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-default">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-6 h-7 bg-white/5 rounded border border-white/10 flex flex-col items-center justify-center gap-0.5 shadow-sm group-hover:border-primary/30 transition-colors">
+                       <div className="w-3 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-4 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-3 h-0.5 bg-white/20 rounded-full" />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-medium text-text-primary leading-none">SDE Track</span>
+                      <span className="text-[9px] text-text-muted leading-none">Backend Resume</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-[9px] font-bold text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded-md border border-green-400/20">98 ATS</span>
+                  </div>
+                </div>
+
+                {/* Data Analyst Track */}
+                <div className="group flex items-center justify-between p-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-default">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-6 h-7 bg-white/5 rounded border border-white/10 flex flex-col items-center justify-center gap-0.5 shadow-sm group-hover:border-primary/30 transition-colors">
+                       <div className="w-3 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-4 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-2 h-0.5 bg-white/20 rounded-full" />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-medium text-text-primary leading-none">Data Analyst</span>
+                      <span className="text-[9px] text-text-muted leading-none">SQL Resume</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-[9px] font-bold text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded-md border border-green-400/20">92 ATS</span>
+                  </div>
+                </div>
+
+                {/* Business Analyst Track */}
+                <div className="group flex items-center justify-between p-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-default">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-6 h-7 bg-white/5 rounded border border-white/10 flex flex-col items-center justify-center gap-0.5 shadow-sm group-hover:border-primary/30 transition-colors">
+                       <div className="w-4 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-3 h-0.5 bg-white/20 rounded-full" />
+                       <div className="w-3 h-0.5 bg-white/20 rounded-full" />
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] font-medium text-text-primary leading-none">Business Analyst</span>
+                      <span className="text-[9px] text-text-muted leading-none">Startup Resume</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-[9px] font-bold text-yellow-400 bg-yellow-400/10 px-1.5 py-0.5 rounded-md border border-yellow-400/20">85 ATS</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
