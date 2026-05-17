@@ -3,10 +3,12 @@
 import { Container } from "@/components/ui/Container";
 import { motion } from "framer-motion";
 import { Sparkles, FileText, Briefcase, CheckCircle2, ChevronRight, BarChart3, Bot, ArrowRight } from "lucide-react";
+import { Features } from "@/components/Features";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16">
+    <>
+      <main className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 pb-16">
       {/* Decorative background blur elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
@@ -176,6 +178,8 @@ export default function Home() {
         </div>
       </Container>
     </main>
+      <Features />
+    </>
   );
 }
 
