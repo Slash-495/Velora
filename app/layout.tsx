@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
+import { createClient } from "@/utils/supabase/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -11,15 +12,18 @@ export const metadata: Metadata = {
   description: "A clean and scalable SaaS foundation.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-background text-text-primary selection:bg-primary/30 selection:text-primary-glow flex flex-col min-h-screen`}>
-        <Navbar />
+        <Navbar user={user} />
         <div className="flex-1 pt-24">
           {children}
         </div>

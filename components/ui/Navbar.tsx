@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Moon } from "lucide-react";
 import { Container } from "./Container";
+import { signOut } from "@/app/(auth)/actions";
 
 const navLinks = [
   { name: "Features", href: "#" },
@@ -13,7 +14,7 @@ const navLinks = [
   { name: "AI Tools", href: "#" },
 ];
 
-export function Navbar() {
+export function Navbar({ user }: { user?: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -61,12 +62,27 @@ export function Navbar() {
           <button className="text-text-muted hover:text-text-primary transition-colors" aria-label="Toggle Theme">
             <Moon className="w-5 h-5" />
           </button>
-          <Link href="#" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
-            Sign In
-          </Link>
-          <Link href="#" className="btn-glow py-2 px-4 text-sm rounded-xl">
-            Get Started
-          </Link>
+          {user ? (
+            <>
+              <Link href="/dashboard" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
+                Dashboard
+              </Link>
+              <form action={signOut}>
+                <button type="submit" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
+                  Logout
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
+                Sign In
+              </Link>
+              <Link href="/sign-up" className="btn-glow py-2 px-4 text-sm rounded-xl">
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -106,20 +122,43 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
-                <Link
-                  href="#"
-                  className="text-center font-medium text-text-secondary hover:text-text-primary py-2 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="#"
-                  className="btn-glow w-full rounded-xl"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Get Started
-                </Link>
+                {user ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="text-center font-medium text-text-secondary hover:text-text-primary py-2 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <form action={signOut} className="flex flex-col">
+                      <button 
+                        type="submit"
+                        className="text-center font-medium text-text-secondary hover:text-text-primary py-2 transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Logout
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/sign-in"
+                      className="text-center font-medium text-text-secondary hover:text-text-primary py-2 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/sign-up"
+                      className="btn-glow w-full rounded-xl text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Get Started
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
