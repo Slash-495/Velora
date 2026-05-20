@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
-import { Navbar } from "@/components/ui/Navbar";
-import { Footer } from "@/components/ui/Footer";
 import { createClient } from "@/utils/supabase/server";
+import { LayoutWrapper } from "@/components/LayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -23,11 +22,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-background text-text-primary selection:bg-primary/30 selection:text-primary-glow flex flex-col min-h-screen`}>
-        <Navbar user={user} />
-        <div className="flex-1 pt-24">
+        <LayoutWrapper user={user}>
           {children}
-        </div>
-        <Footer />
+        </LayoutWrapper>
       </body>
     </html>
   );

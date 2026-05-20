@@ -6,22 +6,22 @@ export async function middleware(request: NextRequest) {
     request,
   })
 
+  const pendingCookies: Array<{ name: string; value: string; options: any }> = []
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
+        get(key) {
+          const cookie = request.cookies.get(key)
+          return cookie?.value ?? null
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+        set(name, value, options) {
+          pendingCookies.push({ name, value, options })
+        },
+        remove(name, options) {
+          pendingCookies.push({ name, value: '', options: { ...options, maxAge: 0 } })
         },
       },
     }
@@ -47,6 +47,16 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
+  }
+
+  if (pendingCookies.length > 0) {
+    supabaseResponse = NextResponse.next({ request })
+    pendingCookies.forEach(({ name, value, options }) =>
+      supabaseResponse.cookies.set(name, value, {
+        ...options,
+        secure: process.env.NODE_ENV === 'production',
+      })
+    )
   }
 
   return supabaseResponse

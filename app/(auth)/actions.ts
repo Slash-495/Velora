@@ -10,17 +10,20 @@ export async function signIn(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
-    redirect(`/sign-in?message=${error.message}`)
+    return { error: error.message }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  if (!data?.session) {
+    return { error: 'Unable to sign in. Please check your credentials and try again.' }
+  }
+
+  return { success: true, session: data.session, user: data.user }
 }
 
 export async function signUp(formData: FormData) {
@@ -29,17 +32,23 @@ export async function signUp(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
   })
 
   if (error) {
-    redirect(`/sign-up?message=${error.message}`)
+    return { error: error.message }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  if (!data?.session) {
+    return {
+      success: false,
+      message: 'Account created. Please check your email to confirm your account before signing in.',
+    }
+  }
+
+  return { success: true, session: data.session, user: data.user }
 }
 
 export async function signInWithGoogle() {
@@ -53,7 +62,7 @@ export async function signInWithGoogle() {
   })
 
   if (error) {
-    redirect(`/sign-in?message=${error.message}`)
+    redirect(`/sign-in?message=${encodeURIComponent(error.message)}`)
   }
 
   if (data.url) {
@@ -65,6 +74,5 @@ export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
   
-  revalidatePath('/', 'layout')
   redirect('/')
 }
