@@ -17,10 +17,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Career Tracks", href: "/dashboard/tracks", icon: Briefcase },
-  { name: "Resume Studio", href: "/dashboard/resumes", icon: FileText },
+  { name: "Career Tracks", href: "/dashboard/career-tracks", icon: Briefcase },
+  { name: "Resume Studio", href: "/dashboard/resume-studio", icon: FileText },
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
-  { name: "AI Assistant", href: "/dashboard/ai", icon: Bot },
+  { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
 ];
 
 export function Sidebar() {

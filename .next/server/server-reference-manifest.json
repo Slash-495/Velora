@@ -2,126 +2,126 @@
   "node": {
     "00292a2475b9b95f4145a2a99dbc171542c0ed7224": {
       "workers": {
-        "app/(auth)/sign-in/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
-          "async": false
-        },
-        "app/page": {
+        "app/dashboard/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
-        "app/(auth)/sign-up/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/career-tracks/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/resume-studio/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/applications/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
         "app/_not-found/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
-        },
-        "app/dashboard/page": {
-          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
-          "async": false
         }
       },
       "layer": {
-        "app/(auth)/sign-in/page": "rsc",
-        "app/page": "action-browser",
-        "app/(auth)/sign-up/page": "rsc",
-        "app/_not-found/page": "action-browser",
-        "app/dashboard/page": "action-browser"
+        "app/dashboard/page": "action-browser",
+        "app/dashboard/career-tracks/page": "action-browser",
+        "app/dashboard/resume-studio/page": "action-browser",
+        "app/dashboard/applications/page": "action-browser",
+        "app/_not-found/page": "action-browser"
       }
     },
     "0081cbf841c2e72c9d0232d896472dc70fc7d7806d": {
       "workers": {
-        "app/(auth)/sign-in/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
-          "async": false
-        },
-        "app/page": {
+        "app/dashboard/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
-        "app/(auth)/sign-up/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/career-tracks/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/resume-studio/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/applications/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
         "app/_not-found/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
-        },
-        "app/dashboard/page": {
-          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
-          "async": false
         }
       },
       "layer": {
-        "app/(auth)/sign-in/page": "rsc",
-        "app/page": "action-browser",
-        "app/(auth)/sign-up/page": "rsc",
-        "app/_not-found/page": "action-browser",
-        "app/dashboard/page": "action-browser"
+        "app/dashboard/page": "action-browser",
+        "app/dashboard/career-tracks/page": "action-browser",
+        "app/dashboard/resume-studio/page": "action-browser",
+        "app/dashboard/applications/page": "action-browser",
+        "app/_not-found/page": "action-browser"
       }
     },
     "409ccb4856ea03e765c7984c58b3c0f6fe36ca9063": {
       "workers": {
-        "app/(auth)/sign-in/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
-          "async": false
-        },
-        "app/page": {
+        "app/dashboard/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
-        "app/(auth)/sign-up/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/career-tracks/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/resume-studio/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/applications/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
         "app/_not-found/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
-        },
-        "app/dashboard/page": {
-          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
-          "async": false
         }
       },
       "layer": {
-        "app/(auth)/sign-in/page": "rsc",
-        "app/page": "action-browser",
-        "app/(auth)/sign-up/page": "rsc",
-        "app/_not-found/page": "action-browser",
-        "app/dashboard/page": "action-browser"
+        "app/dashboard/page": "action-browser",
+        "app/dashboard/career-tracks/page": "action-browser",
+        "app/dashboard/resume-studio/page": "action-browser",
+        "app/dashboard/applications/page": "action-browser",
+        "app/_not-found/page": "action-browser"
       }
     },
     "40b928ede598e8a19afbb9ca424d1b10c83a49178e": {
       "workers": {
-        "app/(auth)/sign-in/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
-          "async": false
-        },
-        "app/page": {
+        "app/dashboard/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
-        "app/(auth)/sign-up/page": {
-          "moduleId": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/career-tracks/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/resume-studio/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/dashboard/applications/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
         },
         "app/_not-found/page": {
           "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
           "async": false
-        },
-        "app/dashboard/page": {
-          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Carush%5C%5COneDrive%5C%5CDesktop%5C%5CVelora%5C%5Capp%5C%5C(auth)%5C%5Cactions.ts%22%2C%5B%5B%2200292a2475b9b95f4145a2a99dbc171542c0ed7224%22%2C%22signInWithGoogle%22%5D%2C%5B%220081cbf841c2e72c9d0232d896472dc70fc7d7806d%22%2C%22signOut%22%5D%2C%5B%22409ccb4856ea03e765c7984c58b3c0f6fe36ca9063%22%2C%22signUp%22%5D%2C%5B%2240b928ede598e8a19afbb9ca424d1b10c83a49178e%22%2C%22signIn%22%5D%5D%5D%5D&__client_imported__=true!",
-          "async": false
         }
       },
       "layer": {
-        "app/(auth)/sign-in/page": "rsc",
-        "app/page": "action-browser",
-        "app/(auth)/sign-up/page": "rsc",
-        "app/_not-found/page": "action-browser",
-        "app/dashboard/page": "action-browser"
+        "app/dashboard/page": "action-browser",
+        "app/dashboard/career-tracks/page": "action-browser",
+        "app/dashboard/resume-studio/page": "action-browser",
+        "app/dashboard/applications/page": "action-browser",
+        "app/_not-found/page": "action-browser"
       }
     }
   },
