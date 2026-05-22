@@ -36,6 +36,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/dashboard/career-tracks/[trackId]/page.js"
     ],
+    "/dashboard/resume-studio/[resumeId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/resume-studio/[resumeId]/page.js"
+    ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

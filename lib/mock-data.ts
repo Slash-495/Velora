@@ -7,6 +7,50 @@ export interface CareerTrack {
   updatedAt: string;
 }
 
+export interface ResumeContent {
+  personalInfo: {
+    fullName: string;
+    email: string;
+    phone: string;
+    location: string;
+    website: string;
+    linkedin: string;
+    github: string;
+    summary: string;
+  };
+  experience: {
+    id: string;
+    company: string;
+    role: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    current: boolean;
+    description: string;
+  }[];
+  education: {
+    id: string;
+    school: string;
+    degree: string;
+    field: string;
+    startDate: string;
+    endDate: string;
+    gpa: string;
+  }[];
+  projects: {
+    id: string;
+    name: string;
+    description: string;
+    techStack: string;
+    link: string;
+  }[];
+  skills: {
+    id: string;
+    category: string;
+    items: string;
+  }[];
+}
+
 export interface Resume {
   id: string;
   trackId: string;
@@ -14,13 +58,7 @@ export interface Resume {
   atsScore: number;
   template: "Modern" | "Minimalist" | "Professional";
   updatedAt: string;
-  // Future scalable JSON structure
-  content: {
-    personalInfo: any;
-    experience: any[];
-    projects: any[];
-    skills: any[];
-  };
+  content: ResumeContent;
 }
 
 export const mockTracks: CareerTrack[] = [
@@ -50,6 +88,66 @@ export const mockTracks: CareerTrack[] = [
   }
 ];
 
+const defaultContent: ResumeContent = {
+  personalInfo: {
+    fullName: "Alex Developer",
+    email: "alex@example.com",
+    phone: "(555) 123-4567",
+    location: "San Francisco, CA",
+    website: "alex.dev",
+    linkedin: "linkedin.com/in/alexdev",
+    github: "github.com/alexdev",
+    summary: "Passionate software engineer with 5+ years of experience building scalable web applications. Strong focus on modern frontend architectures and performance optimization."
+  },
+  experience: [
+    {
+      id: "exp-1",
+      company: "TechNova Solutions",
+      role: "Senior Frontend Engineer",
+      location: "San Francisco, CA",
+      startDate: "Jan 2021",
+      endDate: "Present",
+      current: true,
+      description: "- Spearheaded the migration of a legacy monolithic frontend to a micro-frontend architecture using Next.js and React.\n- Improved core web vitals by 40%, leading to a 15% increase in user retention.\n- Mentored a team of 4 junior developers and established code review best practices."
+    },
+    {
+      id: "exp-2",
+      company: "Digital Horizon",
+      role: "Software Engineer",
+      location: "Austin, TX",
+      startDate: "Jun 2018",
+      endDate: "Dec 2020",
+      current: false,
+      description: "- Developed and maintained RESTful APIs using Node.js and Express.\n- Implemented responsive, mobile-first UI components using React and TailwindCSS.\n- Reduced deployment time by 50% through CI/CD pipeline optimizations."
+    }
+  ],
+  education: [
+    {
+      id: "edu-1",
+      school: "University of Technology",
+      degree: "Bachelor of Science",
+      field: "Computer Science",
+      startDate: "Sep 2014",
+      endDate: "May 2018",
+      gpa: "3.8/4.0"
+    }
+  ],
+  projects: [
+    {
+      id: "proj-1",
+      name: "Velora AI Workspace",
+      description: "An AI-powered career workspace that helps users tailor resumes and track applications.",
+      techStack: "Next.js, TypeScript, TailwindCSS, Supabase",
+      link: "github.com/alexdev/velora"
+    }
+  ],
+  skills: [
+    { id: "skill-1", category: "Languages", items: "JavaScript, TypeScript, Python, HTML/CSS" },
+    { id: "skill-2", category: "Frameworks", items: "React, Next.js, Node.js, Express, TailwindCSS" },
+    { id: "skill-3", category: "Tools", items: "Git, Docker, AWS, Vercel, Supabase" }
+  ]
+};
+
 export const mockResumes: Resume[] = [
   // SDE Track Resumes
   {
@@ -59,7 +157,7 @@ export const mockResumes: Resume[] = [
     atsScore: 94,
     template: "Modern",
     updatedAt: "2024-03-15T10:00:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   },
   {
     id: "res-2",
@@ -68,7 +166,7 @@ export const mockResumes: Resume[] = [
     atsScore: 96,
     template: "Minimalist",
     updatedAt: "2024-03-12T14:20:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   },
   {
     id: "res-3",
@@ -77,7 +175,7 @@ export const mockResumes: Resume[] = [
     atsScore: 88,
     template: "Modern",
     updatedAt: "2024-03-01T11:00:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   },
   // Data Analyst Track Resumes
   {
@@ -87,7 +185,7 @@ export const mockResumes: Resume[] = [
     atsScore: 88,
     template: "Professional",
     updatedAt: "2024-03-14T15:30:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   },
   {
     id: "res-5",
@@ -96,7 +194,7 @@ export const mockResumes: Resume[] = [
     atsScore: 82,
     template: "Minimalist",
     updatedAt: "2024-02-28T09:00:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   },
   // PM Track Resumes
   {
@@ -106,6 +204,6 @@ export const mockResumes: Resume[] = [
     atsScore: 76,
     template: "Professional",
     updatedAt: "2024-03-10T09:15:00Z",
-    content: { personalInfo: {}, experience: [], projects: [], skills: [] }
+    content: defaultContent
   }
 ];

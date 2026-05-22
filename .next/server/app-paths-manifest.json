@@ -4,5 +4,6 @@
   "/dashboard/career-tracks/page": "app/dashboard/career-tracks/page.js",
   "/dashboard/resume-studio/page": "app/dashboard/resume-studio/page.js",
   "/dashboard/applications/page": "app/dashboard/applications/page.js",
-  "/dashboard/career-tracks/[trackId]/page": "app/dashboard/career-tracks/[trackId]/page.js"
+  "/dashboard/career-tracks/[trackId]/page": "app/dashboard/career-tracks/[trackId]/page.js",
+  "/dashboard/resume-studio/[resumeId]/page": "app/dashboard/resume-studio/[resumeId]/page.js"
 }
