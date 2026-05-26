@@ -148,6 +148,53 @@ const defaultContent: ResumeContent = {
   ]
 };
 
+export const mockApplications: JobApplication[] = [
+  {
+    id: "app-1",
+    companyName: "Google",
+    roleTitle: "Software Engineer",
+    location: "Mountain View, CA",
+    status: "interview",
+    resumeId: "1",
+    applicationDate: "2024-05-10T10:00:00Z",
+    salaryRange: "$150k - $200k",
+  },
+  {
+    id: "app-2",
+    companyName: "Stripe",
+    roleTitle: "Backend Developer",
+    location: "Remote",
+    status: "applied",
+    applicationDate: "2024-05-20T10:00:00Z",
+    salaryRange: "$160k - $210k",
+  },
+  {
+    id: "app-3",
+    companyName: "Vercel",
+    roleTitle: "Frontend Engineer",
+    location: "Remote",
+    status: "wishlist",
+    salaryRange: "$140k - $180k",
+  },
+  {
+    id: "app-4",
+    companyName: "Meta",
+    roleTitle: "Production Engineer",
+    location: "Menlo Park, CA",
+    status: "oa",
+    applicationDate: "2024-05-15T10:00:00Z",
+    deadline: "2024-06-01T10:00:00Z",
+  },
+  {
+    id: "app-5",
+    companyName: "Netflix",
+    roleTitle: "Senior Software Engineer",
+    location: "Los Gatos, CA",
+    status: "rejected",
+    applicationDate: "2024-04-10T10:00:00Z",
+  }
+];
+
 export const mockResumes: Resume[] = [
   // SDE Track Resumes
   {
