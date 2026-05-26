@@ -46,6 +46,32 @@ export default function ResumeEditorPage() {
     return () => clearTimeout(timer);
   }, [content]);
 
+  const handleDownloadPDF = async () => {
+    setIsSaving(true);
+    try {
+      // @ts-ignore
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = document.querySelector('.resume-print-document');
+      
+      if (element) {
+        const opt = {
+          margin:       0,
+          filename:     `${initialResume.name || 'resume'}.pdf`,
+          image:        { type: 'jpeg', quality: 1 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        await html2pdf().set(opt).from(element).save();
+      }
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+    }
+    
+    setLastSaved(new Date());
+    setIsSaving(false);
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden">
       
@@ -94,11 +120,13 @@ export default function ResumeEditorPage() {
         </div>
 
         <div className="flex items-center gap-3 w-1/3 justify-end">
-          <button className="px-5 py-2 rounded-xl text-sm font-medium bg-surface border border-white/10 text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors">
-            Export PDF
-          </button>
-          <button className="btn-glow px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
-            <Save className="w-4 h-4" /> Save
+          <button 
+            onClick={handleDownloadPDF}
+            disabled={isSaving}
+            className="btn-glow px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2 disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+            {isSaving ? "Saving..." : "Save & Export"}
           </button>
         </div>
       </div>

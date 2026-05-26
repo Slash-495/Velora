@@ -77,7 +77,7 @@ export function LivePreview({ content, template }: LivePreviewProps) {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white text-black shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-black/20"
+              className="bg-white text-black shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-black/20 resume-print-document"
               style={{ 
                 fontFamily: '"Times New Roman", Times, serif', 
                 lineHeight: 1.4,

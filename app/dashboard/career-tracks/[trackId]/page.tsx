@@ -3,18 +3,25 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, FileText, CheckCircle2, MoreHorizontal, Edit3, Download, Copy, Plus, Briefcase } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
-import { mockTracks, mockResumes } from "@/lib/mock-data";
+import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { mockTracks, mockResumes, Resume } from "@/lib/mock-data";
 
 export default function TrackDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const trackId = params.trackId as string;
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-
+  
   // Load track data
   const track = mockTracks.find(t => t.id === trackId);
-  const trackResumes = mockResumes.filter(r => r.trackId === trackId);
+  
+  // Local state for resumes in this track
+  const [trackResumes, setTrackResumes] = useState<Resume[]>([]);
+
+  useEffect(() => {
+    setTrackResumes(mockResumes.filter(r => r.trackId === trackId));
+  }, [trackId]);
 
   if (!track) {
     return (
@@ -78,9 +85,20 @@ export default function TrackDetailsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-text-primary">Tailored Resumes</h2>
-          <button className="btn-glow px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2">
-            <Plus className="w-4 h-4" /> Add Resume
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => router.push(`/dashboard/resume-studio`)}
+              className="px-4 py-2 rounded-xl text-sm font-medium border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" /> Import Resume
+            </button>
+            <button 
+              onClick={() => router.push(`/dashboard/resume-studio/new`)}
+              className="btn-glow px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" /> Create Resume
+            </button>
+          </div>
         </div>
 
         {/* Resumes Grid */}
@@ -110,17 +128,33 @@ export default function TrackDetailsPage() {
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />
                       <div className="absolute right-0 top-full mt-2 w-48 bg-surface border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 py-1 backdrop-blur-xl">
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
+                        <button 
+                          onClick={() => {
+                            setOpenMenuId(null);
+                            router.push(`/dashboard/resume-studio`);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left"
+                        >
                           <Edit3 className="w-4 h-4" /> Edit Resume
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
+                        <button 
+                          onClick={() => {
+                            setOpenMenuId(null);
+                            const copy = { ...resume, id: `res-${Date.now()}`, title: `${resume.title} (Copy)` };
+                            setTrackResumes(prev => [...prev, copy]);
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left"
+                        >
                           <Copy className="w-4 h-4" /> Duplicate
                         </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
-                          <Download className="w-4 h-4" /> Export PDF
-                        </button>
                         <div className="h-px bg-white/5 my-1 mx-2" />
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left">
+                        <button 
+                          onClick={() => {
+                            setOpenMenuId(null);
+                            setTrackResumes(prev => prev.filter(r => r.id !== resume.id));
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left"
+                        >
                           Delete Resume
                         </button>
                       </div>

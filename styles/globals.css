@@ -52,3 +52,37 @@
     @apply bg-surface/60 backdrop-blur-lg border-y border-white/5;
   }
 }
+
+@media print {
+  html, body, div, main, section {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+  
+  body * {
+    visibility: hidden;
+  }
+  
+  .resume-print-document, .resume-print-document * {
+    visibility: visible;
+  }
+  
+  .resume-print-document {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    width: 794px !important;
+    height: 1123px !important;
+  }
+  
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}

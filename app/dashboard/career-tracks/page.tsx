@@ -1,19 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, Search, Briefcase, FileText, CheckCircle2, MoreHorizontal, ArrowRight } from "lucide-react";
+import { Plus, Search, Briefcase, FileText, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { mockTracks, mockResumes } from "@/lib/mock-data";
-
-const TABS = ["All Tracks", "Active", "Archived"];
+import { CareerTrack, mockTracks, mockResumes } from "@/lib/mock-data";
+import { TrackModal } from "@/components/dashboard/career-tracks/TrackModal";
 
 export default function CareerTracksPage() {
-  const [activeTab, setActiveTab] = useState("All Tracks");
+  const [tracks, setTracks] = useState<CareerTrack[]>(mockTracks);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Calculate stats for each track
-  const tracksWithStats = mockTracks.map(track => {
+  const tracksWithStats = tracks.map(track => {
     const trackResumes = mockResumes.filter(r => r.trackId === track.id);
     const avgScore = trackResumes.length > 0 
       ? Math.round(trackResumes.reduce((acc, curr) => acc + curr.atsScore, 0) / trackResumes.length)
@@ -24,16 +24,21 @@ export default function CareerTracksPage() {
       blue: { bg: "from-blue-500/20 to-cyan-500/20", border: "group-hover:border-blue-500/30", text: "text-blue-400" },
       emerald: { bg: "from-emerald-500/20 to-teal-500/20", border: "group-hover:border-emerald-500/30", text: "text-emerald-400" },
       orange: { bg: "from-orange-500/20 to-red-500/20", border: "group-hover:border-orange-500/30", text: "text-orange-400" },
+      purple: { bg: "from-purple-500/20 to-fuchsia-500/20", border: "group-hover:border-purple-500/30", text: "text-purple-400" },
+      pink: { bg: "from-pink-500/20 to-rose-500/20", border: "group-hover:border-pink-500/30", text: "text-pink-400" },
     };
 
     return { ...track, resumesCount: trackResumes.length, avgScore, styles: colorMap[track.color] || colorMap.blue };
   });
 
   const filteredTracks = tracksWithStats.filter(track => {
-    const matchesSearch = track.name.toLowerCase().includes(searchQuery.toLowerCase()) || track.role.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTab = activeTab === "All Tracks" ? true : activeTab === "Active" ? track.status !== "Archived" : track.status === "Archived";
-    return matchesSearch && matchesTab;
+    return track.name.toLowerCase().includes(searchQuery.toLowerCase()) || track.role.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const handleSaveTrack = (newTrack: CareerTrack) => {
+    mockTracks.push(newTrack);
+    setTracks(prev => [newTrack, ...prev]);
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-12">
@@ -49,29 +54,16 @@ export default function CareerTracksPage() {
           <p className="text-text-muted mt-1">Organize and manage your targeted career paths.</p>
         </div>
         
-        <button className="btn-glow shrink-0 px-6 py-2.5 rounded-xl flex items-center gap-2">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="btn-glow shrink-0 px-6 py-2.5 rounded-xl flex items-center gap-2"
+        >
           <Plus className="w-4 h-4" /> Create Track
         </button>
       </motion.div>
 
-      {/* Toolbar (Search & Filters) */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex bg-surface border border-white/5 p-1 rounded-xl w-full md:w-auto">
-          {TABS.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === tab 
-                  ? "bg-white/10 text-text-primary shadow-sm" 
-                  : "text-text-secondary hover:text-text-primary hover:bg-white/5"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
+      {/* Toolbar (Search) */}
+      <div className="flex flex-col justify-end items-end gap-4">
         <div className="relative w-full md:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <input
@@ -126,12 +118,7 @@ export default function CareerTracksPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs pt-4 border-t border-white/10">
-                  <span className={`font-semibold px-2.5 py-1 rounded-md border border-white/5 ${
-                    track.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-orange-500/10 text-orange-400'
-                  }`}>
-                    {track.status}
-                  </span>
+                <div className="flex items-center justify-end text-xs pt-4 border-t border-white/10 mt-auto">
                   <span className="flex items-center gap-1 text-text-secondary group-hover:text-white transition-colors font-medium">
                     Open Track <ArrowRight className="w-3.5 h-3.5" />
                   </span>
@@ -147,7 +134,10 @@ export default function CareerTracksPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: filteredTracks.length * 0.1 }}
         >
-          <button className="w-full h-full min-h-[240px] card-premium border border-dashed border-white/20 hover:border-primary/50 hover:bg-primary/5 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all group">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="w-full h-full min-h-[240px] card-premium border border-dashed border-white/20 hover:border-primary/50 hover:bg-primary/5 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all group"
+          >
             <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-primary/20 group-hover:text-primary">
               <Plus className="w-6 h-6 text-text-muted group-hover:text-primary transition-colors" />
             </div>
@@ -156,6 +146,12 @@ export default function CareerTracksPage() {
         </motion.div>
 
       </div>
+
+      <TrackModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveTrack}
+      />
     </div>
   );
 }
