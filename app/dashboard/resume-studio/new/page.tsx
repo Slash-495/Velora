@@ -7,13 +7,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { mockTracks } from "@/lib/mock-data";
 
-type Step = "TRACK" | "TEMPLATE" | "FINISH";
+import { availableTemplates } from "@/lib/templates";
 
-const TEMPLATES = [
-  { id: "Modern", name: "Modern Template", desc: "Clean lines, subtle colors. Best for tech and startups." },
-  { id: "Minimalist", name: "Minimalist Template", desc: "Monochrome, high contrast. Focus purely on content." },
-  { id: "Professional", name: "Professional Template", desc: "Traditional structure. Perfect for finance and corporate." }
-];
+type Step = "TRACK" | "TEMPLATE" | "FINISH";
 
 export default function NewResumeFlow() {
   const router = useRouter();
@@ -92,22 +88,25 @@ export default function NewResumeFlow() {
       {step === "TEMPLATE" && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
           <h2 className="text-xl font-bold text-text-primary mb-4 text-center">Choose a visual template</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {TEMPLATES.map(tmpl => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {availableTemplates.map(tmpl => (
               <button
                 key={tmpl.id}
                 onClick={() => setSelectedTemplate(tmpl.id)}
-                className={`p-6 rounded-2xl border text-left flex flex-col h-full transition-all ${
+                className={`p-4 rounded-2xl border text-left flex flex-col h-full transition-all group overflow-hidden ${
                   selectedTemplate === tmpl.id 
                     ? "bg-primary/5 border-primary/50 shadow-[0_0_20px_rgba(var(--primary),0.1)]" 
                     : "bg-surface border-white/10 hover:border-white/20 hover:bg-white/5"
                 }`}
               >
-                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-4">
-                  <LayoutTemplate className="w-6 h-6 text-text-secondary" />
+                <div className="w-full aspect-[1/1.4] rounded-xl bg-black/40 mb-4 overflow-hidden relative border border-white/5">
+                  <img src={tmpl.thumbnail} alt={tmpl.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider border border-white/10">
+                    {tmpl.category}
+                  </div>
                 </div>
-                <h3 className="font-bold text-text-primary mb-2">{tmpl.name}</h3>
-                <p className="text-sm text-text-muted flex-grow">{tmpl.desc}</p>
+                <h3 className="font-bold text-text-primary mb-1 text-sm">{tmpl.name}</h3>
+                <p className="text-xs text-text-muted line-clamp-2">{tmpl.description}</p>
               </button>
             ))}
           </div>
