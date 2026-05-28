@@ -17,6 +17,7 @@ export interface ResumeContent {
     linkedin: string;
     github: string;
     summary: string;
+    photoUrl?: string;
   };
   experience: {
     id: string;
@@ -51,12 +52,15 @@ export interface ResumeContent {
   }[];
 }
 
+import { ResumeThemeConfig, defaultThemeConfig } from "./templates";
+
 export interface Resume {
   id: string;
   trackId: string;
   name: string;
   atsScore: number;
-  template: "Modern" | "Minimalist" | "Professional";
+  template: string; // Updated to reference template ID
+  themeConfig: ResumeThemeConfig;
   updatedAt: string;
   content: ResumeContent;
 }
@@ -202,7 +206,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-1",
     name: "Backend Engineer Core",
     atsScore: 94,
-    template: "Modern",
+    template: "velora-professional",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-03-15T10:00:00Z",
     content: defaultContent
   },
@@ -211,7 +216,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-1",
     name: "Google SWE Tailored",
     atsScore: 96,
-    template: "Minimalist",
+    template: "modern-minimalist",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-03-12T14:20:00Z",
     content: defaultContent
   },
@@ -220,7 +226,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-1",
     name: "Startup Fullstack",
     atsScore: 88,
-    template: "Modern",
+    template: "velora-professional",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-03-01T11:00:00Z",
     content: defaultContent
   },
@@ -230,7 +237,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-2",
     name: "Product Analytics focused",
     atsScore: 88,
-    template: "Professional",
+    template: "velora-professional",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-03-14T15:30:00Z",
     content: defaultContent
   },
@@ -239,7 +247,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-2",
     name: "Data Engineering Junior",
     atsScore: 82,
-    template: "Minimalist",
+    template: "modern-minimalist",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-02-28T09:00:00Z",
     content: defaultContent
   },
@@ -249,7 +258,8 @@ export const mockResumes: Resume[] = [
     trackId: "track-3",
     name: "Technical PM General",
     atsScore: 76,
-    template: "Professional",
+    template: "velora-professional",
+    themeConfig: defaultThemeConfig,
     updatedAt: "2024-03-10T09:15:00Z",
     content: defaultContent
   }

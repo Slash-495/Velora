@@ -10,6 +10,7 @@ import { EditorSidebar } from "@/components/resume-studio/EditorSidebar";
 import { LivePreview } from "@/components/resume-studio/LivePreview";
 import { LatexEditor } from "@/components/resume-studio/LatexEditor";
 import { generateDefaultLatex, parseLatexToJSON } from "@/lib/latex-templates";
+import { defaultThemeConfig, ResumeThemeConfig } from "@/lib/templates";
 
 type EditorMode = "VISUAL" | "LATEX";
 
@@ -25,6 +26,8 @@ export default function ResumeEditorPage() {
   // Load mock data
   const initialResume = mockResumes.find(r => r.id === resumeId) || mockResumes[0]; // fallback if 'new-mock-id'
   const [content, setContent] = useState<ResumeContent>(initialResume.content);
+  const [themeConfig, setThemeConfig] = useState<ResumeThemeConfig>(initialResume.themeConfig || defaultThemeConfig);
+  const [templateId, setTemplateId] = useState<string>(initialResume.template || "velora-professional");
   
   // Compile LaTeX back into the preview
   const handleLatexCompile = (compiledLatex: string) => {
@@ -137,11 +140,18 @@ export default function ResumeEditorPage() {
         {/* Left Side: Editor Form / Code */}
         <div className="lg:w-1/2 w-full h-full flex flex-col min-h-0 pt-2 lg:pt-0">
           {editorMode === "VISUAL" ? (
-            <EditorSidebar content={content} onChange={setContent} />
+            <EditorSidebar 
+              content={content} 
+              onChange={setContent} 
+              themeConfig={themeConfig}
+              onChangeTheme={setThemeConfig}
+              templateId={templateId}
+              onChangeTemplate={setTemplateId}
+            />
           ) : (
             <div className="h-full">
               <LatexEditor 
-                initialLatex={generateDefaultLatex(content)} 
+                initialLatex={generateDefaultLatex(content, templateId)} 
                 onCompile={handleLatexCompile} 
               />
             </div>
@@ -150,7 +160,7 @@ export default function ResumeEditorPage() {
 
         {/* Right Side: Live Preview */}
         <div className="lg:w-1/2 w-full h-full min-h-0 hidden md:block">
-          <LivePreview content={content} template={initialResume.template} />
+          <LivePreview content={content} templateId={templateId} themeConfig={themeConfig} />
         </div>
 
       </div>
