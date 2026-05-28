@@ -186,7 +186,7 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
             )}
           
           <div className="h-[700px] w-full rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl">
-            <LivePreview content={tailoredContent} template="Modern" />
+            <LivePreview content={tailoredContent} templateId={mockResumes.find(r => r.id === resumeId)?.template || "velora-professional"} themeConfig={mockResumes.find(r => r.id === resumeId)?.themeConfig || {}} />
           </div>
         </motion.div>
       )}

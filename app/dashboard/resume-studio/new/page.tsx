@@ -21,9 +21,8 @@ export default function NewResumeFlow() {
     if (step === "TRACK" && selectedTrack) setStep("TEMPLATE");
     else if (step === "TEMPLATE" && selectedTemplate) {
       // In a real app, we would make an API call to Supabase to insert a new row
-      // using the default JSON structure, then get the new ID and redirect.
-      // For now, we mock the creation and redirect to a mock editor route.
-      router.push(`/dashboard/resume-studio/new-mock-id`);
+      // For now, we mock the creation and redirect to a mock editor route, passing the template as a query param.
+      router.push(`/dashboard/resume-studio/new-mock-id?template=${selectedTemplate}`);
     }
   };
 

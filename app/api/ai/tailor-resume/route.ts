@@ -15,21 +15,6 @@ export async function POST(request: Request) {
       model: 'gemini-flash-latest', // Downgraded to flash because user API key has 0 quota for pro models
       generationConfig: {
         responseMimeType: "application/json",
-        responseSchema: {
-          type: SchemaType.OBJECT,
-          properties: {
-            tailoredContent: {
-              type: SchemaType.OBJECT,
-              description: "The complete tailored resume content object matching the input structure exactly, but with rewritten descriptions and summary.",
-            },
-            changesMade: {
-              type: SchemaType.ARRAY,
-              items: { type: SchemaType.STRING },
-              description: "A summary of the 3-5 major changes made to tailor the resume to the JD.",
-            }
-          },
-          required: ["tailoredContent", "changesMade"]
-        }
       }
     });
 
@@ -46,10 +31,10 @@ export async function POST(request: Request) {
       ${JSON.stringify(resumeContent, null, 2)}
 
       Instructions:
-      1. Rewrite the "summary" to align strongly with the JD requirements.
+      1. Rewrite the "summary" string inside personalInfo to align strongly with the JD requirements.
       2. Rewrite the "description" bullet points in the "experience" array. Inject relevant keywords from the JD naturally. Ensure bullet points are impactful, measurable, and action-oriented.
       3. Do NOT invent fake experience, degrees, or skills. Only reframe existing experience to highlight relevance.
-      4. Return the EXACT SAME JSON structure for 'tailoredContent' as the original 'ResumeContent', just with updated text fields.
+      4. Return the EXACT SAME JSON structure for 'tailoredContent' as the original 'ResumeContent', containing the updated 'personalInfo' and 'experience' arrays.
       
       Output strict JSON containing 'tailoredContent' and 'changesMade'.
     `;
@@ -60,8 +45,8 @@ export async function POST(request: Request) {
     const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
     
     return NextResponse.json(JSON.parse(cleanJson));
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error tailoring resume:', error);
-    return NextResponse.json({ error: 'Failed to tailor resume' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to tailor resume' }, { status: 500 });
   }
 }

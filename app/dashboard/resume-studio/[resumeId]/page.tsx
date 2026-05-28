@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Save, Cloud, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { mockResumes, ResumeContent } from "@/lib/mock-data";
 import { EditorSidebar } from "@/components/resume-studio/EditorSidebar";
@@ -16,7 +16,9 @@ type EditorMode = "VISUAL" | "LATEX";
 
 export default function ResumeEditorPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const resumeId = params.resumeId as string;
+  const queryTemplateId = searchParams.get("template");
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(new Date());
@@ -27,7 +29,7 @@ export default function ResumeEditorPage() {
   const initialResume = mockResumes.find(r => r.id === resumeId) || mockResumes[0]; // fallback if 'new-mock-id'
   const [content, setContent] = useState<ResumeContent>(initialResume.content);
   const [themeConfig, setThemeConfig] = useState<ResumeThemeConfig>(initialResume.themeConfig || defaultThemeConfig);
-  const [templateId, setTemplateId] = useState<string>(initialResume.template || "velora-professional");
+  const [templateId, setTemplateId] = useState<string>(queryTemplateId || initialResume.template || "velora-professional");
   
   // Compile LaTeX back into the preview
   const handleLatexCompile = (compiledLatex: string) => {
