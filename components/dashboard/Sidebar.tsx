@@ -10,7 +10,8 @@ import {
   Bot, 
   Settings,
   Menu,
-  X
+  X,
+  Mic
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +21,7 @@ const sidebarLinks = [
   { name: "Career Tracks", href: "/dashboard/career-tracks", icon: Briefcase },
   { name: "Resume Studio", href: "/dashboard/resume-studio", icon: FileText },
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
+  { name: "Interview Prep", href: "/dashboard/interview-prep", icon: Mic },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
 ];
 
