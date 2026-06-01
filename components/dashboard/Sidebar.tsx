@@ -11,7 +11,8 @@ import {
   Settings,
   Menu,
   X,
-  Mic
+  Mic,
+  UserCircle
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +24,7 @@ const sidebarLinks = [
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
   { name: "Interview Prep", href: "/dashboard/interview-prep", icon: Mic },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
+  { name: "Profile", href: "/dashboard/profile", icon: UserCircle },
 ];
 
 export function Sidebar() {
