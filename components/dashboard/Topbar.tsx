@@ -10,22 +10,38 @@ export function Topbar({ user }: { user: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const filteredResumes = mockResumes.filter(r => 
     (r.title || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
     (r.content?.roleTitle || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Close search dropdown when clicking outside
+  const updateProfileData = () => {
+    const storedAvatar = localStorage.getItem("velora_user_avatar");
+    if (storedAvatar) setAvatarUrl(storedAvatar);
+  };
+
   useEffect(() => {
+    // Initial load
+    updateProfileData();
+    
+    // Listen for cross-component profile updates
+    window.addEventListener("profileUpdated", updateProfileData);
+    
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("profileUpdated", updateProfileData);
+    };
   }, []);
+
   return (
     <header className="sticky top-0 z-30 h-16 bg-background/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 md:px-8">
       {/* Mobile Spacer (for menu button) */}
@@ -69,13 +85,19 @@ export function Topbar({ user }: { user: any }) {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
         </button>
 
-        <button className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors">
-          {user?.email ? (
-            <span className="text-xs font-medium uppercase">
+        <button 
+          onClick={() => router.push('/dashboard/profile')}
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors relative group overflow-hidden"
+          title="Go to Profile"
+        >
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover relative z-10" />
+          ) : user?.email ? (
+            <span className="text-xs font-medium uppercase relative z-10">
               {user.email.charAt(0)}
             </span>
           ) : (
-            <User className="w-4 h-4" />
+            <User className="w-4 h-4 relative z-10" />
           )}
         </button>
       </div>
