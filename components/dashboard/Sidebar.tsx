@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   Mic,
-  UserCircle
+  UserCircle,
+  PenTool
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,6 +22,7 @@ const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Career Tracks", href: "/dashboard/career-tracks", icon: Briefcase },
   { name: "Resume Studio", href: "/dashboard/resume-studio", icon: FileText },
+  { name: "Cover Letters", href: "/dashboard/cover-letters", icon: PenTool },
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
   { name: "Interview Prep", href: "/dashboard/interview-prep", icon: Mic },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },

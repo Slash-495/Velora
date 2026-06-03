@@ -13,7 +13,7 @@ interface DayData {
 }
 
 export function ActivityHeatmap() {
-  const daysCount = 365;
+  const daysCount = 546; // 78 weeks (1.5 years) to fill a wide monitor
   
   const { grid, monthLabels, totalContributions } = useMemo(() => {
     const today = new Date();
@@ -132,8 +132,8 @@ export function ActivityHeatmap() {
           <Activity className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-text-primary leading-tight">{totalContributions} career actions in the last year</h2>
-          <p className="text-xs text-text-muted mt-0.5">Your career progress over the last 365 days.</p>
+          <h2 className="text-lg font-bold text-text-primary leading-tight">{totalContributions} career actions in the last 18 months</h2>
+          <p className="text-xs text-text-muted mt-0.5">Your career progress over the last {daysCount} days.</p>
         </div>
       </div>
 
