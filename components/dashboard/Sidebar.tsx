@@ -14,7 +14,8 @@ import {
   Mic,
   UserCircle,
   PenTool,
-  LineChart
+  LineChart,
+  Building2
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +26,7 @@ const sidebarLinks = [
   { name: "Resume Studio", href: "/dashboard/resume-studio", icon: FileText },
   { name: "Resume Review", href: "/dashboard/resume-review", icon: LineChart },
   { name: "Cover Letters", href: "/dashboard/cover-letters", icon: PenTool },
+  { name: "Company Research", href: "/dashboard/company-research", icon: Building2 },
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
   { name: "Interview Prep", href: "/dashboard/interview-prep", icon: Mic },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
@@ -44,12 +46,12 @@ export function Sidebar() {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-surface/50 backdrop-blur-2xl border-r border-white/5 w-64 p-4">
-      <div className="flex items-center gap-3 px-2 mb-8 mt-2">
+      <Link href="/dashboard" className="flex items-center gap-3 px-2 mb-8 mt-2 cursor-pointer transition-opacity hover:opacity-80">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow-primary">
           <span className="text-white font-bold text-lg leading-none">V</span>
         </div>
         <span className="font-bold text-xl tracking-tight text-text-primary">Velora</span>
-      </div>
+      </Link>
 
       <nav className="flex-1 space-y-1">
         <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-4 px-2">Menu</div>

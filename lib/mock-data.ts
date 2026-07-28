@@ -264,3 +264,44 @@ export const mockResumes: Resume[] = [
     content: defaultContent
   }
 ];
+
+export interface Company {
+  id: string;
+  name: string;
+  industry: string;
+  location: string;
+  overview: string;
+  website: string;
+  careersUrl: string;
+  logoUrl?: string;
+}
+
+export const mockCompanies: Company[] = [
+  {
+    id: "comp-1",
+    name: "Google",
+    industry: "Technology",
+    location: "Mountain View, CA",
+    overview: "Google is a multinational technology company focusing on search engine technology, online advertising, cloud computing, computer software, quantum computing, e-commerce, artificial intelligence, and consumer electronics.",
+    website: "google.com",
+    careersUrl: "careers.google.com"
+  },
+  {
+    id: "comp-2",
+    name: "Stripe",
+    industry: "Financial Services",
+    location: "San Francisco, CA",
+    overview: "Stripe is an Irish-American financial services and software as a service company dual-headquartered in South San Francisco, California and Dublin, Ireland.",
+    website: "stripe.com",
+    careersUrl: "stripe.com/jobs"
+  },
+  {
+    id: "comp-3",
+    name: "Vercel",
+    industry: "Cloud Platform",
+    location: "San Francisco, CA",
+    overview: "Vercel is a platform for frontend frameworks and static sites, built to integrate with headless content, commerce, or database.",
+    website: "vercel.com",
+    careersUrl: "vercel.com/careers"
+  }
+];
