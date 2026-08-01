@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { UserCircle, Shield, Camera } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { ActivityHeatmap } from "@/components/analytics/ActivityHeatmap";
 import { CareerOverview } from "@/components/analytics/CareerOverview";
 import { TrackPerformance } from "@/components/analytics/TrackPerformance";
@@ -74,7 +75,7 @@ export default function ProfilePage() {
             className="relative w-full aspect-square max-w-[200px] mb-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group cursor-pointer hover:border-primary/50 transition-colors overflow-hidden shadow-inner"
           >
             {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+              <Image src={avatarUrl} alt="Profile" fill className="object-cover" />
             ) : (
               <UserCircle className="w-24 h-24 text-text-muted" strokeWidth={1} />
             )}

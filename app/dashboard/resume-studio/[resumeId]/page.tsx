@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Save, Cloud, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { mockResumes, ResumeContent } from "@/lib/mock-data";
+import { useDebounce } from "@/hooks/use-debounce";
 import { EditorSidebar } from "@/components/resume-studio/EditorSidebar";
 import { LivePreview } from "@/components/resume-studio/LivePreview";
 import { LatexEditor } from "@/components/resume-studio/LatexEditor";
@@ -40,26 +41,28 @@ export default function ResumeEditorPage() {
   const [templateId, setTemplateId] = useState<string>(queryTemplateId || initialResume.template || "velora-professional");
   
   // Compile LaTeX back into the preview
-  const handleLatexCompile = (compiledLatex: string) => {
+  const handleLatexCompile = useCallback((compiledLatex: string) => {
     // Parse the customized LaTeX back into the JSON structure
     const updatedContent = parseLatexToJSON(compiledLatex, content);
     setContent(updatedContent);
     console.log("LaTeX compiled and preview updated.");
-  };
+  }, [content]);
 
-  // Mock Debounced Autosave
+  const debouncedContent = useDebounce(content, 1000);
+
+  // Debounced Autosave
   useEffect(() => {
     setIsSaving(true);
     const timer = setTimeout(() => {
       // Mock API save
       setLastSaved(new Date());
       setIsSaving(false);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(timer);
-  }, [content]);
+  }, [debouncedContent]);
 
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = useCallback(async () => {
     setIsSaving(true);
     try {
       // @ts-ignore
@@ -83,7 +86,7 @@ export default function ResumeEditorPage() {
     
     setLastSaved(new Date());
     setIsSaving(false);
-  };
+  }, [initialResume.name]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] overflow-hidden">

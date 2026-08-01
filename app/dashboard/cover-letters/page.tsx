@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import { 
   FileText, 
   Wand2, 
@@ -33,7 +33,7 @@ export default function CoverLetterStudio() {
     { id: 1, type: "impact", text: "Quantify your impact to make this stronger.", original: "I improved performance.", improved: "I improved rendering performance by 40%.", status: "pending" }
   ]);
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
     try {
       const res = await fetch("/api/ai/generate-cover-letter", {
@@ -60,9 +60,9 @@ export default function CoverLetterStudio() {
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [company, role, jobDescription, tone]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     try {
       // Dynamically import html2pdf to avoid SSR issues
       const html2pdf = (await import('html2pdf.js')).default;
@@ -84,20 +84,20 @@ export default function CoverLetterStudio() {
       console.error("Failed to generate PDF", error);
       alert("Failed to download PDF.");
     }
-  };
+  }, [company, role, content]);
 
-  const applySuggestion = (id: number, improvedText: string) => {
+  const applySuggestion = useCallback((id: number, improvedText: string) => {
     if (improvedText) {
       // In a real robust app, this would do a targeted replace.
       // For this textarea version, we just append or manually let user copy.
       setContent(prev => prev + "\n\n[Applied Suggestion]: " + improvedText);
     }
     setSuggestions(prev => prev.filter(s => s.id !== id));
-  };
+  }, []);
 
-  const dismissSuggestion = (id: number) => {
+  const dismissSuggestion = useCallback((id: number) => {
     setSuggestions(prev => prev.filter(s => s.id !== id));
-  };
+  }, []);
 
   return (
     <div className="h-[calc(100vh-4rem)] flex overflow-hidden print:h-auto print:block">

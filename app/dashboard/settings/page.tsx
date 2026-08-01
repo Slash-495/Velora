@@ -9,7 +9,6 @@ import { createClient } from "@/utils/supabase/client";
 export default function SettingsPage() {
   const router = useRouter();
   const supabase = createClient();
-  const [theme, setTheme] = useState("dark");
   const [email, setEmail] = useState("user@velora.ai");
   const [isResetting, setIsResetting] = useState(false);
   const [notifications, setNotifications] = useState({
@@ -109,24 +108,6 @@ export default function SettingsPage() {
           
           <div className="space-y-8 max-w-2xl">
             <div>
-              <label className="block text-sm font-semibold text-white mb-3">Theme</label>
-              <div className="flex items-center gap-3">
-                <button onClick={() => setTheme("light")} className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border ${theme === 'light' ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'} transition-colors`}>
-                  <Sun className={`w-5 h-5 ${theme === 'light' ? 'text-primary' : 'text-text-muted'}`} />
-                  <span className="text-sm font-medium text-white">Light</span>
-                </button>
-                <button onClick={() => setTheme("dark")} className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border ${theme === 'dark' ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'} transition-colors`}>
-                  <Moon className={`w-5 h-5 ${theme === 'dark' ? 'text-primary' : 'text-text-muted'}`} />
-                  <span className="text-sm font-medium text-white">Dark</span>
-                </button>
-                <button onClick={() => setTheme("system")} className={`flex-1 flex flex-col items-center gap-2 p-4 rounded-xl border ${theme === 'system' ? 'border-primary bg-primary/10' : 'border-white/10 bg-white/5'} transition-colors`}>
-                  <Monitor className={`w-5 h-5 ${theme === 'system' ? 'text-primary' : 'text-text-muted'}`} />
-                  <span className="text-sm font-medium text-white">System</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-white/5">
               <label className="block text-sm font-semibold text-white mb-4">Notifications</label>
               <div className="space-y-4">
                 <label className="flex items-center justify-between cursor-pointer">

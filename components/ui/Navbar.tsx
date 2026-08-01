@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Container } from "./Container";
 import { signOut } from "@/app/(auth)/actions";
 
@@ -59,9 +59,6 @@ export function Navbar({ user }: { user?: any }) {
 
         {/* Desktop Right Side */}
         <div className="hidden md:flex items-center gap-5">
-          <button className="text-text-muted hover:text-text-primary transition-colors" aria-label="Toggle Theme">
-            <Moon className="w-5 h-5" />
-          </button>
           {user ? (
             <>
               <Link href="/dashboard" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
@@ -87,9 +84,6 @@ export function Navbar({ user }: { user?: any }) {
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-4 md:hidden">
-          <button className="text-text-muted hover:text-text-primary transition-colors" aria-label="Toggle Theme">
-            <Moon className="w-5 h-5" />
-          </button>
           <button
             className="text-text-secondary hover:text-text-primary transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { availableTemplates } from "@/lib/templates";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const categories = ["All", "ATS Friendly", "Modern", "Minimal", "Developer", "Creative", "Academic"];
 
@@ -82,8 +83,8 @@ export default function TemplatesGallery() {
             >
               {/* Thumbnail Container */}
               <div className="aspect-[1/1.3] bg-black/40 relative overflow-hidden p-4">
-                <div className="w-full h-full bg-white rounded-lg shadow-2xl origin-top transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-2">
-                  <img src={template.thumbnail} alt={template.name} className="w-full h-full object-cover rounded-lg opacity-90 group-hover:opacity-100" />
+                <div className="w-full h-full bg-white rounded-lg shadow-2xl origin-top transition-transform duration-500 group-hover:scale-105 group-hover:-translate-y-2 relative overflow-hidden">
+                  <Image src={template.thumbnail} alt={template.name} fill className="object-cover rounded-lg opacity-90 group-hover:opacity-100" />
                 </div>
                 
                 {/* Badges */}

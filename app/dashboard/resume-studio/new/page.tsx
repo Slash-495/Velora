@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Briefcase, LayoutTemplate, FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, Briefcase, FileText } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import { mockTracks } from "@/lib/mock-data";
 
 import { availableTemplates } from "@/lib/templates";
@@ -98,8 +99,8 @@ export default function NewResumeFlow() {
                     : "bg-surface border-white/10 hover:border-white/20 hover:bg-white/5"
                 }`}
               >
-                <div className="w-full aspect-[1/1.4] rounded-xl bg-black/40 mb-4 overflow-hidden relative border border-white/5">
-                  <img src={tmpl.thumbnail} alt={tmpl.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div className="aspect-[1/1.4] relative rounded-xl overflow-hidden mb-4 border border-white/10 group-hover:border-primary/50 transition-colors bg-white/5">
+                  <Image src={tmpl.thumbnail} alt={tmpl.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider border border-white/10">
                     {tmpl.category}
                   </div>
