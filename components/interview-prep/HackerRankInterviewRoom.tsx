@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Video, VideoOff, MessageSquare, Sparkles, Loader2, Volume2, EyeOff, Bot } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, MessageSquare, Sparkles, Loader2, Volume2, EyeOff, Bot, Download, Award } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { InterviewReportModal } from "./InterviewReportModal";
 
 interface HackerRankInterviewRoomProps {
   roleTitle?: string;
@@ -28,6 +29,7 @@ export function HackerRankInterviewRoom({
   const [isCamOn, setIsCamOn] = useState(true);
   const [showCaptions, setShowCaptions] = useState(true);
   const [personNotVisible, setPersonNotVisible] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // AI & Voice States
   const [aiSpeechState, setAiSpeechState] = useState<"speaking" | "listening" | "thinking">("speaking");
@@ -46,6 +48,18 @@ export function HackerRankInterviewRoom({
   const analysisCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isSubmittingRef = useRef<boolean>(false);
+
+  // STOP ALL SPEECH SYNTHESIS IMMEDIATELY ON UNMOUNT OR NAVIGATION
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch (e) {}
+      }
+    };
+  }, []);
 
   // Initialize Voices
   useEffect(() => {
@@ -262,7 +276,6 @@ export function HackerRankInterviewRoom({
           if (transcript.trim()) {
             setUserTranscript(transcript);
 
-            // Clear previous silence timer and set new 2.2s auto-submit timer
             if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
             silenceTimerRef.current = setTimeout(() => {
               handleAutoSubmitAnswer(transcript);
@@ -280,19 +293,23 @@ export function HackerRankInterviewRoom({
     }
   };
 
-  // End Test with AI Ending Voice Greeting
+  // End Test: CANCEL SPEECH IMMEDIATELY & OPEN REPORT MODAL
   const handleEndInterview = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel(); // STOP SPEECH IMMEDIATELY
+    }
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (e) {}
     }
     if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
 
-    const endGreeting = `Thank you for taking the technical screen today ${userName}! I've recorded your responses and generated your performance evaluation report.`;
-    
-    speakAiMessage(endGreeting, () => {
-      if (onEnd) onEnd();
-      else router.push("/dashboard/interview-prep");
-    });
+    setShowReportModal(true);
+  };
+
+  const handleCloseReportModal = () => {
+    setShowReportModal(false);
+    if (onEnd) onEnd();
+    else router.push("/dashboard/interview-prep");
   };
 
   // Canvas Wave Animation
@@ -349,12 +366,12 @@ export function HackerRankInterviewRoom({
   return (
     <div className="fixed inset-0 z-50 bg-black text-white flex flex-col font-sans overflow-hidden">
       
-      {/* Top Header Bar */}
+      {/* Top Header Bar with Velora AI Branding */}
       <header className="h-16 border-b border-white/10 px-6 flex items-center justify-between bg-black/90 backdrop-blur-md shrink-0 z-20">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 bg-emerald-500 rounded-sm font-bold flex items-center justify-center text-[8px] text-black">H</span>
-            <span className="font-bold tracking-wider text-sm text-emerald-400">HackerRank</span>
+            <span className="w-6 h-6 bg-gradient-to-tr from-primary to-purple-500 rounded-lg font-black flex items-center justify-center text-xs text-white shadow-md">V</span>
+            <span className="font-extrabold tracking-wider text-base text-white">Velora AI</span>
           </div>
           <span className="text-white/20">|</span>
           <span className="text-xs text-white/80 font-medium tracking-wide">Technical Screen Mock Interview</span>
@@ -525,6 +542,15 @@ export function HackerRankInterviewRoom({
         </div>
 
       </div>
+
+      {/* Downloadable Performance Evaluation Report Modal */}
+      <InterviewReportModal 
+        isOpen={showReportModal}
+        onClose={handleCloseReportModal}
+        roleTitle={roleTitle}
+        userName={userName}
+        history={history}
+      />
 
     </div>
   );
