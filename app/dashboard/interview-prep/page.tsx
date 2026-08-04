@@ -1,170 +1,262 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Mic, FileText, Briefcase, ChevronRight, Loader2, Play } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { 
+  Mic, 
+  Video, 
+  CheckCircle2, 
+  FileText, 
+  Sparkles, 
+  ShieldCheck, 
+  Play, 
+  UserCircle, 
+  Settings2,
+  Clock
+} from "lucide-react";
+import { AudioCameraModal } from "@/components/interview-prep/AudioCameraModal";
+import { HackerRankInterviewRoom } from "@/components/interview-prep/HackerRankInterviewRoom";
+
 import { mockResumes } from "@/lib/mock-data";
 
-export default function InterviewPrepPage() {
-  const router = useRouter();
-  const [selectedResumeId, setSelectedResumeId] = useState<string>(mockResumes[0].id);
-  const [role, setRole] = useState<string>("");
-  const [jdText, setJdText] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false);
+export default function TechnicalScreenPage() {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [inActiveInterview, setInActiveInterview] = useState(false);
 
-  const handleStartInterview = async () => {
-    if (!role || !jdText || !selectedResumeId) return;
+  const [roleTitle, setRoleTitle] = useState("Senior Full Stack Engineer");
+  const [jdText, setJdText] = useState("");
+  const [selectedResumeId, setSelectedResumeId] = useState(mockResumes[0].id);
 
-    setIsGenerating(true);
-
-    try {
-      const selectedResume = mockResumes.find(r => r.id === selectedResumeId);
-      
-      const res = await fetch('/api/ai/generate-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          resumeContent: selectedResume?.content,
-          jdText,
-          role
-        })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate questions');
-      }
-
-      // In a real app, we would save the session and questions to Supabase here,
-      // and redirect to the generated sessionId.
-      // For now, we will store the generated questions in localStorage to simulate state transfer
-      // and redirect to a mock session ID.
-      localStorage.setItem('mock_interview_questions', JSON.stringify(data.questions));
-      localStorage.setItem('mock_interview_context', JSON.stringify({ role, jdText, resumeId: selectedResumeId }));
-      
-      const mockSessionId = `session-${Math.random().toString(36).substring(7)}`;
-      router.push(`/dashboard/interview-prep/${mockSessionId}`);
-      
-    } catch (error: any) {
-      console.error('Error starting interview:', error);
-      alert(`Failed to generate interview. Please try again.\nError: ${error.message}`);
-    } finally {
-      setIsGenerating(false);
-    }
+  const handleStartInterviewFromModal = () => {
+    setIsSettingsOpen(false);
+    setInActiveInterview(true);
   };
 
+  const selectedResume = mockResumes.find(r => r.id === selectedResumeId);
+
+  if (inActiveInterview) {
+    return (
+      <HackerRankInterviewRoom 
+        roleTitle={roleTitle}
+        jdText={jdText}
+        resumeContent={selectedResume?.content}
+        userName="Arush"
+        onEnd={() => setInActiveInterview(false)} 
+      />
+    );
+  }
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12">
-      {/* Header */}
+    <div className="max-w-6xl mx-auto space-y-10 pb-16 pt-4">
+      
+      {/* Page Title & Subtitle */}
       <div>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400 border border-orange-500/30">
-            <Mic className="w-5 h-5" />
-          </div>
-          <h1 className="text-3xl font-bold text-text-primary tracking-tight">Interview Prep</h1>
-        </div>
-        <p className="text-text-muted">Configure your AI mock interview to match your target role.</p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          Technical Screen
+        </h1>
+        <p className="text-lg text-text-muted mt-2 font-normal">
+          Practice with AI-powered voice interviews
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left Col: Setup */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-surface border border-white/10 p-6 rounded-3xl shadow-2xl flex flex-col gap-6 relative overflow-hidden">
-            
-            {isGenerating && (
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-                <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
-                <h3 className="text-lg font-bold text-white">Generating Questions...</h3>
-                <p className="text-sm text-text-muted text-center max-w-xs mt-2">
-                  Our AI is analyzing your resume and the job description to craft the perfect personalized questions.
-                </p>
+        {/* Left Column: Feature Highlights & Banner */}
+        <div className="lg:col-span-7 space-y-6">
+          
+          {/* Green Credit Badge */}
+          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex items-center justify-between text-emerald-400">
+            <span className="text-sm font-semibold flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> You have 1 mock interview available
+            </span>
+            <span className="text-xs bg-emerald-500/20 px-3 py-1 rounded-full font-bold uppercase tracking-wider">
+              PRO ACCESS
+            </span>
+          </div>
+
+          {/* Customization Inputs (Role, Resume, JD) */}
+          <div className="space-y-4 bg-surface/50 border border-white/5 rounded-3xl p-6 backdrop-blur-xl">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-400" /> Target Position Context
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Target Role Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-text-muted">Target Role</label>
+                <input 
+                  type="text"
+                  value={roleTitle}
+                  onChange={(e) => setRoleTitle(e.target.value)}
+                  placeholder="e.g. Senior Full Stack Engineer"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500/50 transition-colors"
+                />
               </div>
-            )}
 
-            <h2 className="text-xl font-bold text-text-primary">Configure Session</h2>
-
-            {/* Resume Selection */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4" /> Base Resume
-              </label>
-              <select 
-                value={selectedResumeId}
-                onChange={(e) => setSelectedResumeId(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
-              >
-                {mockResumes.map(r => (
-                  <option key={r.id} value={r.id}>{r.name}</option>
-                ))}
-              </select>
+              {/* Resume Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-text-muted">Base Resume</label>
+                <select 
+                  value={selectedResumeId}
+                  onChange={(e) => setSelectedResumeId(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500/50 transition-colors"
+                >
+                  {mockResumes.map((r) => (
+                    <option key={r.id} value={r.id} className="bg-background text-white">
+                      {r.title} ({r.targetRole})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            {/* Role */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider flex items-center gap-2">
-                <Briefcase className="w-4 h-4" /> Target Role
-              </label>
-              <input 
-                type="text"
-                placeholder="e.g. Senior Frontend Engineer"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors"
-              />
-            </div>
-
-            {/* Job Description */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Job Description</label>
+            {/* Job Description Textarea */}
+            <div className="space-y-1.5 pt-1">
+              <label className="text-xs font-semibold text-text-muted">Job Description (Optional)</label>
               <textarea 
-                placeholder="Paste the job description here..."
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
-                className="w-full h-48 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors resize-none custom-scrollbar"
+                rows={3}
+                placeholder="Paste the target job description here to tailor questions..."
+                className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500/50 transition-colors resize-none custom-scrollbar"
               />
             </div>
-
-            <button
-              onClick={handleStartInterview}
-              disabled={!role || !jdText || isGenerating}
-              className="w-full py-4 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold transition-all disabled:opacity-50 disabled:hover:bg-primary flex items-center justify-center gap-2 mt-2 shadow-glow-primary"
-            >
-              <Play className="w-5 h-5 fill-current" /> Start Mock Interview
-            </button>
           </div>
-        </div>
 
-        {/* Right Col: History */}
-        <div className="space-y-6">
-          <div className="bg-surface border border-white/10 p-6 rounded-3xl shadow-lg">
-            <h2 className="text-lg font-bold text-text-primary mb-4">Recent Sessions</h2>
+          {/* Feature Checklist matching Screenshot 1 */}
+          <div className="space-y-6 bg-surface/50 border border-white/5 rounded-3xl p-8 backdrop-blur-xl">
             
-            <div className="flex flex-col gap-3">
-              {[1, 2].map((i) => (
-                <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer group flex flex-col gap-2">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-sm text-text-primary group-hover:text-primary transition-colors">Frontend Developer</h3>
-                    <span className="text-[10px] text-text-muted">Yesterday</span>
-                  </div>
-                  <p className="text-xs text-text-secondary">Google</p>
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
-                    <span className="text-xs font-medium text-emerald-400">Score: 85/100</span>
-                    <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-primary transition-colors" />
-                  </div>
-                </div>
-              ))}
-
-              <div className="p-8 text-center border border-dashed border-white/10 rounded-2xl">
-                <p className="text-sm text-text-muted">Your past interviews will appear here.</p>
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-primary shrink-0 mt-0.5">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white leading-tight">Personalized interviews for your job hunt</h3>
+                <p className="text-sm text-text-muted mt-1 leading-relaxed">
+                  Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description.
+                </p>
               </div>
             </div>
+
+            <div className="flex items-start gap-4 pt-4 border-t border-white/5">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-emerald-400 shrink-0 mt-0.5">
+                <Mic className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white leading-tight">A realistic, voice-based interview</h3>
+                <p className="text-sm text-text-muted mt-1 leading-relaxed">
+                  Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 pt-4 border-t border-white/5">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-purple-400 shrink-0 mt-0.5">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white leading-tight">Work on behavioral & technical questions that matter</h3>
+                <p className="text-sm text-text-muted mt-1 leading-relaxed">
+                  Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 pt-4 border-t border-white/5">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-orange-400 shrink-0 mt-0.5">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white leading-tight">Improve with clear, actionable feedback</h3>
+                <p className="text-sm text-text-muted mt-1 leading-relaxed">
+                  Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Action Trigger Button */}
+          <div className="pt-2">
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-base transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] flex items-center gap-3 cursor-pointer"
+            >
+              Start Interview <Play className="w-5 h-5 fill-current" />
+            </button>
+          </div>
+
+        </div>
+
+        {/* Right Column: HackerRank Preview Card matching Screenshot 1 */}
+        <div className="lg:col-span-5">
+          <div className="bg-[#161a23] border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6 relative overflow-hidden">
+            
+            {/* Timer Badge */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2 text-xs font-semibold text-text-muted">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                AI Interviewer Online
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-text-secondary">
+                <Clock className="w-3.5 h-3.5" /> 30:00
+              </div>
+            </div>
+
+            {/* Split Screen Cards (User & AI Listening) matching Screenshot 1 */}
+            <div className="grid grid-cols-2 gap-3 h-52">
+              
+              {/* Left User Preview */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center relative group">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-text-muted mb-4">
+                  <UserCircle className="w-8 h-8" />
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <button className="p-2 rounded-lg bg-white/5 border border-white/10 text-text-muted hover:text-white transition-colors">
+                    <Mic className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 rounded-lg bg-white/5 border border-white/10 text-text-muted hover:text-white transition-colors">
+                    <Video className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Right AI Listening Preview */}
+              <div className="bg-primary/20 border border-primary/40 rounded-2xl p-4 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-primary/30 border border-primary/50 flex items-center justify-center text-white mb-3 relative">
+                  <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+                  <Mic className="w-6 h-6 relative z-10" />
+                </div>
+                
+                <span className="text-xs font-extrabold tracking-widest uppercase text-white">
+                  LISTENING...
+                </span>
+              </div>
+
+            </div>
+
+            {/* Setup Settings Trigger */}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-2 transition-colors"
+            >
+              <Settings2 className="w-4 h-4" /> Audio & Camera Settings
+            </button>
+
           </div>
         </div>
 
       </div>
+
+      {/* Audio & Camera Modal */}
+      <AudioCameraModal 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onStart={handleStartInterviewFromModal}
+      />
+
     </div>
   );
 }
