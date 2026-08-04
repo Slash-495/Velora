@@ -42,8 +42,15 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
         }
 
         setFormData({
-          ...initialData,
+          companyName: initialData.companyName || "",
+          roleTitle: initialData.roleTitle || "",
+          status: initialData.status || "wishlist",
+          location: initialData.location || "",
+          salaryRange: initialData.salaryRange || "",
+          applicationLink: initialData.applicationLink || "",
           applicationDate: initialData.applicationDate ? new Date(initialData.applicationDate).toISOString().split('T')[0] : "",
+          resumeId: initialData.resumeId || "",
+          jobDescription: initialData.jobDescription || "",
           salaryCurrency: curr,
           salaryAmount: amt,
           salaryUnit: unit,
@@ -139,7 +146,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="text" 
                       name="companyName"
-                      value={formData.companyName}
+                      value={formData.companyName || ""}
                       onChange={handleChange}
                       placeholder="e.g. Google"
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
@@ -153,7 +160,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="text" 
                       name="roleTitle"
-                      value={formData.roleTitle}
+                      value={formData.roleTitle || ""}
                       onChange={handleChange}
                       placeholder="e.g. Frontend Engineer"
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
@@ -170,7 +177,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="text" 
                       name="location"
-                      value={formData.location}
+                      value={formData.location || ""}
                       onChange={handleChange}
                       placeholder="e.g. Remote, San Francisco"
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
@@ -184,7 +191,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="date" 
                       name="applicationDate"
-                      value={formData.applicationDate}
+                      value={formData.applicationDate || ""}
                       onChange={handleChange}
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all [color-scheme:dark]"
                     />
@@ -198,7 +205,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                   <div className="relative flex items-center">
                     <select 
                       name="salaryCurrency"
-                      value={formData.salaryCurrency}
+                      value={formData.salaryCurrency || "$"}
                       onChange={handleChange}
                       className="absolute left-0 top-0 bottom-0 bg-white/5 border-r border-white/10 rounded-l-xl px-3 text-text-muted focus:outline-none text-sm appearance-none cursor-pointer"
                     >
@@ -208,14 +215,14 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="text" 
                       name="salaryAmount"
-                      value={formData.salaryAmount}
+                      value={formData.salaryAmount || ""}
                       onChange={handleChange}
                       placeholder="e.g. 140 - 160"
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-[72px] pr-[72px] text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     />
                     <select 
                       name="salaryUnit"
-                      value={formData.salaryUnit}
+                      value={formData.salaryUnit || "k"}
                       onChange={handleChange}
                       className="absolute right-0 top-0 bottom-0 bg-white/5 border-l border-white/10 rounded-r-xl px-3 text-text-muted focus:outline-none text-sm appearance-none cursor-pointer"
                     >
@@ -231,7 +238,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     <input 
                       type="url" 
                       name="applicationLink"
-                      value={formData.applicationLink}
+                      value={formData.applicationLink || ""}
                       onChange={handleChange}
                       placeholder="https://..."
                       className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
@@ -245,7 +252,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                   <label className="text-sm font-semibold text-text-primary">Status</label>
                   <select 
                     name="status"
-                    value={formData.status}
+                    value={formData.status || "wishlist"}
                     onChange={handleChange}
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer"
                   >
@@ -262,7 +269,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                   <label className="text-sm font-semibold text-text-primary">Linked Resume</label>
                   <select 
                     name="resumeId"
-                    value={formData.resumeId}
+                    value={formData.resumeId || ""}
                     onChange={handleChange}
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer"
                   >
@@ -281,7 +288,7 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                 <textarea 
                   rows={4}
                   name="jobDescription"
-                  value={formData.jobDescription}
+                  value={formData.jobDescription || ""}
                   onChange={handleChange}
                   placeholder="Paste the full job description here..."
                   className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none custom-scrollbar"
