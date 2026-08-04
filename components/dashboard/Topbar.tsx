@@ -72,6 +72,7 @@ export function Topbar({ user }: { user: any }) {
       <div className="flex items-center gap-4 ml-auto">
         <button 
           onClick={() => router.push('/dashboard/resume-studio/new')}
+          onMouseEnter={() => router.prefetch('/dashboard/resume-studio/new')}
           className="hidden sm:flex items-center gap-2 btn-glow py-1.5 px-3 text-sm rounded-lg"
         >
           <Plus className="w-4 h-4" />
@@ -87,6 +88,7 @@ export function Topbar({ user }: { user: any }) {
 
         <button 
           onClick={() => router.push('/dashboard/profile')}
+          onMouseEnter={() => router.prefetch('/dashboard/profile')}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 border border-primary/30 text-primary hover:bg-primary/30 transition-colors relative group overflow-hidden"
           title="Go to Profile"
         >

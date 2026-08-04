@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Plus, FileText, Briefcase, Send, Target } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const actions = [
   {
@@ -32,6 +33,8 @@ const actions = [
 ];
 
 export function QuickActions() {
+  const router = useRouter();
+
   return (
     <div className="space-y-4">
       <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Quick Actions</h2>
@@ -45,6 +48,7 @@ export function QuickActions() {
           >
             <Link 
               href={action.href}
+              onMouseEnter={() => router.prefetch(action.href)}
               className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-white/5 hover:border-white/10 hover:bg-white/5 transition-colors group"
             >
               <div className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform">

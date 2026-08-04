@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -34,6 +34,7 @@ const sidebarLinks = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (href: string) => {
@@ -45,7 +46,11 @@ export function Sidebar() {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-surface/50 backdrop-blur-2xl border-r border-white/5 w-64 p-4">
-      <Link href="/dashboard" className="flex items-center gap-3 px-2 mb-8 mt-2 cursor-pointer transition-opacity hover:opacity-80">
+      <Link 
+        href="/dashboard" 
+        onMouseEnter={() => router.prefetch("/dashboard")}
+        className="flex items-center gap-3 px-2 mb-8 mt-2 cursor-pointer transition-opacity hover:opacity-80"
+      >
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow-primary">
           <span className="text-white font-bold text-lg leading-none">V</span>
         </div>
@@ -62,7 +67,8 @@ export function Sidebar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
+              onMouseEnter={() => router.prefetch(link.href)}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
                 active 
                   ? "bg-primary/10 text-primary font-medium" 
                   : "text-text-secondary hover:bg-white/5 hover:text-text-primary"
@@ -86,6 +92,7 @@ export function Sidebar() {
       <div className="pt-4 border-t border-white/5 mt-auto">
         <Link
           href="/dashboard/settings"
+          onMouseEnter={() => router.prefetch("/dashboard/settings")}
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${
             isActive("/dashboard/settings")
               ? "bg-primary/10 text-primary font-medium" 
