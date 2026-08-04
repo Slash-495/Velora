@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Calendar, MapPin, MoreHorizontal, FileText, DollarSign, Edit, Trash2 } from "lucide-react";
 import { JobApplication } from "@/lib/mock-data";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ApplicationCardProps {
   application: JobApplication;
@@ -14,8 +14,16 @@ interface ApplicationCardProps {
 }
 
 export function ApplicationCard({ application, onDragStart, onEdit, onDelete }: ApplicationCardProps) {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (menuRef.current && menuRef.current.contains(e.target as Node)) {
+      return;
+    }
+    router.push(`/dashboard/applications/${application.id}`);
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -43,9 +51,10 @@ export function ApplicationCard({ application, onDragStart, onEdit, onDelete }: 
       layoutId={application.id}
       draggable
       onDragStart={(e: any) => onDragStart(e, application.id)}
-      className="bg-surface/80 border border-white/5 rounded-2xl p-4 cursor-grab active:cursor-grabbing hover:bg-surface hover:border-white/10 transition-all shadow-sm hover:shadow-glow-sm group relative"
+      onClick={handleCardClick}
+      onMouseEnter={() => router.prefetch(`/dashboard/applications/${application.id}`)}
+      className="bg-surface/80 border border-white/5 rounded-2xl p-4 cursor-pointer hover:bg-surface hover:border-white/10 transition-all shadow-sm hover:shadow-glow-sm group relative"
     >
-      <Link href={`/dashboard/applications/${application.id}`} className="absolute inset-0 z-0"></Link>
       
       <div className="flex justify-between items-start mb-3 relative z-10">
         <div className="flex items-center gap-3">

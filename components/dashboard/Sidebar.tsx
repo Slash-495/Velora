@@ -26,7 +26,6 @@ const sidebarLinks = [
   { name: "Resume Studio", href: "/dashboard/resume-studio", icon: FileText },
   { name: "Resume Review", href: "/dashboard/resume-review", icon: LineChart },
   { name: "Cover Letters", href: "/dashboard/cover-letters", icon: PenTool },
-  { name: "Company Research", href: "/dashboard/company-research", icon: Building2 },
   { name: "Applications", href: "/dashboard/applications", icon: CheckSquare },
   { name: "Interview Prep", href: "/dashboard/interview-prep", icon: Mic },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
