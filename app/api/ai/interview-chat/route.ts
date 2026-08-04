@@ -1,11 +1,20 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCache, callWithRetry } from '@/lib/ai-retry-cache';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
   try {
-    const { role, jdText, resumeContent, userAnswer, conversationHistory } = await request.json();
+    const payload = await request.json();
+    const { role, jdText, resumeContent, userAnswer, conversationHistory } = payload;
+
+    // 1. Response Caching (Requirement 3): Check cache for repeated prompts
+    const cachedResponse = aiCache.get<{ reply: string }>("interview-chat", payload);
+    if (cachedResponse) {
+      console.log("[AI Cache Hit] Returning cached response for repeated prompt.");
+      return NextResponse.json(cachedResponse);
+    }
 
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
@@ -33,14 +42,21 @@ export async function POST(request: Request) {
       5. DO NOT include markdown formatting like asterisks or bullet points—just natural spoken text.
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const aiText = response.text().trim();
+    // 2. Retry Logic with Exponential Backoff (Requirement 2) for HTTP 429 errors
+    const aiText = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
+    }, { maxRetries: 3, initialDelayMs: 800 });
 
-    return NextResponse.json({ reply: aiText });
+    const responsePayload = { reply: aiText };
+
+    // Cache result
+    aiCache.set("interview-chat", payload, responsePayload);
+
+    return NextResponse.json(responsePayload);
   } catch (error: any) {
     console.error('Error in interview-chat route:', error);
-    // Fallback response if API key is not present or error occurs
     return NextResponse.json({
       reply: "Thank you for sharing that. Building on your experience, how do you approach monitoring and error handling in a production environment?"
     });

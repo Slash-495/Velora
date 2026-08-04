@@ -19,6 +19,8 @@ import { HackerRankInterviewRoom } from "@/components/interview-prep/HackerRankI
 
 import { mockResumes } from "@/lib/mock-data";
 
+import { useDebouncedSubmit } from "@/hooks/use-debounced-submit";
+
 export default function TechnicalScreenPage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [inActiveInterview, setInActiveInterview] = useState(false);
@@ -26,6 +28,10 @@ export default function TechnicalScreenPage() {
   const [roleTitle, setRoleTitle] = useState("Senior Full Stack Engineer");
   const [jdText, setJdText] = useState("");
   const [selectedResumeId, setSelectedResumeId] = useState(mockResumes[0].id);
+
+  const { execute: handleStartClick, isPending: isStartPending } = useDebouncedSubmit(async () => {
+    setIsSettingsOpen(true);
+  }, { debounceMs: 1000 });
 
   const handleStartInterviewFromModal = () => {
     setIsSettingsOpen(false);
@@ -180,8 +186,9 @@ export default function TechnicalScreenPage() {
           {/* Action Trigger Button */}
           <div className="pt-2">
             <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-base transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] flex items-center gap-3 cursor-pointer"
+              onClick={handleStartClick}
+              disabled={isStartPending}
+              className="px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-black font-extrabold text-base transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] flex items-center gap-3 cursor-pointer"
             >
               Start Interview <Play className="w-5 h-5 fill-current" />
             </button>

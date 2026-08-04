@@ -1,18 +1,27 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCache, callWithRetry } from '@/lib/ai-retry-cache';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
   try {
-    const { role, history, userName } = await request.json();
+    const payload = await request.json();
+    const { role, history, userName } = payload;
+
+    // 1. Response Caching: Check cache for identical transcript evaluation
+    const cachedEvaluation = aiCache.get<any>("evaluate-session", payload);
+    if (cachedEvaluation) {
+      console.log("[AI Cache Hit] Returning cached evaluation report.");
+      return NextResponse.json(cachedEvaluation);
+    }
 
     const userResponses = (history || []).filter((h: any) => h.role === 'user');
     const totalWordsSpoken = userResponses.reduce((acc: number, curr: any) => acc + (curr.text || '').split(/\s+/).length, 0);
 
-    // REALISM CHECK: If candidate spoke less than 10 words in total, return INCOMPLETE report
+    // If candidate spoke less than 10 words, return INCOMPLETE report
     if (userResponses.length === 0 || totalWordsSpoken < 10) {
-      return NextResponse.json({
+      const incompleteReport = {
         score: 0,
         status: "Incomplete / No Answers",
         summary: "The interview was ended before any substantial answers were provided. No technical data was recorded.",
@@ -22,10 +31,10 @@ export async function POST(request: Request) {
         strengths: ["No technical responses recorded."],
         areasForImprovement: ["Participate and answer questions during the voice screen to receive an evaluation."],
         isComplete: false
-      });
+      };
+      return NextResponse.json(incompleteReport);
     }
 
-    // Call Gemini to evaluate genuine candidate transcript
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: { responseMimeType: "application/json" }
@@ -65,15 +74,21 @@ export async function POST(request: Request) {
       }
     `;
 
-    const result = await model.generateContent(prompt);
-    const text = (await result.response).text().trim();
-    const cleanJson = text.replace(/```(?:json)?/gi, '').trim();
+    // 2. Retry Logic with Exponential Backoff for HTTP 429 errors
+    const evaluationData = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const text = (await result.response).text().trim();
+      const cleanJson = text.replace(/```(?:json)?/gi, '').trim();
+      return JSON.parse(cleanJson);
+    }, { maxRetries: 3, initialDelayMs: 800 });
 
-    return NextResponse.json(JSON.parse(cleanJson));
+    // Cache the result
+    aiCache.set("evaluate-session", payload, evaluationData);
+
+    return NextResponse.json(evaluationData);
   } catch (error: any) {
     console.error("Error evaluating session:", error);
 
-    // Fallback if API key issue
     const userResponses = (history || []).filter((h: any) => h.role === 'user');
     if (userResponses.length === 0) {
       return NextResponse.json({
