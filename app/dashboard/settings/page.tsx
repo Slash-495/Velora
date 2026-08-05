@@ -5,6 +5,7 @@ import { User, Bell, Shield, CreditCard, LogOut, Moon, Monitor, Sun } from "luci
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { signOut } from "@/app/(auth)/actions";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -50,11 +51,8 @@ export default function SettingsPage() {
     localStorage.removeItem("velora_user_name");
     localStorage.removeItem("velora_user_avatar");
     
-    // Sign out from Supabase
-    await supabase.auth.signOut();
-    
-    // Redirect to home page
-    router.push("/");
+    // Sign out via server action to flush server cookies
+    await signOut();
   };
 
   const SectionHeading = ({ title, description }: { title: string, description: string }) => (

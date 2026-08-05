@@ -2,64 +2,63 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
+  let response = NextResponse.next({
     request,
   })
-
-  const pendingCookies: Array<{ name: string; value: string; options: any }> = []
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(key) {
-          const cookie = request.cookies.get(key)
-          return cookie?.value ?? null
+        getAll() {
+          return request.cookies.getAll()
         },
-        set(name, value, options) {
-          pendingCookies.push({ name, value, options })
-        },
-        remove(name, options) {
-          pendingCookies.push({ name, value: '', options: { ...options, maxAge: 0 } })
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({
+            request,
+          })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
         },
       },
     }
   )
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch (e) {
+    console.error("Middleware getUser error:", e)
+  }
 
-  const protectedRoutes = ['/dashboard', '/workspace', '/resume', '/applications']
+  const protectedRoutes = ['/dashboard', '/workspace', '/resume', '/applications', '/interview-prep', '/cover-letter']
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
 
-  if (isProtectedRoute && !user) {
+  // Check if any Supabase auth cookies exist on the incoming request
+  const allCookies = request.cookies.getAll()
+  const hasSupabaseAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token'))
+
+  // Only redirect away from protected routes if there is NO user AND NO auth cookie present
+  if (isProtectedRoute && !user && !hasSupabaseAuthCookie) {
     const url = request.nextUrl.clone()
     url.pathname = '/sign-in'
     return NextResponse.redirect(url)
   }
 
-  // Redirect signed-in users away from auth pages
+  // Redirect authenticated users away from auth pages (/sign-in, /sign-up) directly to /dashboard
   if (user && (request.nextUrl.pathname === '/sign-in' || request.nextUrl.pathname === '/sign-up')) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 
-  if (pendingCookies.length > 0) {
-    supabaseResponse = NextResponse.next({ request })
-    pendingCookies.forEach(({ name, value, options }) =>
-      supabaseResponse.cookies.set(name, value, {
-        ...options,
-        secure: process.env.NODE_ENV === 'production',
-      })
-    )
-  }
-
-  return supabaseResponse
+  return response
 }
 
 export const config = {

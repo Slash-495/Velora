@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
+import { headers, cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
 export async function signIn(formData: FormData) {
@@ -63,6 +63,9 @@ export async function signInWithGoogle() {
     provider: 'google',
     options: {
       redirectTo: `${origin}/api/auth/callback`,
+      queryParams: {
+        prompt: 'select_account' // Forces Google account chooser on re-login
+      }
     },
   })
 
@@ -78,6 +81,17 @@ export async function signInWithGoogle() {
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  
-  redirect('/')
+
+  // Clean up residual cookies to prevent auth token mismatch
+  const cookieStore = await cookies()
+  const allCookies = cookieStore.getAll()
+  for (const c of allCookies) {
+    if (c.name.startsWith('sb-') || c.name.includes('auth-token')) {
+      try {
+        cookieStore.delete(c.name)
+      } catch (e) {}
+    }
+  }
+
+  redirect('/sign-in')
 }
