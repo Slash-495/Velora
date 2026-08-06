@@ -9,25 +9,25 @@ const actions = [
   {
     name: "New Resume",
     icon: FileText,
-    href: "/resume/new",
+    href: "/dashboard/resume-studio",
     color: "text-blue-400"
   },
   {
     name: "Add Track",
     icon: Briefcase,
-    href: "/dashboard/tracks/new",
+    href: "/dashboard/career-tracks",
     color: "text-purple-400"
   },
   {
     name: "Log Application",
     icon: Send,
-    href: "/applications/new",
+    href: "/dashboard/applications",
     color: "text-emerald-400"
   },
   {
     name: "ATS Check",
     icon: Target,
-    href: "/tools/ats",
+    href: "/dashboard/resume-review",
     color: "text-primary-glow"
   }
 ];
@@ -49,7 +49,7 @@ export function QuickActions() {
             <Link 
               href={action.href}
               onMouseEnter={() => router.prefetch(action.href)}
-              className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-white/5 hover:border-white/10 hover:bg-white/5 transition-colors group"
+              className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-white/5 hover:border-white/10 hover:bg-white/5 transition-colors group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-lg bg-black/20 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform">
                 <action.icon className={`w-4 h-4 ${action.color}`} />
