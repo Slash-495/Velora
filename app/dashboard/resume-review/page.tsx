@@ -46,8 +46,9 @@ interface ReviewData {
 }
 
 export default function ResumeReviewPage() {
+  const userResumes = useUserResumes();
   const [targetRole, setTargetRole] = useState("Software Engineer");
-  const [selectedResumeId, setSelectedResumeId] = useState(mockResumes[0].id);
+  const [selectedResumeId, setSelectedResumeId] = useState(userResumes[0]?.id || "res-1");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [review, setReview] = useState<ReviewData | null>(null);
 
@@ -55,7 +56,7 @@ export default function ResumeReviewPage() {
     setIsAnalyzing(true);
     setReview(null);
     try {
-      const selected = mockResumes.find(r => r.id === selectedResumeId);
+      const selected = userResumes.find(r => r.id === selectedResumeId) || userResumes[0];
       const res = await fetch("/api/ai/review-resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,8 +140,10 @@ export default function ResumeReviewPage() {
                 onChange={(e) => setSelectedResumeId(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-primary/50 transition-colors appearance-none cursor-pointer"
               >
-                {mockResumes.map(r => (
-                  <option key={r.id} value={r.id} className="bg-background text-text-primary">{r.name}</option>
+                {userResumes.map(r => (
+                  <option key={r.id} value={r.id} className="bg-background text-text-primary">
+                    {r.name} {r.isDemo ? "(DEMO)" : "(REAL)"}
+                  </option>
                 ))}
               </select>
             </div>

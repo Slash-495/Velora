@@ -5,6 +5,7 @@ export interface CareerTrack {
   status: "Active" | "Archived" | "Needs Optimization";
   color: string;
   updatedAt: string;
+  isDemo?: boolean;
 }
 
 export interface ResumeContent {
@@ -63,6 +64,7 @@ export interface Resume {
   themeConfig: ResumeThemeConfig;
   updatedAt: string;
   content: ResumeContent;
+  isDemo?: boolean;
 }
 
 export const mockTracks: CareerTrack[] = [

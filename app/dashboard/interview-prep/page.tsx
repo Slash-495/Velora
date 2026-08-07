@@ -17,17 +17,18 @@ import {
 import { AudioCameraModal } from "@/components/interview-prep/AudioCameraModal";
 import { HackerRankInterviewRoom } from "@/components/interview-prep/HackerRankInterviewRoom";
 
-import { mockResumes } from "@/lib/mock-data";
+import { useUserResumes } from "@/lib/user-data-store";
 
 import { useDebouncedSubmit } from "@/hooks/use-debounced-submit";
 
 export default function TechnicalScreenPage() {
+  const userResumes = useUserResumes();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [inActiveInterview, setInActiveInterview] = useState(false);
 
   const [roleTitle, setRoleTitle] = useState("Senior Full Stack Engineer");
   const [jdText, setJdText] = useState("");
-  const [selectedResumeId, setSelectedResumeId] = useState(mockResumes[0].id);
+  const [selectedResumeId, setSelectedResumeId] = useState(userResumes[0]?.id || "res-1");
 
   const { execute: handleStartClick, isPending: isStartPending } = useDebouncedSubmit(async () => {
     setIsSettingsOpen(true);
@@ -38,7 +39,7 @@ export default function TechnicalScreenPage() {
     setInActiveInterview(true);
   };
 
-  const selectedResume = mockResumes.find(r => r.id === selectedResumeId);
+  const selectedResume = userResumes.find(r => r.id === selectedResumeId) || userResumes[0];
 
   if (inActiveInterview) {
     return (
@@ -108,9 +109,9 @@ export default function TechnicalScreenPage() {
                   onChange={(e) => setSelectedResumeId(e.target.value)}
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500/50 transition-colors"
                 >
-                  {mockResumes.map((r) => (
+                  {userResumes.map((r) => (
                     <option key={r.id} value={r.id} className="bg-background text-white">
-                      {r.title} ({r.targetRole})
+                      {r.name} {r.isDemo ? "(DEMO)" : "(REAL)"}
                     </option>
                   ))}
                 </select>

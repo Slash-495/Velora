@@ -62,7 +62,14 @@ export function ApplicationCard({ application, onDragStart, onEdit, onDelete }: 
             <Building2 className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">{application.roleTitle}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1">{application.roleTitle}</h3>
+              {application.isDemo ? (
+                <span className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-mono font-bold text-text-muted uppercase">DEMO</span>
+              ) : (
+                <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-[9px] font-mono font-bold text-emerald-400 uppercase">REAL</span>
+              )}
+            </div>
             <p className="text-xs text-text-muted font-medium">{application.companyName}</p>
           </div>
         </div>

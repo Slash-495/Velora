@@ -1,27 +1,37 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, Search, FileText, CheckCircle2, MoreHorizontal, ArrowRight, Edit3, Download, Copy, Trash2, LayoutTemplate } from "lucide-react";
+import { Plus, Search, FileText, CheckCircle2, MoreHorizontal, ArrowRight, Edit3, Download, Copy, Trash2, LayoutTemplate, Sparkles, Upload } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { mockResumes, mockTracks } from "@/lib/mock-data";
+import { useUserResumes, useUserTracks, deleteUserResume } from "@/lib/user-data-store";
 
-const TABS = ["All Resumes", "Recent", "High ATS Score"];
+const TABS = ["All Resumes", "Real User Resumes", "High ATS Score"];
 
 export default function ResumeStudioPage() {
+  const resumes = useUserResumes();
+  const tracks = useUserTracks();
+
   const [activeTab, setActiveTab] = useState("All Resumes");
   const [searchQuery, setSearchQuery] = useState("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  const filteredResumes = mockResumes.filter(resume => {
+  const filteredResumes = resumes.filter(resume => {
     const matchesSearch = resume.name.toLowerCase().includes(searchQuery.toLowerCase());
     
     let matchesTab = true;
     if (activeTab === "High ATS Score") matchesTab = resume.atsScore >= 90;
-    // For "Recent", we could sort or filter by date. Assuming all are recent for mock.
+    if (activeTab === "Real User Resumes") matchesTab = !resume.isDemo;
 
     return matchesSearch && matchesTab;
   });
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this resume?")) {
+      deleteUserResume(id);
+      setOpenMenuId(null);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-12">
@@ -34,12 +44,14 @@ export default function ResumeStudioPage() {
       >
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary tracking-tight">Resume Studio</h1>
-          <p className="text-text-muted mt-1">Manage, tailor, and optimize your career documents.</p>
+          <p className="text-text-muted mt-1">Manage, tailor, import, and optimize your real career documents.</p>
         </div>
         
-        <Link href="/dashboard/resume-studio/new" className="btn-glow shrink-0 px-6 py-2.5 rounded-xl flex items-center gap-2">
-          <Plus className="w-4 h-4" /> New Resume
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/resume-studio/new" className="btn-glow shrink-0 px-6 py-2.5 rounded-xl flex items-center gap-2 font-semibold">
+            <Plus className="w-4 h-4" /> New or Import Resume
+          </Link>
+        </div>
       </motion.div>
 
       {/* Toolbar (Search & Filters) */}
@@ -49,9 +61,9 @@ export default function ResumeStudioPage() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === tab 
-                  ? "bg-white/10 text-text-primary shadow-sm" 
+                  ? "bg-white/10 text-text-primary shadow-sm font-semibold" 
                   : "text-text-secondary hover:text-text-primary hover:bg-white/5"
               }`}
             >
@@ -77,23 +89,34 @@ export default function ResumeStudioPage() {
       {/* Resumes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
         {filteredResumes.map((resume, index) => {
-          const track = mockTracks.find(t => t.id === resume.trackId);
+          const track = tracks.find(t => t.id === resume.trackId);
           
           return (
             <motion.div
               key={resume.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="card-premium p-5 rounded-2xl border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 group relative"
+              transition={{ delay: index * 0.05 }}
+              className="card-premium p-5 rounded-2xl border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 group relative overflow-hidden"
             >
-              <div className="flex justify-between items-start mb-6">
+              {/* DEMO / REAL Badge */}
+              {resume.isDemo ? (
+                <span className="absolute top-3 right-3 px-2 py-0.5 rounded bg-white/10 border border-white/10 text-[10px] font-mono font-bold text-text-muted uppercase tracking-wider">
+                  DEMO
+                </span>
+              ) : (
+                <span className="absolute top-3 right-3 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> REAL
+                </span>
+              )}
+
+              <div className="flex justify-between items-start mb-6 pr-12">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-primary" />
+                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${resume.isDemo ? 'bg-primary/10 border-primary/20' : 'bg-emerald-500/10 border-emerald-500/20'}`}>
+                    <FileText className={`w-5 h-5 ${resume.isDemo ? 'text-primary' : 'text-emerald-400'}`} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-text-primary text-lg leading-tight">{resume.name}</h3>
+                    <h3 className="font-bold text-text-primary text-lg leading-tight truncate max-w-[180px]">{resume.name}</h3>
                     <p className="text-xs text-text-muted font-medium mt-0.5">{track?.name || 'Unassigned Track'}</p>
                   </div>
                 </div>
@@ -102,7 +125,7 @@ export default function ResumeStudioPage() {
                 <div className="relative">
                   <button 
                     onClick={() => setOpenMenuId(openMenuId === resume.id ? null : resume.id)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-text-muted transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-text-muted transition-colors cursor-pointer"
                   >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
@@ -114,17 +137,11 @@ export default function ResumeStudioPage() {
                         <Link href={`/dashboard/resume-studio/${resume.id}`} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
                           <Edit3 className="w-4 h-4" /> Edit Resume
                         </Link>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
-                          <LayoutTemplate className="w-4 h-4" /> Change Template
-                        </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
-                          <Copy className="w-4 h-4" /> Duplicate
-                        </button>
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left">
-                          <Download className="w-4 h-4" /> Export PDF
-                        </button>
                         <div className="h-px bg-white/5 my-1 mx-2" />
-                        <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left">
+                        <button 
+                          onClick={() => handleDelete(resume.id)}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left cursor-pointer"
+                        >
                           <Trash2 className="w-4 h-4" /> Delete Resume
                         </button>
                       </div>
@@ -143,7 +160,7 @@ export default function ResumeStudioPage() {
                 </div>
                 <div className="bg-black/20 rounded-xl p-3 border border-white/5">
                   <span className="block text-[10px] text-text-muted uppercase tracking-wider font-semibold mb-1">Template</span>
-                  <span className="text-sm font-bold text-text-primary truncate">
+                  <span className="text-sm font-bold text-text-primary truncate block">
                     {resume.template}
                   </span>
                 </div>
@@ -168,7 +185,7 @@ export default function ResumeStudioPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: filteredResumes.length * 0.1 }}
+          transition={{ delay: filteredResumes.length * 0.05 }}
         >
           <Link 
             href="/dashboard/resume-studio/new"
@@ -177,7 +194,7 @@ export default function ResumeStudioPage() {
             <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-primary/20 group-hover:text-primary">
               <Plus className="w-6 h-6 text-text-muted group-hover:text-primary transition-colors" />
             </div>
-            <span className="text-sm font-medium text-text-secondary group-hover:text-primary transition-colors">Create Blank Resume</span>
+            <span className="text-sm font-medium text-text-secondary group-hover:text-primary transition-colors">Import or Create New Resume</span>
           </Link>
         </motion.div>
 
