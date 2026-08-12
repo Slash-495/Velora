@@ -24,6 +24,14 @@ export async function signIn(formData: FormData) {
     return { error: 'Unable to sign in. Please check your credentials and try again.' }
   }
 
+  // Set a explicit 7-day persistent session cookie
+  const cookieStore = await cookies()
+  cookieStore.set('velora_remember_user', 'true', {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/',
+    sameSite: 'lax',
+  })
+
   return { success: true, session: data.session, user: data.user }
 }
 
@@ -48,6 +56,13 @@ export async function signUp(formData: FormData) {
       message: 'Account created. Please check your email to confirm your account before signing in.',
     }
   }
+
+  const cookieStore = await cookies()
+  cookieStore.set('velora_remember_user', 'true', {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/',
+    sameSite: 'lax',
+  })
 
   return { success: true, session: data.session, user: data.user }
 }
@@ -82,11 +97,11 @@ export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
 
-  // Clean up residual cookies to prevent auth token mismatch
+  // Clean up residual cookies
   const cookieStore = await cookies()
   const allCookies = cookieStore.getAll()
   for (const c of allCookies) {
-    if (c.name.startsWith('sb-') || c.name.includes('auth-token')) {
+    if (c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user') {
       try {
         cookieStore.delete(c.name)
       } catch (e) {}

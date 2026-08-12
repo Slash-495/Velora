@@ -9,9 +9,10 @@ import {
   Eye, 
   Sparkles, 
   LayoutTemplate,
-  ChevronRight,
+  ArrowRight,
   Briefcase
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const features = [
   {
@@ -19,6 +20,7 @@ const features = [
     title: "AI Resume Builder",
     description: "Generate professional, impact-driven resumes in minutes. Let AI improve your wording, structure, and formatting automatically.",
     icon: FileText,
+    targetRoute: "/dashboard/resume-studio",
     className: "md:col-span-2 md:row-span-2",
     content: (
       <div className="absolute right-0 bottom-0 w-[80%] h-[70%] bg-surface/50 border-t border-l border-white/5 rounded-tl-2xl p-4 overflow-hidden mask-image-b transform transition-transform group-hover:-translate-y-2 group-hover:-translate-x-2">
@@ -46,6 +48,7 @@ const features = [
     title: "ATS Optimization",
     description: "Score higher on ATS screens with keyword suggestions and formatting fixes.",
     icon: Target,
+    targetRoute: "/dashboard/resume-review",
     className: "md:col-span-1 md:row-span-1",
     content: (
       <div className="absolute right-4 bottom-4 flex items-center justify-center transform transition-transform group-hover:scale-110">
@@ -60,6 +63,7 @@ const features = [
     title: "Live Preview",
     description: "See your changes in real-time as you type. What you see is what you export.",
     icon: Eye,
+    targetRoute: "/dashboard/resume-studio",
     className: "md:col-span-1 md:row-span-2",
     content: (
       <div className="absolute -right-4 -bottom-4 w-[120%] h-[60%] bg-white/5 border border-white/10 rounded-2xl rotate-[-5deg] p-4 transform transition-transform group-hover:rotate-0">
@@ -80,6 +84,7 @@ const features = [
     title: "Resume Workspace",
     description: "Organize and manage all your tailored resumes in one place.",
     icon: Briefcase,
+    targetRoute: "/dashboard/career-tracks",
     className: "md:col-span-1 md:row-span-1",
     content: (
       <div className="absolute -right-2 -bottom-2 w-[85%] bg-white/5 border border-white/10 p-3 rounded-tl-2xl rounded-tr-md rounded-bl-md backdrop-blur-md transform transition-transform group-hover:-translate-y-2 group-hover:-translate-x-2 shadow-2xl">
@@ -121,6 +126,7 @@ const features = [
     title: "Job Tracker",
     description: "Organize your job hunt visually. Track applications, interviews, and offers in one clean kanban board.",
     icon: KanbanSquare,
+    targetRoute: "/dashboard/applications",
     className: "md:col-span-2 md:row-span-1",
     content: (
       <div className="absolute right-4 bottom-0 flex gap-2 h-[80%] transform transition-transform group-hover:-translate-y-2">
@@ -141,6 +147,7 @@ const features = [
     title: "Multiple Templates",
     description: "Choose from a collection of modern, ATS-friendly designs crafted by typography experts.",
     icon: LayoutTemplate,
+    targetRoute: "/dashboard/resume-studio",
     className: "md:col-span-2 md:row-span-1",
     content: (
       <div className="absolute right-8 bottom-0 flex transform transition-transform group-hover:-translate-y-2 group-hover:-translate-x-2">
@@ -153,8 +160,10 @@ const features = [
 ];
 
 export function Features() {
+  const { navigateProtected } = useAuth();
+
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="features" className="py-24 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
       
       <Container>
@@ -199,17 +208,23 @@ export function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`group relative overflow-hidden rounded-3xl card-premium hover:border-white/[0.1] transition-colors p-6 sm:p-8 flex flex-col ${feature.className}`}
+              onClick={() => navigateProtected(feature.targetRoute)}
+              className={`group relative overflow-hidden rounded-3xl card-premium hover:border-primary/50 transition-all hover:-translate-y-1 p-6 sm:p-8 flex flex-col cursor-pointer ${feature.className}`}
             >
               {/* Subtle background glow on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/5 group-hover:to-transparent transition-colors duration-500 z-0" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/10 group-hover:to-transparent transition-colors duration-500 z-0" />
               
               <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 rounded-xl bg-white/5 text-text-primary group-hover:bg-primary/20 group-hover:text-primary-glow transition-colors">
-                    <feature.icon className="w-5 h-5" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-white/5 text-text-primary group-hover:bg-primary/20 group-hover:text-primary-glow transition-colors">
+                      <feature.icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-text-primary group-hover:text-primary-glow transition-colors">{feature.title}</h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-text-primary">{feature.title}</h3>
+                  <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                    <ArrowRight className="w-4 h-4 text-primary-glow" />
+                  </div>
                 </div>
                 
                 <p className="text-sm text-text-secondary leading-relaxed max-w-[80%]">

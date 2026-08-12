@@ -20,14 +20,18 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              maxAge: 60 * 60 * 24 * 7, // Remember user for at least 7 days
+              path: '/',
+              sameSite: 'lax',
+            })
           )
         },
       },
     }
   )
 
-  // refreshing the auth token
   await supabase.auth.getUser()
 
   return supabaseResponse

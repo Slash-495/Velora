@@ -2,21 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Container } from "./Container";
 import { signOut } from "@/app/(auth)/actions";
+import { useAuth } from "@/hooks/use-auth";
 
-const navLinks = [
-  { name: "Features", href: "#" },
-  { name: "Templates", href: "#" },
-  { name: "Job Tracker", href: "#" },
-  { name: "AI Tools", href: "#" },
-];
-
-export function Navbar({ user }: { user?: any }) {
+export function Navbar({ user: initialUser }: { user?: any }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isLoggedIn } = useAuth(initialUser);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +23,53 @@ export function Navbar({ user }: { user?: any }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent, navName: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    if (isLoggedIn) {
+      switch (navName) {
+        case "Features":
+          router.push("/dashboard");
+          break;
+        case "Templates":
+          router.push("/dashboard/resume-studio");
+          break;
+        case "Job Tracker":
+          router.push("/dashboard/applications");
+          break;
+        case "AI Tools":
+          router.push("/dashboard/resume-review");
+          break;
+        default:
+          router.push("/dashboard");
+      }
+    } else {
+      switch (navName) {
+        case "Features":
+        case "Templates":
+        case "Job Tracker":
+        case "AI Tools":
+          const el = document.getElementById("features");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          } else {
+            router.push("/#features");
+          }
+          break;
+        default:
+          router.push("/sign-in");
+      }
+    }
+  };
+
+  const navLinks = [
+    { name: "Features" },
+    { name: "Templates" },
+    { name: "Job Tracker" },
+    { name: "AI Tools" },
+  ];
 
   return (
     <header
@@ -47,13 +91,14 @@ export function Navbar({ user }: { user?: any }) {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
+            <a
               key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200"
+              href="#"
+              onClick={(e) => handleNavClick(e, link.name)}
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 cursor-pointer"
             >
               {link.name}
-            </Link>
+            </a>
           ))}
         </nav>
 
@@ -64,7 +109,12 @@ export function Navbar({ user }: { user?: any }) {
               <Link href="/dashboard" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
                 Dashboard
               </Link>
-              <form action={signOut}>
+              <form action={signOut} onSubmit={() => {
+                if (typeof window !== "undefined") {
+                  localStorage.removeItem("velora_user_logged_in");
+                  document.cookie = "velora_remember_user=; path=/; max-age=0; SameSite=Lax";
+                }
+              }}>
                 <button type="submit" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
                   Logout
                 </button>
@@ -106,14 +156,14 @@ export function Navbar({ user }: { user?: any }) {
           >
             <div className="flex flex-col p-4 gap-4">
               {navLinks.map((link) => (
-                <Link
+                <a
                   key={link.name}
-                  href={link.href}
-                  className="text-base font-medium text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-white/5 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  href="#"
+                  onClick={(e) => handleNavClick(e, link.name)}
+                  className="text-base font-medium text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
               <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
                 {user ? (

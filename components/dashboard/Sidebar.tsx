@@ -47,8 +47,8 @@ export function Sidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-surface/50 backdrop-blur-2xl border-r border-white/5 w-64 p-4">
       <Link 
-        href="/dashboard" 
-        onMouseEnter={() => router.prefetch("/dashboard")}
+        href="/" 
+        onMouseEnter={() => router.prefetch("/")}
         className="flex items-center gap-3 px-2 mb-8 mt-2 cursor-pointer transition-opacity hover:opacity-80"
       >
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow-primary">

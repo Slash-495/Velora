@@ -20,7 +20,12 @@ export async function middleware(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, {
+              ...options,
+              maxAge: 60 * 60 * 24 * 7, // Remember user for 7 days
+              path: '/',
+              sameSite: 'lax',
+            })
           )
         },
       },
@@ -42,7 +47,7 @@ export async function middleware(request: NextRequest) {
 
   // Check if any Supabase auth cookies exist on the incoming request
   const allCookies = request.cookies.getAll()
-  const hasSupabaseAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token'))
+  const hasSupabaseAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user')
 
   // Only redirect away from protected routes if there is NO user AND NO auth cookie present
   if (isProtectedRoute && !user && !hasSupabaseAuthCookie) {

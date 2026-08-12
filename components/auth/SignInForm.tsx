@@ -24,6 +24,10 @@ export function SignInForm() {
         setError(res.error);
         setLoading(false);
       } else if (res?.success) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("velora_user_logged_in", "true");
+          document.cookie = "velora_remember_user=true; path=/; max-age=604800; SameSite=Lax";
+        }
         router.push("/dashboard");
       } else if (res?.message) {
         setError(res.message);

@@ -3,6 +3,7 @@
 import { Container } from "@/components/ui/Container";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Quote } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const testimonials = [
   {
@@ -32,6 +33,8 @@ const testimonials = [
 ];
 
 export function CTA() {
+  const { navigateProtected } = useAuth();
+
   return (
     <div className="relative overflow-hidden">
       {/* Testimonials Section */}
@@ -70,7 +73,7 @@ export function CTA() {
                 <div>
                   <Quote className="w-8 h-8 text-primary/20 absolute top-6 right-6 transition-colors duration-300 group-hover:text-primary/40" />
                   <p className="text-text-secondary leading-relaxed mb-8 relative z-10">
-                    "{testimonial.quote}"
+                    &quot;{testimonial.quote}&quot;
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -124,11 +127,17 @@ export function CTA() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button className="btn-glow group w-full sm:w-auto text-base px-8 py-4 rounded-xl">
+                <button 
+                  onClick={() => navigateProtected("/dashboard/resume-studio")}
+                  className="btn-glow group w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer"
+                >
                   Build Your Resume
                   <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                 </button>
-                <button className="btn-secondary w-full sm:w-auto text-base px-8 py-4 rounded-xl">
+                <button 
+                  onClick={() => navigateProtected("/dashboard")}
+                  className="btn-secondary w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer"
+                >
                   Explore Workspace
                 </button>
               </div>
