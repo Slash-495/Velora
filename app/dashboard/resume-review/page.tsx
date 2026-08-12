@@ -18,6 +18,7 @@ import {
   Search
 } from "lucide-react";
 import { mockResumes } from "@/lib/mock-data"; // We'll just use one of these for the review payload
+import { useUserResumes } from "@/lib/user-data-store";
 
 interface ReviewData {
   scores: {

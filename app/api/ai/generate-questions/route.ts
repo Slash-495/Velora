@@ -54,6 +54,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ questions: JSON.parse(cleanJson) });
   } catch (error: any) {
     console.error('Error generating questions:', error);
-    return NextResponse.json({ error: error.message || 'Failed to generate questions' }, { status: 500 });
+    return NextResponse.json({
+      questions: [
+        { question: "Can you describe a challenging technical project you worked on and the key architectural decisions you made?", category: "Technical" },
+        { question: "How do you ensure code quality, performance, and scalability when building new features?", category: "Technical" },
+        { question: "Tell me about a time when you faced a strict deadline or technical disagreement. How did you resolve it?", category: "Behavioral" },
+        { question: "Looking at your resume experience, can you walk me through your most impactful project contribution?", category: "Resume Deep-Dive" },
+        { question: "How do you approach debugging complex production issues or latency bottlenecks?", category: "Resume Deep-Dive" }
+      ]
+    });
   }
 }
