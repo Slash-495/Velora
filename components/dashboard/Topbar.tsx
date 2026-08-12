@@ -77,6 +77,7 @@ export function Topbar({ user }: { user: any }) {
           title="Go to Profile"
         >
           {avatarUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover relative z-10" />
           ) : user?.email ? (
             <span className="text-xs font-medium uppercase relative z-10">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Video, Volume2, X, Check, Play, RefreshCw, AlertTriangle } from "lucide-react";
 
@@ -27,7 +27,7 @@ export function AudioCameraModal({ isOpen, onClose, onStart }: AudioCameraModalP
   const streamRef = useRef<MediaStream | null>(null);
   const animationRef = useRef<number | null>(null);
 
-  const initDevices = async () => {
+  const initDevices = useCallback(async () => {
     setDeviceError(null);
     try {
       const initialStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
@@ -68,7 +68,7 @@ export function AudioCameraModal({ isOpen, onClose, onStart }: AudioCameraModalP
         setDeviceError(`Device initialization error: ${err.message || 'Unable to access media devices'}`);
       }
     }
-  };
+  }, []);
 
   // Request permissions and enumerate devices
   useEffect(() => {
@@ -82,7 +82,7 @@ export function AudioCameraModal({ isOpen, onClose, onStart }: AudioCameraModalP
     return () => {
       stopStream();
     };
-  }, [isOpen]);
+  }, [isOpen, initDevices]);
 
   const stopStream = () => {
     if (animationRef.current) {

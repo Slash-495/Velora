@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, Video, VideoOff, MessageSquare, Sparkles, Loader2, Volume2, EyeOff, Bot, Download, Award } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, MessageSquare, Sparkles, Loader2, Volume2, EyeOff, Bot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { InterviewReportModal } from "./InterviewReportModal";
 
@@ -67,9 +67,9 @@ export function HackerRankInterviewRoom({
       const updateVoices = () => {
         const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith("en"));
         setAvailableVoices(voices);
-        if (voices.length > 0 && !selectedVoiceURI) {
+        if (voices.length > 0) {
           const pref = voices.find(v => v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha")) || voices[0];
-          setSelectedVoiceURI(pref.voiceURI);
+          setSelectedVoiceURI(prev => prev || pref.voiceURI);
         }
       };
 
@@ -172,51 +172,6 @@ export function HackerRankInterviewRoom({
     }
   }, [isMicOn, isCamOn]);
 
-  // Speech Synthesis
-  const speakAiMessage = useCallback((text: string, onComplete?: () => void) => {
-    setAiSpeechState("speaking");
-    setCurrentAiMessage(text);
-
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
-
-      if (selectedVoiceURI) {
-        const chosenVoice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
-        if (chosenVoice) utterance.voice = chosenVoice;
-      }
-
-      utterance.onend = () => {
-        if (onComplete) {
-          onComplete();
-        } else {
-          setAiSpeechState("listening");
-          startListeningUser();
-        }
-      };
-
-      window.speechSynthesis.speak(utterance);
-    } else {
-      setTimeout(() => {
-        if (onComplete) {
-          onComplete();
-        } else {
-          setAiSpeechState("listening");
-          startListeningUser();
-        }
-      }, 4000);
-    }
-  }, [selectedVoiceURI, availableVoices]);
-
-  // Start Initial AI Greeting based on Role/JD/Resume
-  useEffect(() => {
-    const greeting = `Hey ${userName}! Great to meet you. I'm your AI Technical Recruiter today for the ${roleTitle} position. I've reviewed your background and the job description. To get started, could you briefly introduce yourself and share a key technical project you're proud of?`;
-    speakAiMessage(greeting);
-    setHistory([{ role: "ai", text: greeting }]);
-  }, []);
-
   // Submit Answer to Gemini API & get dynamic reply
   const handleAutoSubmitAnswer = useCallback(async (answerText: string) => {
     if (!answerText.trim() || isSubmittingRef.current) return;
@@ -260,7 +215,7 @@ export function HackerRankInterviewRoom({
   }, [history, roleTitle, jdText, resumeContent, speakAiMessage]);
 
   // Speech Recognition with Silence Detection for AUTO-SUBMIT
-  const startListeningUser = () => {
+  const startListeningUser = useCallback(() => {
     if (typeof window !== "undefined" && ("SpeechRecognition" in window || "webkitSpeechRecognition" in window)) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!recognitionRef.current) {
@@ -291,12 +246,57 @@ export function HackerRankInterviewRoom({
         recognitionRef.current.start();
       } catch (e) {}
     }
-  };
+  }, [handleAutoSubmitAnswer]);
+
+  // Speech Synthesis
+  const speakAiMessage = useCallback((text: string, onComplete?: () => void) => {
+    setAiSpeechState("speaking");
+    setCurrentAiMessage(text);
+
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+
+      if (selectedVoiceURI) {
+        const chosenVoice = availableVoices.find(v => v.voiceURI === selectedVoiceURI);
+        if (chosenVoice) utterance.voice = chosenVoice;
+      }
+
+      utterance.onend = () => {
+        if (onComplete) {
+          onComplete();
+        } else {
+          setAiSpeechState("listening");
+          startListeningUser();
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        } else {
+          setAiSpeechState("listening");
+          startListeningUser();
+        }
+      }, 4000);
+    }
+  }, [selectedVoiceURI, availableVoices, startListeningUser]);
+
+  // Start Initial AI Greeting based on Role/JD/Resume
+  useEffect(() => {
+    const greeting = `Hey ${userName}! Great to meet you. I'm your AI Technical Recruiter today for the ${roleTitle} position. I've reviewed your background and the job description. To get started, could you briefly introduce yourself and share a key technical project you're proud of?`;
+    speakAiMessage(greeting);
+    setHistory([{ role: "ai", text: greeting }]);
+  }, [userName, roleTitle, speakAiMessage]);
 
   // End Test: CANCEL SPEECH IMMEDIATELY & OPEN REPORT MODAL
   const handleEndInterview = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel(); // STOP SPEECH IMMEDIATELY
+      window.speechSynthesis.cancel();
     }
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (e) {}

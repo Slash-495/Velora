@@ -71,6 +71,7 @@ export function TodaysFocus() {
     setTasks(updated);
     try {
       localStorage.setItem("velora_todays_focus", JSON.stringify(updated));
+      window.dispatchEvent(new Event("focusTasksUpdated"));
     } catch (e) {}
   };
 

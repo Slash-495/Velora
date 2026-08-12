@@ -87,6 +87,7 @@ export function CreativeAccent({ content, themeConfig }: TemplateProps) {
         {/* Photo Placeholder mimicking \photo */}
         <div className="w-20 h-24 bg-gray-200 border border-gray-300 rounded shadow-sm shrink-0 ml-4 flex items-center justify-center text-gray-400 text-[10px] uppercase overflow-hidden">
           {content.personalInfo.photoUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={content.personalInfo.photoUrl} alt="Resume Photo" className="w-full h-full object-cover" />
           ) : (
             "Photo"

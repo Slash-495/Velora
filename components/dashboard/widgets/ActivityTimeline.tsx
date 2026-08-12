@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, Send, Clock, Video, Award, AlertCircle, Bookmark, CheckCircle2, FileText } from "lucide-react";
+import { Activity, Send, Clock, Video, Award, AlertCircle, Bookmark, CheckCircle2, FileText, Target } from "lucide-react";
 import { useUserApplications, useUserResumes } from "@/lib/user-data-store";
 import { useEffect, useState } from "react";
 
@@ -22,21 +22,24 @@ export function ActivityTimeline() {
   const resumes = useUserResumes();
   const [focusTasks, setFocusTasks] = useState<any[]>([]);
 
-  useEffect(() => {
+  const loadTasks = () => {
     try {
       const saved = localStorage.getItem("velora_todays_focus");
-      if (saved) setFocusTasks(JSON.parse(saved));
+      if (saved) {
+        setFocusTasks(JSON.parse(saved));
+      }
     } catch (e) {}
+  };
 
-    const handleStorageChange = () => {
-      try {
-        const saved = localStorage.getItem("velora_todays_focus");
-        if (saved) setFocusTasks(JSON.parse(saved));
-      } catch (e) {}
+  useEffect(() => {
+    loadTasks();
+
+    window.addEventListener("storage", loadTasks);
+    window.addEventListener("focusTasksUpdated", loadTasks);
+    return () => {
+      window.removeEventListener("storage", loadTasks);
+      window.removeEventListener("focusTasksUpdated", loadTasks);
     };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const activityItems: ActivityItem[] = [];
@@ -129,19 +132,33 @@ export function ActivityTimeline() {
     }
   });
 
-  // 2. Completed Focus Items
-  focusTasks.filter((t) => t.completed).forEach((task) => {
-    activityItems.push({
-      id: `focus-task-${task.id}`,
-      title: `Completed Focus Item`,
-      description: task.title,
-      time: "Today",
-      timestamp: Date.now() - 500,
-      icon: CheckCircle2,
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
-    });
+  // 2. Focus Items (Added & Completed)
+  focusTasks.forEach((task) => {
+    if (task.completed) {
+      activityItems.push({
+        id: `focus-task-done-${task.id}`,
+        title: `Completed Focus Goal`,
+        description: task.title,
+        time: "Today",
+        timestamp: (task.id || Date.now()) + 10,
+        icon: CheckCircle2,
+        color: "text-emerald-400",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
+      });
+    } else {
+      activityItems.push({
+        id: `focus-task-added-${task.id}`,
+        title: `Added Focus Goal`,
+        description: `${task.title} • ${task.tag}`,
+        time: "Today",
+        timestamp: task.id || Date.now(),
+        icon: Target,
+        color: "text-purple-400",
+        bg: "bg-purple-500/10",
+        border: "border-purple-500/20",
+      });
+    }
   });
 
   // 3. Resumes
@@ -163,13 +180,13 @@ export function ActivityTimeline() {
 
   // Sort descending by timestamp
   activityItems.sort((a, b) => b.timestamp - a.timestamp);
-  const displayItems = activityItems.slice(0, 5);
+  const displayItems = activityItems.slice(0, 6);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Activity className="w-4 h-4 text-text-secondary" />
-        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Activity</h2>
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Activity Timeline</h2>
       </div>
 
       <div className="relative pl-3">

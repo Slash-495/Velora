@@ -1,66 +1,142 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Activity } from "lucide-react";
+import { useUserApplications, useUserResumes } from "@/lib/user-data-store";
 
 type EventType = 'none' | 'applied' | 'oa' | 'interview' | 'offer';
 
 interface DayData {
   date: Date;
+  dateStr: string;
   type: EventType;
   intensity: number; // For 'applied', 1-4
+  details: string[];
 }
 
 export function ActivityHeatmap() {
-  const daysCount = 546; // 78 weeks (1.5 years) to fill a wide monitor
-  
+  const daysCount = 546; // 78 weeks (1.5 years)
+  const applications = useUserApplications();
+  const resumes = useUserResumes();
+  const [focusTasks, setFocusTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("velora_todays_focus");
+      if (saved) setFocusTasks(JSON.parse(saved));
+    } catch (e) {}
+
+    const handleStorage = () => {
+      try {
+        const saved = localStorage.getItem("velora_todays_focus");
+        if (saved) setFocusTasks(JSON.parse(saved));
+      } catch (e) {}
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const { grid, monthLabels, totalContributions } = useMemo(() => {
     const today = new Date();
-    // Normalize today to start of day
     today.setHours(0, 0, 0, 0);
-    
+
     const startDate = new Date(today.getTime() - (daysCount - 1) * 86400000);
     const startDayOfWeek = startDate.getDay(); // 0 = Sun, 6 = Sat
-    
-    let contributions = 0;
+
+    // Helper to format YYYY-MM-DD
+    const toKey = (d: Date) => {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const eventMap: Record<string, { type: EventType; intensity: number; details: string[] }> = {};
+    let count = 0;
+
+    // Process real user applications
+    applications.forEach((app) => {
+      const rawDate = app.applicationDate || app.deadline || new Date().toISOString();
+      const dateObj = new Date(rawDate);
+      if (isNaN(dateObj.getTime())) return;
+      dateObj.setHours(0, 0, 0, 0);
+      const key = toKey(dateObj);
+
+      if (!eventMap[key]) {
+        eventMap[key] = { type: 'none', intensity: 0, details: [] };
+      }
+
+      count++;
+      if (app.status === 'offer') {
+        eventMap[key].type = 'offer';
+        eventMap[key].details.push(`Offer: ${app.companyName} (${app.roleTitle})`);
+      } else if (app.status === 'interview' && eventMap[key].type !== 'offer') {
+        eventMap[key].type = 'interview';
+        eventMap[key].details.push(`Interview: ${app.companyName} (${app.roleTitle})`);
+      } else if (app.status === 'oa' && eventMap[key].type !== 'offer' && eventMap[key].type !== 'interview') {
+        eventMap[key].type = 'oa';
+        eventMap[key].details.push(`OA: ${app.companyName} (${app.roleTitle})`);
+      } else if (eventMap[key].type === 'none' || eventMap[key].type === 'applied') {
+        eventMap[key].type = 'applied';
+        eventMap[key].intensity = Math.min(eventMap[key].intensity + 1, 4);
+        eventMap[key].details.push(`Applied: ${app.companyName} (${app.roleTitle})`);
+      }
+    });
+
+    // Process real user resumes
+    resumes.forEach((res) => {
+      const dateObj = new Date(res.updatedAt);
+      if (isNaN(dateObj.getTime())) return;
+      dateObj.setHours(0, 0, 0, 0);
+      const key = toKey(dateObj);
+
+      if (!eventMap[key]) {
+        eventMap[key] = { type: 'none', intensity: 0, details: [] };
+      }
+
+      count++;
+      if (eventMap[key].type === 'none') {
+        eventMap[key].type = 'applied';
+        eventMap[key].intensity = Math.min(eventMap[key].intensity + 1, 4);
+      }
+      eventMap[key].details.push(`Resume Updated: ${res.name}`);
+    });
+
+    // Process completed focus items
+    const todayKey = toKey(today);
+    focusTasks.filter((t) => t.completed).forEach((task) => {
+      if (!eventMap[todayKey]) {
+        eventMap[todayKey] = { type: 'none', intensity: 0, details: [] };
+      }
+      count++;
+      if (eventMap[todayKey].type === 'none') {
+        eventMap[todayKey].type = 'applied';
+        eventMap[todayKey].intensity = Math.min(eventMap[todayKey].intensity + 1, 4);
+      }
+      eventMap[todayKey].details.push(`Completed Focus: ${task.title}`);
+    });
+
     const data: DayData[] = [];
-    
-    // Generate data
     for (let i = 0; i < daysCount; i++) {
       const date = new Date(startDate.getTime() + i * 86400000);
-      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-      
-      let type: EventType = 'none';
-      let intensity = 0;
-      
-      const rand = Math.random();
-      
-      // Random mock probabilities
-      if (rand > (isWeekend ? 0.8 : 0.6)) {
-        // Did something today
-        contributions++;
-        
-        const eventRand = Math.random();
-        if (eventRand > 0.98) {
-          type = 'offer';
-        } else if (eventRand > 0.93) {
-          type = 'interview';
-        } else if (eventRand > 0.85) {
-          type = 'oa';
-        } else {
-          type = 'applied';
-          intensity = Math.floor(Math.random() * 4) + 1; // 1 to 4
-        }
-      }
-      
-      data.push({ date, type, intensity });
+      date.setHours(0, 0, 0, 0);
+      const key = toKey(date);
+      const entry = eventMap[key] || { type: 'none', intensity: 0, details: [] };
+
+      data.push({
+        date,
+        dateStr: date.toLocaleDateString(),
+        type: entry.type,
+        intensity: entry.intensity,
+        details: entry.details,
+      });
     }
 
     const totalCells = startDayOfWeek + daysCount;
     const cols = Math.ceil(totalCells / 7);
-    
-    // Build grid (column-major)
+
     const grid: (DayData | null)[][] = Array.from({ length: cols }, () => Array(7).fill(null));
     const monthLabels: { label: string; colIndex: number }[] = [];
     let lastMonth = -1;
@@ -69,39 +145,35 @@ export function ActivityHeatmap() {
     for (let c = 0; c < cols; c++) {
       let firstDayInCol: Date | null = null;
       for (let r = 0; r < 7; r++) {
-        // Skip padding at start
         if (c === 0 && r < startDayOfWeek) continue;
-        // Stop if we run out of data
         if (dataIndex >= daysCount) break;
-        
+
         const cellData = data[dataIndex++];
         grid[c][r] = cellData;
-        
+
         if (!firstDayInCol) firstDayInCol = cellData.date;
       }
-      
+
       if (firstDayInCol) {
         const month = firstDayInCol.getMonth();
         if (month !== lastMonth) {
-          // Add month label if it's not the very first column (unless it's the start of a month)
-          // We'll just simplify and always add it, then filter out clustered ones if needed
-          monthLabels.push({ 
-            label: firstDayInCol.toLocaleString('default', { month: 'short' }), 
-            colIndex: c 
+          monthLabels.push({
+            label: firstDayInCol.toLocaleString('default', { month: 'short' }),
+            colIndex: c
           });
           lastMonth = month;
         }
       }
     }
 
-    return { grid, monthLabels, totalContributions: contributions };
-  }, []);
+    return { grid, monthLabels, totalContributions: count };
+  }, [applications, resumes, focusTasks]);
 
   const getColor = (type: EventType, intensity: number) => {
     switch (type) {
-      case 'offer': return "bg-[#FF69B4] border border-[#FF69B4]/50 shadow-[0_0_10px_rgba(255,105,180,0.6)]"; // Pink
-      case 'interview': return "bg-orange-500 border border-orange-400/50 shadow-[0_0_8px_rgba(249,115,22,0.5)]"; // Orange
-      case 'oa': return "bg-yellow-400 border border-yellow-300/50 shadow-[0_0_6px_rgba(250,204,21,0.4)]"; // Yellow
+      case 'offer': return "bg-[#FF69B4] border border-[#FF69B4]/50 shadow-[0_0_10px_rgba(255,105,180,0.6)]";
+      case 'interview': return "bg-orange-500 border border-orange-400/50 shadow-[0_0_8px_rgba(249,115,22,0.5)]";
+      case 'oa': return "bg-yellow-400 border border-yellow-300/50 shadow-[0_0_6px_rgba(250,204,21,0.4)]";
       case 'applied':
         switch (intensity) {
           case 1: return "bg-emerald-900/60 border border-emerald-800/50";
@@ -115,13 +187,15 @@ export function ActivityHeatmap() {
   };
 
   const getTooltip = (data: DayData) => {
-    const dateStr = data.date.toLocaleDateString();
+    if (data.details && data.details.length > 0) {
+      return `${data.details.join(" • ")} on ${data.dateStr}`;
+    }
     switch (data.type) {
-      case 'offer': return `Job Offer! on ${dateStr}`;
-      case 'interview': return `Interview on ${dateStr}`;
-      case 'oa': return `Online Assessment on ${dateStr}`;
-      case 'applied': return `${data.intensity} application(s) on ${dateStr}`;
-      default: return `No activity on ${dateStr}`;
+      case 'offer': return `Job Offer on ${data.dateStr}`;
+      case 'interview': return `Interview on ${data.dateStr}`;
+      case 'oa': return `Online Assessment on ${data.dateStr}`;
+      case 'applied': return `${data.intensity} action(s) on ${data.dateStr}`;
+      default: return `No activity on ${data.dateStr}`;
     }
   };
 
@@ -132,8 +206,10 @@ export function ActivityHeatmap() {
           <Activity className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-text-primary leading-tight">{totalContributions} career actions in the last 18 months</h2>
-          <p className="text-xs text-text-muted mt-0.5">Your career progress over the last {daysCount} days.</p>
+          <h2 className="text-lg font-bold text-text-primary leading-tight">
+            {totalContributions} career action{totalContributions === 1 ? '' : 's'} tracked
+          </h2>
+          <p className="text-xs text-text-muted mt-0.5">Your real career activity timeline over the last {daysCount} days.</p>
         </div>
       </div>
 
@@ -145,7 +221,7 @@ export function ActivityHeatmap() {
               <div 
                 key={i} 
                 className="absolute" 
-                style={{ left: `${ml.colIndex * (12 + 4)}px` }} // 12px width + 4px gap = 16px per col
+                style={{ left: `${ml.colIndex * (12 + 4)}px` }}
               >
                 {ml.label}
               </div>
@@ -170,14 +246,14 @@ export function ActivityHeatmap() {
                 <div key={colIndex} className="flex flex-col gap-1">
                   {col.map((cell, rowIndex) => {
                     if (!cell) {
-                      return <div key={rowIndex} className="w-3 h-3" />; // Empty padding
+                      return <div key={rowIndex} className="w-3 h-3" />;
                     }
                     return (
                       <motion.div
                         key={rowIndex}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: (colIndex * 7 + rowIndex) * 0.001 }} // Fast ripple
+                        transition={{ delay: (colIndex * 7 + rowIndex) * 0.001 }}
                         className={`w-3 h-3 rounded-[2px] ${getColor(cell.type, cell.intensity)}`}
                         title={getTooltip(cell)}
                       />

@@ -29,6 +29,7 @@ export function ModernMinimalist({ content, themeConfig }: TemplateProps) {
           {/* Photo */}
           <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-300">
             {content.personalInfo.photoUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={content.personalInfo.photoUrl} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-500 uppercase tracking-widest bg-gray-200">

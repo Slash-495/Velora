@@ -71,6 +71,7 @@ export function ThemeCustomizer({ themeConfig, onChange, templateId, onChangeTem
               }`}
             >
               <div className="w-full aspect-[1/1.4] bg-white rounded shadow-inner overflow-hidden relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={template.thumbnail} alt={template.name} className="w-full h-full object-cover opacity-80" />
                 {templateId === template.id && (
                   <div className="absolute inset-0 border-2 border-primary rounded" />
