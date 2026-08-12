@@ -1,46 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, TrendingUp, CheckCircle2, Briefcase, Send } from "lucide-react";
-
-const metrics = [
-  {
-    title: "Total Resumes",
-    value: "6",
-    trend: "+2 this week",
-    icon: FileText,
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20"
-  },
-  {
-    title: "Active Tracks",
-    value: "3",
-    trend: "Optimized",
-    icon: Briefcase,
-    color: "text-purple-400",
-    bg: "bg-purple-500/10",
-    border: "border-purple-500/20"
-  },
-  {
-    title: "Applications",
-    value: "12",
-    trend: "3 interviewing",
-    icon: Send,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20"
-  },
-  {
-    title: "Avg ATS Score",
-    value: "89",
-    trend: "+4 pts",
-    icon: CheckCircle2,
-    color: "text-primary-glow",
-    bg: "bg-primary/10",
-    border: "border-primary/20"
-  }
-];
+import { FileText, CheckCircle2, Briefcase, Send } from "lucide-react";
+import { useUserResumes, useUserTracks, useUserApplications } from "@/lib/user-data-store";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,6 +18,58 @@ const itemVariants = {
 };
 
 export function AnalyticsCards() {
+  const resumes = useUserResumes();
+  const tracks = useUserTracks();
+  const applications = useUserApplications();
+
+  const totalResumes = resumes.length;
+  const totalTracks = tracks.length;
+  const totalApplications = applications.length;
+  const interviewingCount = applications.filter(a => a.status === "interview").length;
+
+  const avgAtsScore = resumes.length > 0
+    ? Math.round(resumes.reduce((acc, curr) => acc + (curr.atsScore || 0), 0) / resumes.length)
+    : 0;
+
+  const metrics = [
+    {
+      title: "Total Resumes",
+      value: String(totalResumes),
+      trend: resumes.length > 0 ? "Active Workspace" : "Create One",
+      icon: FileText,
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/20"
+    },
+    {
+      title: "Active Tracks",
+      value: String(totalTracks),
+      trend: "Career Focus",
+      icon: Briefcase,
+      color: "text-purple-400",
+      bg: "bg-purple-500/10",
+      border: "border-purple-500/20"
+    },
+    {
+      title: "Applications",
+      value: String(totalApplications),
+      trend: `${interviewingCount} interviewing`,
+      icon: Send,
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20"
+    },
+    {
+      title: "Avg ATS Score",
+      value: avgAtsScore > 0 ? `${avgAtsScore}%` : "N/A",
+      trend: "Target: 90+",
+      icon: CheckCircle2,
+      color: "text-primary-glow",
+      bg: "bg-primary/10",
+      border: "border-primary/20"
+    }
+  ];
+
   return (
     <motion.div 
       variants={containerVariants}

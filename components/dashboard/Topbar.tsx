@@ -1,21 +1,17 @@
 "use client";
 
-import { Bell, Search, Plus, User, FileText } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { Bell, Plus, User } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { mockResumes } from "@/lib/mock-data";
+import { useUserApplications } from "@/lib/user-data-store";
 
 export function Topbar({ user }: { user: any }) {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const applications = useUserApplications();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  const filteredResumes = mockResumes.filter(r => 
-    (r.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (r.content?.roleTitle || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const activeAppsCount = applications.filter(a => a.status !== "rejected").length;
+  const interviewsCount = applications.filter(a => a.status === "interview").length;
 
   const updateProfileData = () => {
     const storedAvatar = localStorage.getItem("velora_user_avatar");
@@ -23,21 +19,9 @@ export function Topbar({ user }: { user: any }) {
   };
 
   useEffect(() => {
-    // Initial load
     updateProfileData();
-    
-    // Listen for cross-component profile updates
     window.addEventListener("profileUpdated", updateProfileData);
-    
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsSearchOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("profileUpdated", updateProfileData);
     };
   }, []);
@@ -47,24 +31,24 @@ export function Topbar({ user }: { user: any }) {
       {/* Mobile Spacer (for menu button) */}
       <div className="w-8 md:hidden" />
 
-      {/* Career Pulse (Replaced Search) */}
+      {/* Career Pulse */}
       <div className="flex-1 max-w-2xl hidden md:flex items-center gap-6 px-4">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 shadow-inner">
           <span className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">12</strong> Active Apps</span>
+          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">{activeAppsCount}</strong> Active Apps</span>
         </div>
 
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 shadow-inner">
           <span className="text-orange-400 text-xs">🔥</span>
-          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">5 Day</strong> Streak</span>
+          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">1 Day</strong> Streak</span>
         </div>
 
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 shadow-inner">
           <span className="text-primary text-xs">🎯</span>
-          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">3</strong> Interviews</span>
+          <span className="text-xs font-medium text-text-secondary"><strong className="text-text-primary">{interviewsCount}</strong> Interviews</span>
         </div>
       </div>
 

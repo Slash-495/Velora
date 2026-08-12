@@ -3,9 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, Video, Mail, FileText, Plus, X, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useUserApplications } from "@/lib/user-data-store";
 
 interface EventItem {
-  id: number;
+  id: string | number;
   title: string;
   date: string;
   type: "deadline" | "interview" | "review" | "email";
@@ -13,40 +14,14 @@ interface EventItem {
 
 const EVENT_TYPES = [
   { id: "interview", label: "Interview", icon: Video, color: "text-primary", bg: "bg-primary/10", border: "border-primary/20" },
-  { id: "deadline", label: "Deadline", icon: Clock, color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/20" },
+  { id: "deadline", label: "Deadline / OA", icon: Clock, color: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/20" },
   { id: "review", label: "Review", icon: FileText, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
   { id: "email", label: "Email / Follow-up", icon: Mail, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" }
 ];
 
-const initialEvents: EventItem[] = [
-  {
-    id: 1,
-    title: "Google OA Deadline",
-    date: "Tomorrow, 11:59 PM",
-    type: "deadline"
-  },
-  {
-    id: 2,
-    title: "Interview with Stripe",
-    date: "Friday, 2:00 PM EST",
-    type: "interview"
-  },
-  {
-    id: 3,
-    title: "Resume Review Pending",
-    date: "Awaiting AI Analysis",
-    type: "review"
-  },
-  {
-    id: 4,
-    title: "Follow-up Recruiter Email",
-    date: "Next Monday",
-    type: "email"
-  }
-];
-
 export function Upcoming() {
-  const [events, setEvents] = useState<EventItem[]>(initialEvents);
+  const applications = useUserApplications();
+  const [customEvents, setCustomEvents] = useState<EventItem[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
@@ -56,13 +31,13 @@ export function Upcoming() {
     try {
       const saved = localStorage.getItem("velora_upcoming_events");
       if (saved) {
-        setEvents(JSON.parse(saved));
+        setCustomEvents(JSON.parse(saved));
       }
     } catch (e) {}
   }, []);
 
   const updateEvents = (updated: EventItem[]) => {
-    setEvents(updated);
+    setCustomEvents(updated);
     try {
       localStorage.setItem("velora_upcoming_events", JSON.stringify(updated));
     } catch (e) {}
@@ -79,16 +54,42 @@ export function Upcoming() {
       type: selectedType
     };
 
-    updateEvents([...events, newEvt]);
+    updateEvents([...customEvents, newEvt]);
     setNewTitle("");
     setNewDate("");
     setIsAdding(false);
   };
 
-  const handleDeleteEvent = (id: number) => {
-    const updated = events.filter(e => e.id !== id);
+  const handleDeleteEvent = (id: string | number) => {
+    const updated = customEvents.filter(e => e.id !== id);
     updateEvents(updated);
   };
+
+  // Combine dynamic application events (OAs, Interviews) with custom events
+  const appEvents: EventItem[] = [];
+  applications.forEach((app) => {
+    if (app.status === "oa") {
+      const rawDate = app.deadline || app.applicationDate;
+      const formatted = rawDate ? new Date(rawDate).toLocaleDateString() : "Due soon";
+      appEvents.push({
+        id: `app-oa-${app.id}`,
+        title: `${app.companyName} OA`,
+        date: formatted,
+        type: "deadline"
+      });
+    } else if (app.status === "interview") {
+      const rawDate = app.deadline || app.applicationDate;
+      const formatted = rawDate ? new Date(rawDate).toLocaleDateString() : "Scheduled";
+      appEvents.push({
+        id: `app-int-${app.id}`,
+        title: `Interview with ${app.companyName}`,
+        date: formatted,
+        type: "interview"
+      });
+    }
+  });
+
+  const allEvents = [...appEvents, ...customEvents];
 
   return (
     <div className="space-y-4">
@@ -169,13 +170,13 @@ export function Upcoming() {
 
       {/* Grid List */}
       <div className="bg-surface/50 border border-white/5 rounded-2xl p-4">
-        {events.length === 0 ? (
+        {allEvents.length === 0 ? (
           <div className="text-center py-6 text-xs text-text-muted">
-            No upcoming events scheduled. Click "+ Add Event" to add your next interview or deadline!
+            No upcoming events scheduled. Click "+ Add Event" or set application deadlines to track them!
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-            {events.map((event, index) => {
+            {allEvents.map((event, index) => {
               const config = EVENT_TYPES.find(t => t.id === event.type) || EVENT_TYPES[0];
               const Icon = config.icon;
 
@@ -202,13 +203,15 @@ export function Upcoming() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleDeleteEvent(event.id)}
-                    className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-red-500/20 text-text-muted hover:text-red-400 transition-all shrink-0 cursor-pointer"
-                    title="Remove event"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  {typeof event.id === "number" && (
+                    <button
+                      onClick={() => handleDeleteEvent(event.id)}
+                      className="opacity-0 group-hover:opacity-100 p-1 rounded-lg hover:bg-red-500/20 text-text-muted hover:text-red-400 transition-all shrink-0 cursor-pointer"
+                      title="Remove event"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </motion.div>
               );
             })}
