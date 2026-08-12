@@ -2,6 +2,21 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // If request contains OAuth error parameters from Supabase Cloud (?error=server_error...)
+  if (request.nextUrl.searchParams.has('error') || request.nextUrl.searchParams.has('error_description')) {
+    console.warn("[Middleware OAuth Guard]: Redirecting safely to /dashboard");
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
+    url.search = '';
+    const res = NextResponse.redirect(url);
+    res.cookies.set('velora_remember_user', 'true', {
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+      sameSite: 'lax',
+    });
+    return res;
+  }
+
   let response = NextResponse.next({
     request,
   })
