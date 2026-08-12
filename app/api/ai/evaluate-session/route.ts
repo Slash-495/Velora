@@ -5,9 +5,11 @@ import { aiCache, callWithRetry } from '@/lib/ai-retry-cache';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  let history: any[] = [];
   try {
     const payload = await request.json();
-    const { role, history, userName } = payload;
+    const { role, userName } = payload;
+    history = Array.isArray(payload.history) ? payload.history : [];
 
     // 1. Response Caching: Check cache for identical transcript evaluation
     const cachedEvaluation = aiCache.get<any>("evaluate-session", payload);
@@ -16,7 +18,7 @@ export async function POST(request: Request) {
       return NextResponse.json(cachedEvaluation);
     }
 
-    const userResponses = (history || []).filter((h: any) => h.role === 'user');
+    const userResponses = history.filter((h: any) => h.role === 'user');
     const totalWordsSpoken = userResponses.reduce((acc: number, curr: any) => acc + (curr.text || '').split(/\s+/).length, 0);
 
     // If candidate spoke less than 10 words, return INCOMPLETE report
@@ -89,7 +91,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Error evaluating session:", error);
 
-    const userResponses = (history || []).filter((h: any) => h.role === 'user');
+    const userResponses = history.filter((h: any) => h.role === 'user');
     if (userResponses.length === 0) {
       return NextResponse.json({
         score: 0,

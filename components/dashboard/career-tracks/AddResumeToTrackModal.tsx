@@ -19,7 +19,7 @@ export function AddResumeToTrackModal({ isOpen, onClose, onSelect, existingResum
     return mockResumes
       .filter(r => !existingResumeIds.includes(r.id))
       .filter(r => 
-        (r.title || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (r.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
         (r.content?.roleTitle || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
   }, [searchQuery, existingResumeIds]);
@@ -85,7 +85,7 @@ export function AddResumeToTrackModal({ isOpen, onClose, onSelect, existingResum
                       <Check className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100" />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-text-primary text-sm line-clamp-1">{resume.title}</h3>
+                  <h3 className="font-semibold text-text-primary text-sm line-clamp-1">{resume.name}</h3>
                   <p className="text-xs text-text-muted mt-1 line-clamp-1">{resume.content.roleTitle}</p>
                   
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5 w-full">

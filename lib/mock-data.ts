@@ -67,6 +67,23 @@ export interface Resume {
   isDemo?: boolean;
 }
 
+export type ApplicationStatus = "wishlist" | "applied" | "oa" | "interview" | "offer" | "rejected";
+
+export interface JobApplication {
+  id: string;
+  companyName: string;
+  roleTitle: string;
+  location?: string;
+  status: ApplicationStatus;
+  resumeId?: string;
+  applicationDate?: string;
+  deadline?: string;
+  salaryRange?: string;
+  notes?: string;
+  jobUrl?: string;
+  isDemo?: boolean;
+}
+
 export const mockTracks: CareerTrack[] = [
   {
     id: "track-1",

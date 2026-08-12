@@ -13,7 +13,7 @@ export function Topbar({ user }: { user: any }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const filteredResumes = mockResumes.filter(r => 
-    (r.title || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (r.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
     (r.content?.roleTitle || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 

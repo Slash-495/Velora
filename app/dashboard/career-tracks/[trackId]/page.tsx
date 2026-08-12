@@ -140,7 +140,7 @@ export default function TrackDetailsPage() {
                         <button 
                           onClick={() => {
                             setOpenMenuId(null);
-                            const copy = { ...resume, id: `res-${Date.now()}`, title: `${resume.title} (Copy)` };
+                            const copy = { ...resume, id: `res-${Date.now()}`, name: `${resume.name} (Copy)` };
                             setTrackResumes(prev => [...prev, copy]);
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left"

@@ -173,7 +173,7 @@ export function ApplicationDetailClient({ application }: { application: JobAppli
             {linkedResume ? (
               <div className="bg-surface/80 border border-white/10 rounded-xl p-4 flex flex-col gap-3 group hover:border-primary/50 transition-colors cursor-pointer">
                 <div>
-                  <h4 className="font-semibold text-text-primary text-sm line-clamp-1">{linkedResume.title}</h4>
+                  <h4 className="font-semibold text-text-primary text-sm line-clamp-1">{linkedResume.name}</h4>
                   <p className="text-xs text-text-muted mt-1">Last updated {new Date(linkedResume.updatedAt).toLocaleDateString()}</p>
                 </div>
                 {linkedResume.atsScore !== undefined && (
