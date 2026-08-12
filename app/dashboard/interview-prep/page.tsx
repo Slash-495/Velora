@@ -15,7 +15,7 @@ import {
   Clock
 } from "lucide-react";
 import { AudioCameraModal } from "@/components/interview-prep/AudioCameraModal";
-import { HackerRankInterviewRoom } from "@/components/interview-prep/HackerRankInterviewRoom";
+import { VeloraInterviewRoom } from "@/components/interview-prep/VeloraInterviewRoom";
 
 import { useUserResumes } from "@/lib/user-data-store";
 
@@ -43,7 +43,7 @@ export default function TechnicalScreenPage() {
 
   if (inActiveInterview) {
     return (
-      <HackerRankInterviewRoom 
+      <VeloraInterviewRoom 
         roleTitle={roleTitle}
         jdText={jdText}
         resumeContent={selectedResume?.content}

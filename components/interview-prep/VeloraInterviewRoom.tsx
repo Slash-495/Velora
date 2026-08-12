@@ -6,7 +6,7 @@ import { Mic, MicOff, Video, VideoOff, MessageSquare, Sparkles, Loader2, Volume2
 import { useRouter } from "next/navigation";
 import { InterviewReportModal } from "./InterviewReportModal";
 
-interface HackerRankInterviewRoomProps {
+interface VeloraInterviewRoomProps {
   roleTitle?: string;
   jdText?: string;
   resumeContent?: any;
@@ -14,13 +14,13 @@ interface HackerRankInterviewRoomProps {
   onEnd?: () => void;
 }
 
-export function HackerRankInterviewRoom({ 
+export function VeloraInterviewRoom({ 
   roleTitle = "Senior Software Engineer", 
   jdText = "",
   resumeContent = null,
   userName = "Candidate", 
   onEnd 
-}: HackerRankInterviewRoomProps) {
+}: VeloraInterviewRoomProps) {
   const router = useRouter();
   
   // State
@@ -212,7 +212,7 @@ export function HackerRankInterviewRoom({
     } finally {
       isSubmittingRef.current = false;
     }
-  }, [history, roleTitle, jdText, resumeContent, speakAiMessage]);
+  }, [history, roleTitle, jdText, resumeContent]);
 
   // Speech Recognition with Silence Detection for AUTO-SUBMIT
   const startListeningUser = useCallback(() => {

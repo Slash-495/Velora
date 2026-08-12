@@ -1,7 +1,7 @@
 "use client";
 
-import { HackerRankInterviewRoom } from "@/components/interview-prep/HackerRankInterviewRoom";
+import { VeloraInterviewRoom } from "@/components/interview-prep/VeloraInterviewRoom";
 
 export default function InterviewSessionPage() {
-  return <HackerRankInterviewRoom roleTitle="Senior Full Stack Engineer" userName="Arush" />;
+  return <VeloraInterviewRoom roleTitle="Senior Full Stack Engineer" userName="Arush" />;
 }
