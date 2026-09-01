@@ -21,48 +21,55 @@ export async function middleware(request: NextRequest) {
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, {
-              ...options,
-              maxAge: 60 * 60 * 24 * 7, // Remember user for 7 days
-              path: '/',
-              sameSite: 'lax',
-            })
-          )
-        },
-      },
-    }
-  )
-
-  let user = null
-  try {
-    const { data } = await supabase.auth.getUser()
-    user = data.user
-  } catch (e) {
-    console.error("Middleware getUser error:", e)
-  }
+  // Check if any Supabase auth cookies exist on the incoming request
+  const allCookies = request.cookies.getAll()
+  const hasSupabaseAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user')
 
   const protectedRoutes = ['/dashboard', '/workspace', '/resume', '/applications', '/interview-prep', '/cover-letter']
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   )
 
-  // Check if any Supabase auth cookies exist on the incoming request
-  const allCookies = request.cookies.getAll()
-  const hasSupabaseAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user')
+  let user = null
+  if (hasSupabaseAuthCookie) {
+    try {
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return request.cookies.getAll()
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+              response = NextResponse.next({
+                request,
+              })
+              cookiesToSet.forEach(({ name, value, options }) =>
+                response.cookies.set(name, value, {
+                  ...options,
+                  maxAge: 60 * 60 * 24 * 7,
+                  path: '/',
+                  sameSite: 'lax',
+                })
+              )
+            },
+          },
+        }
+      )
+
+      // Add a 2s timeout guard to prevent network stalls from hanging middleware
+      const userPromise = supabase.auth.getUser()
+      const timeoutPromise = new Promise<{ data: { user: null } }>((resolve) => 
+        setTimeout(() => resolve({ data: { user: null } }), 2000)
+      )
+      const res = await Promise.race([userPromise, timeoutPromise])
+      user = res.data.user
+    } catch (e) {
+      console.error("Middleware getUser error:", e)
+    }
+  }
 
   // Only redirect away from protected routes if there is NO user AND NO auth cookie present
   if (isProtectedRoute && !user && !hasSupabaseAuthCookie) {
@@ -83,6 +90,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/ping|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

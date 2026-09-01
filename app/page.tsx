@@ -1,6 +1,7 @@
 "use client";
 
 import { Container } from "@/components/ui/Container";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sparkles, FileText, Briefcase, CheckCircle2, ArrowRight } from "lucide-react";
 import { Features } from "@/components/Features";
@@ -43,36 +44,33 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                <button 
-                  onClick={() => navigateProtected("/dashboard/resume-studio")}
-                  className="btn-glow group cursor-pointer"
+                <Link 
+                  href="/sign-up"
+                  className="btn-glow group cursor-pointer flex items-center justify-center"
                 >
                   Build Your Resume
                   <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </button>
-                <button 
-                  onClick={() => navigateProtected("/dashboard/resume-studio")}
-                  className="btn-secondary cursor-pointer"
+                </Link>
+                <Link 
+                  href="/sign-in"
+                  className="btn-secondary cursor-pointer flex items-center justify-center"
                 >
                   Explore Templates
-                </button>
+                </Link>
               </div>
 
-              {/* Small Trust Indicators */}
-              <div className="flex items-center gap-6 mt-8 pt-8 border-t border-white/5">
-                <div className="flex flex-col">
-                  <span className="text-2xl font-bold text-text-primary">92%</span>
-                  <span className="text-xs text-text-muted font-medium uppercase tracking-wider">Avg ATS Score</span>
+              {/* Honest Proof of Concept & Tech Stack Showcase */}
+              <div className="flex flex-col gap-3 mt-8 pt-8 border-t border-white/5">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  Built as a Proof of Concept / Personal Project
                 </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div className="flex flex-col">
-                  <span className="text-2xl font-bold text-text-primary">3x</span>
-                  <span className="text-xs text-text-muted font-medium uppercase tracking-wider">Faster Hires</span>
-                </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div className="flex flex-col">
-                  <span className="text-2xl font-bold text-text-primary">10k+</span>
-                  <span className="text-xs text-text-muted font-medium uppercase tracking-wider">Users</span>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {["Next.js 15", "React 19", "TypeScript", "Supabase Auth", "Google Gemini AI", "Tailwind CSS", "Framer Motion"].map((tech) => (
+                    <span key={tech} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs text-text-secondary font-mono">
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
             </motion.div>

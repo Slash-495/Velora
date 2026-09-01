@@ -74,7 +74,7 @@ export function CareerTracks() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {careerTracks.map((track) => (
           <motion.div key={track.name} variants={itemVariants}>
-            <Link href="#" className={`block h-full card-premium p-5 rounded-2xl border border-white/10 transition-all duration-300 hover:-translate-y-1 ${track.border} group relative overflow-hidden`}>
+            <Link href="/dashboard/career-tracks" className={`block h-full card-premium p-5 rounded-2xl border border-white/10 transition-all duration-300 hover:-translate-y-1 ${track.border} group relative overflow-hidden`}>
               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${track.color} blur-[50px] opacity-50 group-hover:opacity-100 transition-opacity duration-500`} />
               
               <div className="relative z-10">

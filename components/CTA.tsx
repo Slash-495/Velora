@@ -2,33 +2,34 @@
 
 import { Container } from "@/components/ui/Container";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Quote } from "lucide-react";
+import { ArrowRight, Sparkles, Code, Cpu, Database, Layers } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import Link from "next/link";
 
-const testimonials = [
+const architectureHighlights = [
   {
     id: 1,
-    quote: "Velora made organizing my job hunt so much easier. The resume builder is intuitive and the ATS tips actually helped me land interviews.",
-    name: "Sarah Chen",
-    role: "CS Student",
-    initials: "SC",
-    color: "from-blue-500/20 to-purple-500/20"
+    title: "AI Resume Studio",
+    description: "Built-in real-time resume editor supporting custom LaTeX compilation, theme customization, and instant ATS scoring.",
+    icon: Code,
+    color: "from-blue-500/20 to-purple-500/20",
+    badge: "Next.js App Router"
   },
   {
     id: 2,
-    quote: "I used to have 10 different Word docs for my resumes. Now I manage them all in one workspace. Absolutely love the clean interface.",
-    name: "Alex Rivera",
-    role: "Frontend Developer",
-    initials: "AR",
-    color: "from-emerald-500/20 to-teal-500/20"
+    title: "Job Application Pipeline",
+    description: "Kanban-style tracking board synchronized reactively with contribution activity heatmaps and application status logs.",
+    icon: Layers,
+    color: "from-emerald-500/20 to-teal-500/20",
+    badge: "Reactive Store"
   },
   {
     id: 3,
-    quote: "The job tracker board is exactly what I needed. It's so satisfying to move applications to the 'Interviewing' column!",
-    name: "James Wilson",
-    role: "Data Analyst",
-    initials: "JW",
-    color: "from-orange-500/20 to-red-500/20"
+    title: "Voice AI Mock Interviews",
+    description: "Real-time technical interview room featuring Web Speech recognition, SpeechSynthesis voice selection, and Gemini AI evaluation.",
+    icon: Cpu,
+    color: "from-orange-500/20 to-red-500/20",
+    badge: "Gemini AI + Speech"
   }
 ];
 
@@ -37,53 +38,63 @@ export function CTA() {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Testimonials Section */}
+      {/* Engineering & Architecture Highlights Section */}
       <section className="py-24 relative z-10">
         <Container>
           <div className="text-center mb-16">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 w-fit mb-4 backdrop-blur-md"
+            >
+              <Database className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">Project Highlights</span>
+            </motion.div>
+
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
               className="text-3xl md:text-5xl font-bold text-text-primary tracking-tight mb-4"
             >
-              Loved by job seekers
+              Engineered for Speed & Usability
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-lg text-text-secondary font-light"
+              transition={{ delay: 0.2 }}
+              className="text-lg text-text-secondary font-light max-w-2xl mx-auto"
             >
-              Built to help students and professionals manage their careers more effectively.
+              Built as a modern full-stack web application demonstrating AI integration, responsive design, and production-ready React architecture.
             </motion.p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, i) => (
-               <motion.div
-                key={testimonial.id}
+            {architectureHighlights.map((item, i) => (
+              <motion.div
+                key={item.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="card-premium p-8 rounded-3xl relative group hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between"
+                className="card-premium p-8 rounded-3xl relative group hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <Quote className="w-8 h-8 text-primary/20 absolute top-6 right-6 transition-colors duration-300 group-hover:text-primary/40" />
-                  <p className="text-text-secondary leading-relaxed mb-8 relative z-10">
-                    &quot;{testimonial.quote}&quot;
+                  <div className="flex items-center justify-between mb-6">
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center border border-white/10 shrink-0`}>
+                      <item.icon className="w-6 h-6 text-text-primary" />
+                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-text-muted">
+                      {item.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-text-primary mb-3">{item.title}</h3>
+                  <p className="text-text-secondary text-sm leading-relaxed mb-6 font-light">
+                    {item.description}
                   </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center border border-white/10 shrink-0`}>
-                    <span className="text-sm font-medium text-white/80">{testimonial.initials}</span>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-text-primary">{testimonial.name}</h4>
-                    <p className="text-xs text-text-muted">{testimonial.role}</p>
-                  </div>
                 </div>
               </motion.div>
             ))}
@@ -115,7 +126,7 @@ export function CTA() {
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 w-fit mb-8 backdrop-blur-md">
                 <Sparkles className="w-4 h-4 text-primary-glow" />
-                <span className="text-sm font-medium text-text-secondary">Get started for free</span>
+                <span className="text-sm font-medium text-text-secondary">Explore the workspace</span>
               </div>
 
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary tracking-tight mb-6 max-w-3xl mx-auto leading-[1.1]">
@@ -127,19 +138,19 @@ export function CTA() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button 
-                  onClick={() => navigateProtected("/dashboard/resume-studio")}
-                  className="btn-glow group w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer"
+                <Link 
+                  href="/sign-up"
+                  className="btn-glow group w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer flex items-center justify-center"
                 >
                   Build Your Resume
                   <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </button>
-                <button 
-                  onClick={() => navigateProtected("/dashboard")}
-                  className="btn-secondary w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer"
+                </Link>
+                <Link 
+                  href="/sign-in"
+                  className="btn-secondary w-full sm:w-auto text-base px-8 py-4 rounded-xl cursor-pointer flex items-center justify-center"
                 >
                   Explore Workspace
-                </button>
+                </Link>
               </div>
             </div>
           </motion.div>

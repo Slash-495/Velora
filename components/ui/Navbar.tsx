@@ -91,14 +91,13 @@ export function Navbar({ user: initialUser }: { user?: any }) {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <button
               key={link.name}
-              href="#"
               onClick={(e) => handleNavClick(e, link.name)}
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 cursor-pointer"
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200 cursor-pointer bg-transparent border-0 p-0"
             >
               {link.name}
-            </a>
+            </button>
           ))}
         </nav>
 
@@ -156,14 +155,13 @@ export function Navbar({ user: initialUser }: { user?: any }) {
           >
             <div className="flex flex-col p-4 gap-4">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.name}
-                  href="#"
                   onClick={(e) => handleNavClick(e, link.name)}
-                  className="text-base font-medium text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+                  className="text-left text-base font-medium text-text-secondary hover:text-text-primary p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-0"
                 >
                   {link.name}
-                </a>
+                </button>
               ))}
               <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
                 {user ? (

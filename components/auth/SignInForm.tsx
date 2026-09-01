@@ -65,9 +65,9 @@ export function SignInForm() {
           <label className="text-xs font-medium text-text-secondary" htmlFor="password">
             Password
           </label>
-          <Link href="#" className="text-[10px] text-primary hover:text-primary-glow transition-colors">
-            Forgot password?
-          </Link>
+          <span className="text-[10px] text-text-muted">
+            Enter credentials to continue
+          </span>
         </div>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
