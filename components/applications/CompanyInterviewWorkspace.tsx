@@ -12,6 +12,7 @@ export function CompanyInterviewWorkspace({ company }: { company: any }) {
   // AI Insights State
   const [insights, setInsights] = useState<any>(null);
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+  const [insightsError, setInsightsError] = useState<string | null>(null);
 
   const debouncedNotes = useDebounce(notes, 1000);
 
@@ -28,6 +29,7 @@ export function CompanyInterviewWorkspace({ company }: { company: any }) {
   const generateInsights = useCallback(async () => {
     if (!company) return;
     setIsGeneratingInsights(true);
+    setInsightsError(null);
     try {
       const res = await fetch("/api/ai/company-insights", {
         method: "POST",
@@ -38,12 +40,12 @@ export function CompanyInterviewWorkspace({ company }: { company: any }) {
           notes: notes
         })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setInsights(data);
-    } catch (err) {
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload?.error?.message || "Failed to generate insights.");
+      setInsights(payload.data);
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to generate insights.");
+      setInsightsError(err.message || "Failed to generate insights.");
     } finally {
       setIsGeneratingInsights(false);
     }
@@ -85,6 +87,11 @@ export function CompanyInterviewWorkspace({ company }: { company: any }) {
                 {isGeneratingInsights ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
                 {isGeneratingInsights ? "Analyzing Company..." : "Generate Insights"}
               </button>
+              {insightsError && (
+                <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                  {insightsError}
+                </div>
+              )}
             </div>
           ) : (
             <div className="relative z-10 space-y-6">
@@ -129,10 +136,16 @@ export function CompanyInterviewWorkspace({ company }: { company: any }) {
               
               <button 
                 onClick={generateInsights}
-                className="w-full py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors border border-white/10"
+                disabled={isGeneratingInsights}
+                className="w-full py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors border border-white/10 disabled:opacity-50"
               >
-                <RefreshCw className="w-3 h-3" /> Refresh Insights
+                <RefreshCw className={`w-3 h-3 ${isGeneratingInsights ? "animate-spin" : ""}`} /> Refresh Insights
               </button>
+              {insightsError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                  {insightsError}
+                </div>
+              )}
             </div>
           )}
         </section>

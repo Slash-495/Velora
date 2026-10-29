@@ -1,16 +1,45 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateJsonSize,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
+
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'generate-questions');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
   try {
-    const { resumeContent, jdText, role } = await request.json();
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
 
-    if (!resumeContent || !jdText || !role) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+  const { resumeContent, jdText, role } = body ?? {};
 
+  if (!resumeContent || !jdText || !role) {
+    return apiError('BAD_REQUEST', 'Missing required fields.', 400);
+  }
+
+  const validationError =
+    validateJsonSize(resumeContent, 'resumeContent') ||
+    validateStringLength(jdText, 'jdText', INPUT_LIMITS.MAX_TEXT_CHARS) ||
+    validateStringLength(role, 'role', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: {
@@ -46,22 +75,16 @@ export async function POST(request: Request) {
       ]
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jsonText = response.text();
-    const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
-    
-    return NextResponse.json({ questions: JSON.parse(cleanJson) });
-  } catch (error: any) {
-    console.error('Error generating questions:', error);
-    return NextResponse.json({
-      questions: [
-        { question: "Can you describe a challenging technical project you worked on and the key architectural decisions you made?", category: "Technical" },
-        { question: "How do you ensure code quality, performance, and scalability when building new features?", category: "Technical" },
-        { question: "Tell me about a time when you faced a strict deadline or technical disagreement. How did you resolve it?", category: "Behavioral" },
-        { question: "Looking at your resume experience, can you walk me through your most impactful project contribution?", category: "Resume Deep-Dive" },
-        { question: "How do you approach debugging complex production issues or latency bottlenecks?", category: "Resume Deep-Dive" }
-      ]
+    const questions = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jsonText = response.text();
+      const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
+      return JSON.parse(cleanJson);
     });
+
+    return apiSuccess({ questions });
+  } catch (error: any) {
+    return handleAIError(error, 'generate interview questions');
   }
 }

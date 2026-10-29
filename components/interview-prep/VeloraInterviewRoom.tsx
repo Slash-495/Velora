@@ -35,6 +35,7 @@ export function VeloraInterviewRoom({
   const [aiSpeechState, setAiSpeechState] = useState<"speaking" | "listening" | "thinking">("speaking");
   const [currentAiMessage, setCurrentAiMessage] = useState<string>("");
   const [userTranscript, setUserTranscript] = useState<string>("");
+  const [chatError, setChatError] = useState<string | null>(null);
   const [history, setHistory] = useState<{ role: "ai" | "user"; text: string }[]>([]);
 
   // Voice Selection State
@@ -182,6 +183,7 @@ export function VeloraInterviewRoom({
     }
 
     setAiSpeechState("thinking");
+    setChatError(null);
     const updatedHistory = [...history, { role: "user" as const, text: answerText }];
     setHistory(updatedHistory);
     setUserTranscript("");
@@ -199,16 +201,19 @@ export function VeloraInterviewRoom({
         })
       });
 
-      const data = await res.json();
-      const aiReply = data.reply || "Thank you for sharing. How do you handle scalability and error monitoring in production?";
+      const payload = await res.json();
+      if (!res.ok || !payload?.data?.reply) {
+        throw new Error(payload?.error?.message || "Failed to get AI recruiter response.");
+      }
+      const aiReply = payload.data.reply;
       
       setHistory(prev => [...prev, { role: "ai", text: aiReply }]);
       speakAiMessage(aiReply);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Gemini Chat error:", err);
-      const fallbackMsg = "Thanks for that explanation. Moving forward, how do you handle software architecture trade-offs under tight deadlines?";
-      setHistory(prev => [...prev, { role: "ai", text: fallbackMsg }]);
-      speakAiMessage(fallbackMsg);
+      setChatError(err.message || "Failed to reach AI recruiter. Speak again to retry.");
+      setAiSpeechState("listening");
+      startListeningUser();
     } finally {
       isSubmittingRef.current = false;
     }
@@ -466,6 +471,12 @@ export function VeloraInterviewRoom({
               <div className="mt-4 pt-4 border-t border-white/10 text-sm text-emerald-400 font-mono">
                 <span className="text-xs text-white/50 block mb-1">Your Speech (Auto-submitting on pause...):</span>
                 {userTranscript}
+              </div>
+            )}
+
+            {chatError && (
+              <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                {chatError}
               </div>
             )}
           </motion.div>

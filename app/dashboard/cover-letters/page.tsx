@@ -26,6 +26,7 @@ export default function CoverLetterStudio() {
   const [jobDescription, setJobDescription] = useState("");
   const [tone, setTone] = useState<Tone>("Professional");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Mock Suggestions
@@ -35,6 +36,7 @@ export default function CoverLetterStudio() {
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
+    setGenerateError(null);
     try {
       const res = await fetch("/api/ai/generate-cover-letter", {
         method: "POST",
@@ -42,13 +44,12 @@ export default function CoverLetterStudio() {
         body: JSON.stringify({ company, role, jobDescription, tone })
       });
       
+      const payload = await res.json();
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to generate");
+        throw new Error(payload?.error?.message || "Failed to generate cover letter");
       }
       
-      const data = await res.json();
-      setContent(data.coverLetter);
+      setContent(payload.data.coverLetter);
       
       // Clear or update mock suggestions
       setSuggestions([
@@ -56,7 +57,7 @@ export default function CoverLetterStudio() {
       ]);
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to generate cover letter. Error: ${error.message}`);
+      setGenerateError(error.message || "Failed to generate cover letter.");
     } finally {
       setIsGenerating(false);
     }
@@ -195,6 +196,11 @@ export default function CoverLetterStudio() {
                     </>
                   )}
                 </button>
+                {generateError && (
+                  <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                    {generateError}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

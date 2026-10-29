@@ -1,12 +1,41 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
-  try {
-    const { company, role, jobDescription, tone } = await request.json();
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
 
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'generate-cover-letter');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
+  try {
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
+
+  const { company, role, jobDescription, tone } = body ?? {};
+
+  const validationError =
+    validateStringLength(company, 'company', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(role, 'role', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(tone, 'tone', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(jobDescription, 'jobDescription', INPUT_LIMITS.MAX_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
     });
@@ -34,15 +63,14 @@ export async function POST(request: Request) {
       Write the cover letter now:
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    
-    return NextResponse.json({ coverLetter: text.trim() });
-  } catch (error: any) {
-    console.error('Error generating cover letter:', error);
-    return NextResponse.json({
-      coverLetter: `Dear Hiring Team,\n\nI am writing to express my strong interest in the ${role || 'Software Engineering'} position at ${company || 'your organization'}. With a proven background in building scalable web applications, optimizing performance, and delivering user-focused software solutions, I am excited about the opportunity to contribute to your team.\n\nThroughout my experience, I have led technical initiatives that improved application speed, reduced latency, and enhanced user engagement. My hands-on experience with modern frameworks, combined with a data-driven mindset, enables me to deliver clean, maintainable code aligned with business goals.\n\nThank you for considering my application. I look forward to the possibility of discussing how my technical background and problem-solving skills align with your upcoming goals.\n\nSincerely,\nCandidate`
+    const coverLetter = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      return response.text().trim();
     });
+
+    return apiSuccess({ coverLetter });
+  } catch (error: any) {
+    return handleAIError(error, 'generate cover letter');
   }
 }

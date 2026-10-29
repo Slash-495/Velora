@@ -1,16 +1,44 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
+
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'company-insights');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
   try {
-    const { companyName, industry, notes } = await request.json();
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
 
-    if (!companyName) {
-      return NextResponse.json({ error: 'Missing company name' }, { status: 400 });
-    }
+  const { companyName, industry, notes } = body ?? {};
 
+  if (!companyName) {
+    return apiError('BAD_REQUEST', 'Missing company name.', 400);
+  }
+
+  const validationError =
+    validateStringLength(companyName, 'companyName', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(industry, 'industry', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(notes, 'notes', INPUT_LIMITS.MAX_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: {
@@ -45,23 +73,16 @@ export async function POST(request: Request) {
       }
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jsonText = response.text();
-    const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
-    
-    return NextResponse.json(JSON.parse(cleanJson));
-  } catch (error: any) {
-    console.error('Error generating company insights:', error);
-    return NextResponse.json({
-      techStack: ["React", "TypeScript", "Node.js", "AWS"],
-      culturalFocus: ["Customer Obsession", "Ownership", "Bias for Action"],
-      commonTopics: [
-        { topic: "System Design", context: "High focus on scalability, caching strategies, and REST API design." },
-        { topic: "Behavioral", context: "Structure responses using the STAR method highlighting measurable impact." }
-      ],
-      redFlags: ["Failing to ask clarifying questions during problem solving.", "Not discussing technical trade-offs."],
-      greenFlags: ["Demonstrating clear communication", "Focusing on user experience and system reliability"]
+    const insights = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jsonText = response.text();
+      const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
+      return JSON.parse(cleanJson);
     });
+
+    return apiSuccess(insights);
+  } catch (error: any) {
+    return handleAIError(error, 'generate company insights');
   }
 }

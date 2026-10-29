@@ -1,19 +1,51 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { aiCache, callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateJsonSize,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
-  try {
-    const payload = await request.json();
-    const { role, jdText, resumeContent, userAnswer, conversationHistory } = payload;
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
 
-    // 1. Response Caching (Requirement 3): Check cache for repeated prompts
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'interview-chat', {
+    limit: 20,
+    windowSeconds: 60,
+  });
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let payload: any;
+  try {
+    payload = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
+
+  const { role, jdText, resumeContent, userAnswer, conversationHistory } = payload ?? {};
+
+  const validationError =
+    validateStringLength(role, 'role', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(jdText, 'jdText', INPUT_LIMITS.MAX_TEXT_CHARS) ||
+    validateStringLength(userAnswer, 'userAnswer', INPUT_LIMITS.MAX_TEXT_CHARS) ||
+    validateJsonSize(resumeContent, 'resumeContent') ||
+    validateJsonSize(conversationHistory, 'conversationHistory');
+  if (validationError) return validationError;
+
+  try {
+    // 1. Response Caching: Check cache for repeated prompts
     const cachedResponse = aiCache.get<{ reply: string }>("interview-chat", payload);
     if (cachedResponse) {
       console.log("[AI Cache Hit] Returning cached response for repeated prompt.");
-      return NextResponse.json(cachedResponse);
+      return apiSuccess(cachedResponse);
     }
 
     const model = genAI.getGenerativeModel({
@@ -42,7 +74,7 @@ export async function POST(request: Request) {
       5. DO NOT include markdown formatting like asterisks or bullet points—just natural spoken text.
     `;
 
-    // 2. Retry Logic with Exponential Backoff (Requirement 2) for HTTP 429 errors
+    // 2. Retry Logic with Exponential Backoff for HTTP 429 errors
     const aiText = await callWithRetry(async () => {
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -54,11 +86,8 @@ export async function POST(request: Request) {
     // Cache result
     aiCache.set("interview-chat", payload, responsePayload);
 
-    return NextResponse.json(responsePayload);
+    return apiSuccess(responsePayload);
   } catch (error: any) {
-    console.error('Error in interview-chat route:', error);
-    return NextResponse.json({
-      reply: "Thank you for sharing that. Building on your experience, how do you approach monitoring and error handling in a production environment?"
-    });
+    return handleAIError(error, 'generate interviewer response');
   }
 }

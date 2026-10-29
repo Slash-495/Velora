@@ -1,17 +1,44 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
+
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'parse-resume');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
   try {
-    const { rawText, base64Data, mimeType } = await request.json();
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
 
-    if (!rawText && !base64Data) {
-      return NextResponse.json({ error: 'Missing resume text or file data' }, { status: 400 });
-    }
+  const { rawText, base64Data, mimeType } = body ?? {};
 
+  if (!rawText && !base64Data) {
+    return apiError('BAD_REQUEST', 'Missing resume text or file data.', 400);
+  }
+
+  const validationError =
+    validateStringLength(rawText, 'rawText', INPUT_LIMITS.MAX_JSON_CHARS) ||
+    validateStringLength(base64Data, 'base64Data', INPUT_LIMITS.MAX_BASE64_CHARS) ||
+    validateStringLength(mimeType, 'mimeType', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
       generationConfig: {
@@ -132,35 +159,8 @@ export async function POST(request: Request) {
         : [{ id: `skill-imp-${Date.now()}-0`, category: "Core Skills", items: "Technical Skills, Communication, Problem Solving" }]
     };
 
-    return NextResponse.json({ success: true, content: finalContent });
+    return apiSuccess({ content: finalContent });
   } catch (error: any) {
-    console.error('Error in parse-resume route:', error);
-    return NextResponse.json({
-      success: true,
-      content: {
-        personalInfo: {
-          fullName: "Imported Resume Candidate",
-          email: "candidate@example.com",
-          phone: "+1 (555) 019-2834",
-          location: "San Francisco, CA",
-          website: "github.com/candidate",
-          linkedin: "linkedin.com/in/candidate",
-          github: "github.com/candidate",
-          summary: "Experienced software engineer with expertise in building scalable applications."
-        },
-        experience: [
-          { id: `exp-imp-${Date.now()}-0`, company: "Tech Solutions Inc.", role: "Software Engineer", location: "San Francisco, CA", startDate: "2022-01-01", endDate: "Present", current: true, description: "Architected modern web services and optimized database performance." }
-        ],
-        education: [
-          { id: `edu-imp-${Date.now()}-0`, school: "University of Technology", degree: "B.S. Computer Science", field: "Computer Science", startDate: "2018-09-01", endDate: "2022-05-01", gpa: "3.8" }
-        ],
-        projects: [
-          { id: `proj-imp-${Date.now()}-0`, name: "Career Workspace Platform", description: "AI-powered web app built with Next.js and React.", techStack: "TypeScript, Next.js, TailwindCSS", link: "github.com/demo/project" }
-        ],
-        skills: [
-          { id: `skill-imp-${Date.now()}-0`, category: "Core Technologies", items: "JavaScript, TypeScript, React, Next.js, Node.js, Python, SQL" }
-        ]
-      }
-    });
+    return handleAIError(error, 'parse resume');
   }
 }

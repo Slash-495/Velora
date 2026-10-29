@@ -29,6 +29,7 @@ export default function NewResumeFlow() {
   const [fileMimeType, setFileMimeType] = useState<string>("application/pdf");
   const [fileName, setFileName] = useState<string | null>(null);
   const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState<string | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,8 +84,8 @@ export default function NewResumeFlow() {
     if (!importRawText.trim() && !fileBase64) return;
 
     setIsParsing(true);
+    setParseError(null);
     try {
-      // Call Gemini AI Resume Parser for 100% accurate content extraction
       const res = await fetch("/api/ai/parse-resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,12 +96,12 @@ export default function NewResumeFlow() {
         })
       });
 
-      const data = await res.json();
-
-      let preParsed = undefined;
-      if (data.success && data.content) {
-        preParsed = data.content;
+      const payload = await res.json();
+      if (!res.ok) {
+        throw new Error(payload?.error?.message || "Failed to parse resume.");
       }
+
+      const preParsed = payload.data?.content;
 
       const importedResume = importResumeFromText(
         importRawText || "Imported Resume Content",
@@ -112,16 +113,10 @@ export default function NewResumeFlow() {
 
       setIsParsing(false);
       router.push(`/dashboard/resume-studio/${importedResume.id}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Resume parsing error:", err);
-      const importedResume = importResumeFromText(
-        importRawText || "Imported Candidate Resume",
-        importTitle.trim() || "Imported Candidate Resume",
-        selectedTrack || "track-1",
-        selectedTemplate || "velora-professional"
-      );
+      setParseError(err.message || "Failed to parse resume.");
       setIsParsing(false);
-      router.push(`/dashboard/resume-studio/${importedResume.id}`);
     }
   };
 
@@ -370,6 +365,11 @@ export default function NewResumeFlow() {
           </div>
 
           {/* Submit Importer */}
+          {parseError && (
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+              {parseError}
+            </div>
+          )}
           <div className="pt-4 flex justify-end">
             <button
               onClick={handleImportSubmit}

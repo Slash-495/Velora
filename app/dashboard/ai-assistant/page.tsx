@@ -13,6 +13,7 @@ export default function AIAssistantPage() {
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [currentJdData, setCurrentJdData] = useState<{ text: string; company: string; role: string } | undefined>(undefined);
 
   const handleAnalyze = async (jd: { text: string; company: string; role: string }) => {
@@ -20,6 +21,7 @@ export default function AIAssistantPage() {
     
     setIsAnalyzing(true);
     setAnalysisResult(null);
+    setAnalysisError(null);
     setCurrentJdData(jd);
 
     try {
@@ -36,16 +38,16 @@ export default function AIAssistantPage() {
         }),
       });
 
+      const payload = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to analyze");
+        throw new Error(payload?.error?.message || "Failed to analyze resume");
       }
       
-      const data = await response.json();
-      setAnalysisResult(data);
+      setAnalysisResult(payload.data);
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to analyze resume: ${error.message}`);
+      setAnalysisError(error.message || "Failed to analyze resume.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -84,7 +86,20 @@ export default function AIAssistantPage() {
         <div className="w-2/3 flex flex-col gap-6 overflow-hidden bg-surface/30 rounded-2xl border border-white/5 backdrop-blur-sm relative">
           
           <AnimatePresence mode="wait">
-            {!analysisResult && !isAnalyzing ? (
+            {analysisError && !isAnalyzing ? (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex-1 flex flex-col items-center justify-center text-center p-12"
+              >
+                <div className="max-w-md bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-red-400">
+                  <h3 className="text-base font-semibold mb-2">ATS Analysis Failed</h3>
+                  <p className="text-sm text-red-300/90">{analysisError}</p>
+                </div>
+              </motion.div>
+            ) : !analysisResult && !isAnalyzing ? (
               <motion.div 
                 key="empty"
                 initial={{ opacity: 0 }}

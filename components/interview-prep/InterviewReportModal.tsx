@@ -15,12 +15,14 @@ interface ReportModalProps {
 export function InterviewReportModal({ isOpen, onClose, roleTitle, userName, history }: ReportModalProps) {
   const [report, setReport] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
     async function evaluateSession() {
       setIsLoading(true);
+      setErrorMsg(null);
       try {
         const res = await fetch("/api/ai/evaluate-session", {
           method: "POST",
@@ -32,24 +34,15 @@ export function InterviewReportModal({ isOpen, onClose, roleTitle, userName, his
           })
         });
 
-        const data = await res.json();
-        setReport(data);
-      } catch (err) {
-        console.error("Evaluation error:", err);
-        const userResponses = history.filter(h => h.role === "user");
-        if (userResponses.length === 0) {
-          setReport({
-            score: 0,
-            status: "Incomplete / No Answers",
-            summary: "The interview was ended before any answers were provided.",
-            technicalDepth: 0,
-            communication: 0,
-            problemSolving: 0,
-            strengths: ["No spoken responses recorded."],
-            areasForImprovement: ["Attempt all screening questions to receive an evaluation."],
-            isComplete: false
-          });
+        const payload = await res.json();
+        if (!res.ok) {
+          throw new Error(payload?.error?.message || "Failed to evaluate interview session.");
         }
+        setReport(payload.data);
+      } catch (err: any) {
+        console.error("Evaluation error:", err);
+        setReport(null);
+        setErrorMsg(err.message || "Failed to evaluate interview session.");
       } finally {
         setIsLoading(false);
       }
@@ -135,6 +128,13 @@ export function InterviewReportModal({ isOpen, onClose, roleTitle, userName, his
               <div className="h-64 flex flex-col items-center justify-center space-y-4">
                 <Loader2 className="w-10 h-10 animate-spin text-emerald-400" />
                 <p className="text-sm font-semibold text-text-muted">Analyzing your interview responses with Gemini AI...</p>
+              </div>
+            ) : errorMsg ? (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-red-400 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-sm">
+                  <AlertCircle className="w-5 h-5" /> Evaluation Failed
+                </div>
+                <p className="text-xs text-red-300/90">{errorMsg}</p>
               </div>
             ) : report ? (
               <>
@@ -252,7 +252,7 @@ export function InterviewReportModal({ isOpen, onClose, roleTitle, userName, his
             </button>
             <button 
               onClick={handleDownloadReport}
-              disabled={isLoading || report?.score === 0}
+              disabled={isLoading || !report || report?.score === 0}
               className="px-8 py-3 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-400 text-black shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all flex items-center gap-2 text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="w-4 h-4" /> Download Performance Report

@@ -16,12 +16,14 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
   const [isTailoring, setIsTailoring] = useState(false);
   const [tailoredContent, setTailoredContent] = useState<ResumeContent | null>(null);
   const [changesMade, setChangesMade] = useState<string[]>([]);
+  const [tailorError, setTailorError] = useState<string | null>(null);
 
   if (!analysisResult) return null;
 
   const handleTailor = async () => {
     if (!resumeId) return;
     setIsTailoring(true);
+    setTailorError(null);
     
     try {
       const selectedResume = mockResumes.find(r => r.id === resumeId);
@@ -37,14 +39,14 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
         }),
       });
 
+      const payload = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to tailor resume");
+        throw new Error(payload?.error?.message || "Failed to tailor resume");
       }
       
-      const data = await response.json();
-      console.log("Tailored Output:", data);
-      if (data.tailoredContent) {
+      const data = payload.data;
+      if (data?.tailoredContent) {
         // Merge the AI output with the original resume to prevent missing fields (e.g. personalInfo)
         const mergedContent = {
           ...selectedResume?.content,
@@ -74,7 +76,7 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
       }
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to tailor resume: ${error.message}`);
+      setTailorError(error.message || "Failed to tailor resume.");
     } finally {
       setIsTailoring(false);
     }
@@ -146,6 +148,11 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
             {isTailoring ? 'Generating Version...' : 'Tailor Resume'}
           </button>
         </div>
+        {tailorError && (
+          <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+            {tailorError}
+          </div>
+        )}
       </div>
 
       {/* Tailored Output Display */}

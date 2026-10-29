@@ -52,10 +52,12 @@ export default function ResumeReviewPage() {
   const [selectedResumeId, setSelectedResumeId] = useState(userResumes[0]?.id || "res-1");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [review, setReview] = useState<ReviewData | null>(null);
+  const [reviewError, setReviewError] = useState<string | null>(null);
 
   const runReview = async () => {
     setIsAnalyzing(true);
     setReview(null);
+    setReviewError(null);
     try {
       const selected = userResumes.find(r => r.id === selectedResumeId) || userResumes[0];
       const res = await fetch("/api/ai/review-resume", {
@@ -67,16 +69,15 @@ export default function ResumeReviewPage() {
         })
       });
 
+      const payload = await res.json();
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to analyze resume.");
+        throw new Error(payload?.error?.message || "Failed to analyze resume.");
       }
 
-      const data = await res.json();
-      setReview(data);
+      setReview(payload.data);
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to run review: ${error.message}`);
+      setReviewError(error.message || "Failed to run resume review.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -171,6 +172,22 @@ export default function ResumeReviewPage() {
       </div>
 
       <AnimatePresence mode="wait">
+        {reviewError && !isAnalyzing && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-red-400 mb-6"
+          >
+            <div className="flex items-center gap-2 font-semibold mb-1">
+              <AlertTriangle className="w-5 h-5" />
+              Resume Review Failed
+            </div>
+            <p className="text-sm text-red-300/90">{reviewError}</p>
+          </motion.div>
+        )}
+
         {isAnalyzing && (
           <motion.div 
             key="loading"

@@ -1,16 +1,44 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateJsonSize,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
+
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'review-resume');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
   try {
-    const { resumeContent, targetRole } = await request.json();
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
 
-    if (!resumeContent || !targetRole) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+  const { resumeContent, targetRole } = body ?? {};
 
+  if (!resumeContent || !targetRole) {
+    return apiError('BAD_REQUEST', 'Missing required fields.', 400);
+  }
+
+  const validationError =
+    validateJsonSize(resumeContent, 'resumeContent') ||
+    validateStringLength(targetRole, 'targetRole', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
       generationConfig: {
@@ -63,52 +91,16 @@ export async function POST(request: Request) {
       }
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jsonText = response.text();
-    const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
-    
-    return NextResponse.json(JSON.parse(cleanJson));
-  } catch (error: any) {
-    console.error('Error reviewing resume:', error);
-    return NextResponse.json({
-      scores: {
-        overall: 88,
-        ats: 92,
-        recruiter: 84,
-        technical: 86,
-        readability: 90
-      },
-      careerInsights: `Strong technical profile for ${targetRole || 'Software Engineer'}. Resume showcases relevant skills and experience, with opportunities to further quantify bullet points and highlight system design choices.`,
-      sectionAnalysis: [
-        {
-          section: "Experience",
-          strengths: ["Strong action verbs used in key accomplishments.", "Clear progression of technical responsibilities."],
-          weaknesses: ["Could add more concrete metrics and scale indicators.", "Some technology stack details are implicit."],
-          recommendations: ["Quantify impact with % improvements or user scale metrics.", "Explicitly state cloud infrastructure and API frameworks used."]
-        },
-        {
-          section: "Projects",
-          strengths: ["Good demonstration of modern full-stack technologies.", "Includes GitHub and live application links."],
-          weaknesses: ["Bullet points focus on features rather than architectural challenges overcome."],
-          recommendations: ["Highlight performance optimizations and technical trade-offs."]
-        }
-      ],
-      skillGaps: [
-        {
-          skill: "Cloud Infrastructure (AWS/GCP)",
-          context: "Standard requirement for modern engineering roles."
-        },
-        {
-          skill: "CI/CD & Monitoring",
-          context: "Demonstrates production readiness and DevOps familiarity."
-        }
-      ],
-      roadmap: {
-        thisWeek: ["Rewrite 3 bullet points to include quantified impact metrics.", "Add explicit tech stack tags under each project."],
-        thisMonth: ["Deploy current project with automated CI/CD pipeline.", "Conduct mock technical interview practice."],
-        nextQuarter: ["Add system design case study to portfolio.", "Contribute to open-source repository."]
-      }
+    const reviewData = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jsonText = response.text();
+      const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
+      return JSON.parse(cleanJson);
     });
+
+    return apiSuccess(reviewData);
+  } catch (error: any) {
+    return handleAIError(error, 'review resume');
   }
 }

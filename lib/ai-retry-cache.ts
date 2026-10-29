@@ -47,7 +47,7 @@ class AICacheManager {
 export const aiCache = new AICacheManager();
 
 /**
- * Executes an async function (e.g. Gemini AI generation) with HTTP 429 retry & exponential backoff.
+ * Executes an async function (e.g. Gemini AI generation) with HTTP 429 retry, exponential backoff, and request timeout.
  */
 export async function callWithRetry<T>(
   fn: () => Promise<T>,
@@ -55,17 +55,29 @@ export async function callWithRetry<T>(
     maxRetries?: number;
     initialDelayMs?: number;
     backoffFactor?: number;
+    timeoutMs?: number;
   } = {}
 ): Promise<T> {
   const maxRetries = options.maxRetries ?? 3;
   const initialDelayMs = options.initialDelayMs ?? 800;
   const backoffFactor = options.backoffFactor ?? 2;
+  const timeoutMs = options.timeoutMs ?? 25000;
 
   let attempt = 0;
 
   while (attempt <= maxRetries) {
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
     try {
-      return await fn();
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutHandle = setTimeout(() => {
+          const timeoutError = new Error(`AI request timed out after ${timeoutMs}ms`);
+          (timeoutError as any).code = "ETIMEDOUT";
+          (timeoutError as any).status = 504;
+          reject(timeoutError);
+        }, timeoutMs);
+      });
+
+      return await Promise.race([fn(), timeoutPromise]);
     } catch (err: any) {
       attempt++;
 
@@ -84,6 +96,10 @@ export async function callWithRetry<T>(
       const delay = Math.round(initialDelayMs * Math.pow(backoffFactor, attempt - 1) + Math.random() * 200);
       console.warn(`[AI Rate Limit 429] Retrying request (Attempt ${attempt}/${maxRetries}) after ${delay}ms delay...`);
       await new Promise((resolve) => setTimeout(resolve, delay));
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
     }
   }
 

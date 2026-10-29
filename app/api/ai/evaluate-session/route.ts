@@ -1,25 +1,54 @@
-import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { aiCache, callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateJsonSize,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
-  let history: any[] = [];
-  try {
-    const payload = await request.json();
-    const { role, userName } = payload;
-    history = Array.isArray(payload.history) ? payload.history : [];
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
 
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'evaluate-session');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let payload: any;
+  try {
+    payload = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
+
+  const { role, userName } = payload ?? {};
+  const history = Array.isArray(payload?.history) ? payload.history : [];
+
+  const validationError =
+    validateStringLength(role, 'role', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(userName, 'userName', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateJsonSize(history, 'history');
+  if (validationError) return validationError;
+
+  try {
     // 1. Response Caching: Check cache for identical transcript evaluation
     const cachedEvaluation = aiCache.get<any>("evaluate-session", payload);
     if (cachedEvaluation) {
       console.log("[AI Cache Hit] Returning cached evaluation report.");
-      return NextResponse.json(cachedEvaluation);
+      return apiSuccess(cachedEvaluation);
     }
 
     const userResponses = history.filter((h: any) => h.role === 'user');
-    const totalWordsSpoken = userResponses.reduce((acc: number, curr: any) => acc + (curr.text || '').split(/\s+/).length, 0);
+    const totalWordsSpoken = userResponses.reduce(
+      (acc: number, curr: any) => acc + (curr.text || '').trim().split(/\s+/).filter(Boolean).length,
+      0
+    );
 
     // If candidate spoke less than 10 words, return INCOMPLETE report
     if (userResponses.length === 0 || totalWordsSpoken < 10) {
@@ -34,7 +63,7 @@ export async function POST(request: Request) {
         areasForImprovement: ["Participate and answer questions during the voice screen to receive an evaluation."],
         isComplete: false
       };
-      return NextResponse.json(incompleteReport);
+      return apiSuccess(incompleteReport);
     }
 
     const model = genAI.getGenerativeModel({
@@ -87,35 +116,8 @@ export async function POST(request: Request) {
     // Cache the result
     aiCache.set("evaluate-session", payload, evaluationData);
 
-    return NextResponse.json(evaluationData);
+    return apiSuccess(evaluationData);
   } catch (error: any) {
-    console.error("Error evaluating session:", error);
-
-    const userResponses = history.filter((h: any) => h.role === 'user');
-    if (userResponses.length === 0) {
-      return NextResponse.json({
-        score: 0,
-        status: "Incomplete / No Answers",
-        summary: "The candidate ended the session without providing spoken answers.",
-        technicalDepth: 0,
-        communication: 0,
-        problemSolving: 0,
-        strengths: ["No spoken responses recorded."],
-        areasForImprovement: ["Complete the interview questions to receive a performance evaluation."],
-        isComplete: false
-      });
-    }
-
-    return NextResponse.json({
-      score: 72,
-      status: "Consider",
-      summary: "Candidate provided initial answers demonstrating basic conceptual understanding.",
-      technicalDepth: 70,
-      communication: 75,
-      problemSolving: 70,
-      strengths: ["Responded to initial prompt."],
-      areasForImprovement: ["Elaborate further on architectural specifics."],
-      isComplete: true
-    });
+    return handleAIError(error, 'evaluate interview session');
   }
 }

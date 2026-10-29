@@ -25,6 +25,7 @@ export function MockInterviewWorkspace({ questions, context }: MockInterviewWork
   const [isRecording, setIsRecording] = useState(false);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [feedback, setFeedback] = useState<any>(null);
+  const [evaluationError, setEvaluationError] = useState<string | null>(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
   
   const recognitionRef = useRef<any>(null);
@@ -94,6 +95,7 @@ export function MockInterviewWorkspace({ questions, context }: MockInterviewWork
     }
 
     setIsEvaluating(true);
+    setEvaluationError(null);
     
     try {
       const res = await fetch('/api/ai/evaluate-answer', {
@@ -110,13 +112,13 @@ export function MockInterviewWorkspace({ questions, context }: MockInterviewWork
         })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload?.error?.message || "Failed to evaluate answer.");
 
-      setFeedback(data);
+      setFeedback(payload.data);
     } catch (error: any) {
       console.error("Evaluation failed", error);
-      alert(`Failed to evaluate answer. Please try again.\nError: ${error.message}`);
+      setEvaluationError(error.message || "Failed to evaluate answer. Please try again.");
     } finally {
       setIsEvaluating(false);
     }
@@ -124,6 +126,7 @@ export function MockInterviewWorkspace({ questions, context }: MockInterviewWork
 
   const handleNext = () => {
     setFeedback(null);
+    setEvaluationError(null);
     setAnswer("");
     setTimeElapsed(0);
     if (currentIndex < questions.length - 1) {
@@ -181,6 +184,12 @@ export function MockInterviewWorkspace({ questions, context }: MockInterviewWork
               disabled={isEvaluating || !!feedback}
               className="w-full h-48 bg-black/40 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-primary/50 transition-colors resize-none custom-scrollbar disabled:opacity-50"
             />
+
+            {evaluationError && (
+              <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+                {evaluationError}
+              </div>
+            )}
 
             {!feedback && (
               <div className="flex items-center justify-between pt-4 border-t border-white/10">

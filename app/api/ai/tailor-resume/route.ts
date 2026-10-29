@@ -1,16 +1,46 @@
-import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { callWithRetry } from '@/lib/ai-retry-cache';
+import {
+  apiError,
+  apiSuccess,
+  enforceRateLimit,
+  handleAIError,
+  INPUT_LIMITS,
+  requireUser,
+  validateJsonSize,
+  validateStringLength,
+} from '@/lib/api-guard';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export async function POST(request: Request) {
+  const { user, supabase, errorResponse } = await requireUser();
+  if (errorResponse) return errorResponse;
+
+  const rateLimitResponse = await enforceRateLimit(supabase, user.id, 'tailor-resume');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  let body: any;
   try {
-    const { resumeContent, jdText, company, role } = await request.json();
+    body = await request.json();
+  } catch {
+    return apiError('BAD_REQUEST', 'Invalid JSON request body.', 400);
+  }
 
-    if (!resumeContent || !jdText) {
-      return NextResponse.json({ error: 'Missing resume content or job description' }, { status: 400 });
-    }
+  const { resumeContent, jdText, company, role } = body ?? {};
 
+  if (!resumeContent || !jdText) {
+    return apiError('BAD_REQUEST', 'Missing resume content or job description.', 400);
+  }
+
+  const validationError =
+    validateJsonSize(resumeContent, 'resumeContent') ||
+    validateStringLength(jdText, 'jdText', INPUT_LIMITS.MAX_TEXT_CHARS) ||
+    validateStringLength(company, 'company', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS) ||
+    validateStringLength(role, 'role', INPUT_LIMITS.MAX_SHORT_TEXT_CHARS);
+  if (validationError) return validationError;
+
+  try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest', // Downgraded to flash because user API key has 0 quota for pro models
       generationConfig: {
@@ -39,21 +69,16 @@ export async function POST(request: Request) {
       Output strict JSON containing 'tailoredContent' and 'changesMade'.
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jsonText = response.text();
-    const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
-    
-    return NextResponse.json(JSON.parse(cleanJson));
-  } catch (error: any) {
-    console.error('Error tailoring resume:', error);
-    return NextResponse.json({
-      tailoredContent: resumeContent || {},
-      changesMade: [
-        "Tailored executive summary with target role keywords.",
-        "Quantified bullet points for higher ATS score.",
-        "Highlighted relevant frameworks and tools."
-      ]
+    const tailoredResult = await callWithRetry(async () => {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jsonText = response.text();
+      const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
+      return JSON.parse(cleanJson);
     });
+
+    return apiSuccess(tailoredResult);
+  } catch (error: any) {
+    return handleAIError(error, 'tailor resume');
   }
 }
