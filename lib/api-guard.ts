@@ -57,6 +57,8 @@ export interface RateLimitOptions {
 
 /**
  * Per-user fixed-window rate limiter backed by the `ai_usage` Supabase table.
+ * Uses the atomic `increment_ai_usage` Postgres RPC (`INSERT ... ON CONFLICT DO UPDATE ... RETURNING count`)
+ * so concurrent requests cannot race past the limit.
  * Returns a 429 NextResponse with a `Retry-After` header when limited, or null if allowed.
  */
 export async function enforceRateLimit(
@@ -77,16 +79,19 @@ export async function enforceRateLimit(
     Math.ceil((windowStartMs + windowMs - nowMs) / 1000)
   );
 
-  const { data: existing, error: selectError } = await supabase
-    .from('ai_usage')
-    .select('count')
-    .eq('user_id', userId)
-    .eq('route', route)
-    .eq('window_start', windowStartIso)
-    .maybeSingle();
+  const { data: newCount, error: rpcError } = await supabase.rpc(
+    'increment_ai_usage',
+    {
+      p_route: route,
+      p_window_start: windowStartIso,
+    }
+  );
 
-  if (selectError) {
-    console.error(`[RateLimiter] Failed to query ai_usage for ${route}:`, selectError.message);
+  if (rpcError || typeof newCount !== 'number') {
+    console.error(
+      `[RateLimiter] Atomic increment_ai_usage RPC failed for ${route} (user ${userId}):`,
+      rpcError?.message
+    );
     return apiError(
       'RATE_LIMIT_CHECK_FAILED',
       'Unable to verify rate limit status.',
@@ -94,47 +99,13 @@ export async function enforceRateLimit(
     );
   }
 
-  if (existing && existing.count >= limit) {
+  if (newCount > limit) {
     return apiError(
       'RATE_LIMITED',
       `Rate limit exceeded for ${route}. Try again in ${retryAfterSeconds}s.`,
       429,
       { 'Retry-After': String(retryAfterSeconds) }
     );
-  }
-
-  if (!existing) {
-    const { error: insertError } = await supabase.from('ai_usage').insert({
-      user_id: userId,
-      route,
-      window_start: windowStartIso,
-      count: 1,
-    });
-
-    if (insertError) {
-      console.error(`[RateLimiter] Failed to insert ai_usage for ${route}:`, insertError.message);
-      return apiError(
-        'RATE_LIMIT_UPDATE_FAILED',
-        'Unable to record rate limit usage.',
-        500
-      );
-    }
-  } else {
-    const { error: updateError } = await supabase
-      .from('ai_usage')
-      .update({ count: existing.count + 1 })
-      .eq('user_id', userId)
-      .eq('route', route)
-      .eq('window_start', windowStartIso);
-
-    if (updateError) {
-      console.error(`[RateLimiter] Failed to update ai_usage for ${route}:`, updateError.message);
-      return apiError(
-        'RATE_LIMIT_UPDATE_FAILED',
-        'Unable to update rate limit usage.',
-        500
-      );
-    }
   }
 
   return null;

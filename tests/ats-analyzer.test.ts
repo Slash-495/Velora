@@ -8,8 +8,7 @@ import type { ResumeContent } from '@/lib/mock-data';
 
 const mockGenerateContent = vi.fn();
 const mockGetUser = vi.fn();
-const mockMaybeSingle = vi.fn();
-const mockInsert = vi.fn();
+const mockRpc = vi.fn();
 
 vi.mock('@google/generative-ai', () => ({
   SchemaType: {
@@ -30,18 +29,7 @@ vi.mock('@/utils/supabase/server', () => ({
     auth: {
       getUser: mockGetUser,
     },
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          eq: vi.fn(() => ({
-            eq: vi.fn(() => ({
-              maybeSingle: mockMaybeSingle,
-            })),
-          })),
-        })),
-      })),
-      insert: mockInsert,
-    })),
+    rpc: mockRpc,
   })),
 }));
 
@@ -174,8 +162,7 @@ describe('ATS Scoring & Analysis Logic', () => {
       data: { user: { id: '11111111-1111-4111-8111-111111111111' } },
       error: null,
     });
-    mockMaybeSingle.mockResolvedValue({ data: null, error: null });
-    mockInsert.mockResolvedValue({ error: null });
+    mockRpc.mockResolvedValue({ data: 1, error: null });
     mockGenerateContent.mockResolvedValue({
       response: {
         text: () =>

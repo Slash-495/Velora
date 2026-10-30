@@ -1,8 +1,10 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Share2, Copy, Check, Globe } from "lucide-react";
-import { useState } from "react";
+import { X, Share2, Copy, Check, Globe, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { isValidUuid } from "@/lib/data";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -14,21 +16,86 @@ export function ShareModal({ isOpen, onClose, resumeId }: ShareModalProps) {
   const [isPublic, setIsPublic] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareId, setShareId] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleToggleShare = () => {
-    // In a real app, this would call Supabase to insert/update the shared_resumes table
-    if (!isPublic) {
-      setShareId(`share-${Math.random().toString(36).substring(7)}`);
-      setIsPublic(true);
-    } else {
-      setShareId(null);
-      setIsPublic(false);
+  useEffect(() => {
+    if (!isOpen || !resumeId) return;
+    let cancelled = false;
+
+    async function loadShareStatus() {
+      if (!isValidUuid(resumeId)) {
+        return;
+      }
+      try {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from("shared_resumes")
+          .select("id, is_active")
+          .eq("resume_id", resumeId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!cancelled && data) {
+          setShareId(data.id);
+          setIsPublic(Boolean(data.is_active));
+        }
+      } catch {
+        // Ignore in demo mode
+      }
+    }
+
+    loadShareStatus();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, resumeId]);
+
+  const handleToggleShare = async () => {
+    const nextPublic = !isPublic;
+    if (!isValidUuid(resumeId)) {
+      setShareId(nextPublic ? resumeId : null);
+      setIsPublic(nextPublic);
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const supabase = createClient();
+      if (shareId && isValidUuid(shareId)) {
+        const { data, error } = await supabase
+          .from("shared_resumes")
+          .update({ is_active: nextPublic })
+          .eq("id", shareId)
+          .select("id, is_active")
+          .single();
+
+        if (!error && data) {
+          setIsPublic(Boolean(data.is_active));
+        }
+      } else if (nextPublic) {
+        const { data, error } = await supabase
+          .from("shared_resumes")
+          .insert({ resume_id: resumeId, is_active: true })
+          .select("id, is_active")
+          .single();
+
+        if (!error && data) {
+          setShareId(data.id);
+          setIsPublic(Boolean(data.is_active));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to update share settings:", err);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const shareUrl = typeof window !== 'undefined' && shareId 
-    ? `${window.location.origin}/resume/${shareId}` 
-    : '';
+  const shareUrl =
+    typeof window !== "undefined" && shareId && isPublic
+      ? `${window.location.origin}/resume/${shareId}`
+      : "";
 
   const handleCopy = () => {
     if (shareUrl) {
@@ -42,7 +109,7 @@ export function ShareModal({ isOpen, onClose, resumeId }: ShareModalProps) {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -62,11 +129,15 @@ export function ShareModal({ isOpen, onClose, resumeId }: ShareModalProps) {
                   <Share2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-text-primary leading-tight">Share Resume</h2>
-                  <p className="text-xs text-text-muted mt-0.5">Publish a public link to your resume.</p>
+                  <h2 className="text-xl font-bold text-text-primary leading-tight">
+                    Share Resume
+                  </h2>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    Publish a public link to your resume.
+                  </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
                 className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 text-text-muted hover:text-white transition-colors"
               >
@@ -76,50 +147,69 @@ export function ShareModal({ isOpen, onClose, resumeId }: ShareModalProps) {
 
             {/* Content */}
             <div className="p-6 flex flex-col gap-6">
-              
               <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10">
                 <div className="flex items-center gap-3">
-                  <Globe className={`w-5 h-5 ${isPublic ? 'text-blue-400' : 'text-text-muted'}`} />
+                  <Globe
+                    className={`w-5 h-5 ${
+                      isPublic ? "text-blue-400" : "text-text-muted"
+                    }`}
+                  />
                   <div>
-                    <p className="font-semibold text-sm text-text-primary">Public Access</p>
-                    <p className="text-xs text-text-muted">Anyone with the link can view.</p>
+                    <p className="font-semibold text-sm text-text-primary">
+                      Public Access
+                    </p>
+                    <p className="text-xs text-text-muted">
+                      Anyone with the link can view.
+                    </p>
                   </div>
                 </div>
                 <button
                   onClick={handleToggleShare}
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${isPublic ? 'bg-blue-500' : 'bg-white/10'}`}
+                  disabled={isUpdating}
+                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center disabled:opacity-50 ${
+                    isPublic ? "bg-blue-500" : "bg-white/10"
+                  }`}
                 >
-                  <motion.div 
-                    layout
-                    className="w-4 h-4 bg-white rounded-full mx-1 shadow-sm"
-                    animate={{ x: isPublic ? 24 : 0 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
+                  {isUpdating ? (
+                    <Loader2 className="w-3.5 h-3.5 text-white animate-spin mx-auto" />
+                  ) : (
+                    <motion.div
+                      layout
+                      className="w-4 h-4 bg-white rounded-full mx-1 shadow-sm"
+                      animate={{ x: isPublic ? 24 : 0 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
                 </button>
               </div>
 
               {isPublic && shareUrl && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   className="flex flex-col gap-2"
                 >
-                  <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Public Link</label>
+                  <label className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    Public Link
+                  </label>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-text-muted truncate">
                       {shareUrl}
                     </div>
-                    <button 
+                    <button
                       onClick={handleCopy}
                       className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors flex items-center gap-2"
                     >
-                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copied ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
                       {copied ? "Copied" : "Copy"}
                     </button>
                   </div>
                 </motion.div>
               )}
-
             </div>
           </motion.div>
         </div>

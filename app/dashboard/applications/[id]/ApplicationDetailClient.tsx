@@ -15,14 +15,35 @@ import {
   AlertCircle
 } from "lucide-react";
 import Link from "next/link";
-import { mockResumes, JobApplication } from "@/lib/mock-data";
+import { JobApplication } from "@/lib/mock-data";
+import { useUserApplications, useUserResumes } from "@/lib/user-data-store";
 import { CompanyInterviewWorkspace } from "@/components/applications/CompanyInterviewWorkspace";
 
 type TabType = 'details' | 'timeline' | 'interview';
 
-export function ApplicationDetailClient({ application }: { application: JobApplication }) {
-  const linkedResume = mockResumes.find(r => r.id === application.resumeId);
+export function ApplicationDetailClient({
+  applicationId,
+  application: initialApplication,
+}: {
+  applicationId?: string;
+  application?: JobApplication;
+}) {
+  const applications = useUserApplications();
+  const resumes = useUserResumes();
+  const application =
+    initialApplication ||
+    applications.find((a) => a.id === applicationId) ||
+    applications[0];
+  const linkedResume = resumes.find((r) => r.id === application?.resumeId);
   const [activeTab, setActiveTab] = useState<TabType>('details');
+
+  if (!application) {
+    return (
+      <div className="max-w-5xl mx-auto py-12 text-center text-text-muted">
+        Application not found.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto pb-12">

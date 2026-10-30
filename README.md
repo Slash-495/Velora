@@ -4,23 +4,23 @@
 
 **Velora** is a full-stack AI career workspace built with **Next.js 15**, **Supabase**, and **Google Gemini (`gemini-flash-latest`)**. It combines a live Visual/LaTeX Resume Studio with optimistic concurrency control, ATS resume scoring and job-description tailoring, an idempotent Kanban application tracker, an AI mock interview simulator, cover letter generation, and career activity analytics.
 
-🔗 **Live Demo**: [https://velora-ai.vercel.app](https://velora-ai.vercel.app) *(replace with your deployment URL)*
+🔗 **Live Demo**: [https://velora-ai.vercel.app](https://velora-ai.vercel.app)
 
 ---
 
-## 📸 Screenshots & Demo Preview
+## 📸 Workspace Preview
+
+> Place screenshots of the running workspace in `public/screenshots/` (`dashboard.png`, `resume-studio.png`, `ai-tailoring.png`, `kanban-board.png`) or a walkthrough recording at `public/screenshots/demo.gif`.
 
 | Dashboard & Career Heatmap | Resume Studio (Visual + LaTeX) |
 | :---: | :---: |
-| ![Dashboard Preview](public/templates/velora-professional-cover.png) | ![Resume Studio Preview](public/templates/modern-minimalist-cover.png) |
-| *Overview metrics, career tracks, and 18-month activity grid* | *Debounced autosave, live A4 preview, and optimistic conflict detection* |
+| ![Dashboard Preview](public/screenshots/dashboard.png) | ![Resume Studio Preview](public/screenshots/resume-studio.png) |
+| *Overview metrics, career tracks, and 18-month activity grid* | *800ms debounced autosave, live A4 preview, and optimistic conflict detection* |
 
 | AI ATS Tailoring & Optimization | Kanban Application Pipeline |
 | :---: | :---: |
-| ![AI Tailoring Preview](public/templates/dev-terminal-cover.png) | ![Kanban Tracker Preview](public/templates/creative-accent-cover.png) |
+| ![AI Tailoring Preview](public/screenshots/ai-tailoring.png) | ![Kanban Tracker Preview](public/screenshots/kanban-board.png) |
 | *Keyword gap analysis and one-click JD tailoring via Gemini* | *Idempotent drag-and-drop across Wishlist, Applied, OA, Interview, Final Round, Offer, and Rejected* |
-
-> 💡 *Tip: Drop a screen-recording GIF at `public/demo.gif` and reference `![Velora Demo](public/demo.gif)` above.*
 
 ---
 
@@ -219,13 +219,12 @@ sequenceDiagram
   else Authenticated
     DB-->>Guard: user (id)
     API->>Guard: enforceRateLimit(supabase, user.id, "tailor-resume")
-    Guard->>DB: SELECT count FROM ai_usage WHERE user_id & route & window_start
-    alt Over Rate Limit (count >= 10 / 60s)
+    Guard->>DB: RPC increment_ai_usage(route, window_start)\n(INSERT ... ON CONFLICT DO UPDATE SET count = count + 1 RETURNING count)
+    alt Over Rate Limit (returned count > 10 / 60s)
       Guard-->>API: 429 { error: { code: "RATE_LIMITED" } } + Header Retry-After
       API-->>UI: 429 Too Many Requests
       UI-->>User: Display rate-limit message
-    else Within Rate Limit
-      Guard->>DB: INSERT or UPDATE ai_usage (count + 1)
+    else Within Rate Limit (returned count <= 10)
       API->>Guard: validateJsonSize(resumeContent) & validateStringLength(jdText)
       alt Payload Invalid or Exceeds Limit
         Guard-->>API: 400 BAD_REQUEST or 413 PAYLOAD_TOO_LARGE
@@ -272,9 +271,9 @@ sequenceDiagram
    - **Decision**: Resume edits are debounced by 800ms ([`hooks/use-debounce.ts`](hooks/use-debounce.ts)) and persisted via `UPDATE resumes SET ... WHERE id = $1 AND version = $expectedVersion`. A PostgreSQL `BEFORE UPDATE` trigger (`trg_resumes_version_and_updated_at`) automatically increments `version`. If 0 rows match because another tab saved a newer version, [`updateResume`](lib/data/resumes.ts) fetches the latest server row and throws [`VersionConflictError`](lib/data/types.ts), pausing autosave and prompting the user to reload.
    - **Trade-off**: Simpler, stateless, and free of WebSocket connection overhead compared to Yjs/CRDTs, at the cost of whole-document conflict resolution if a single user edits the same resume simultaneously in two browser tabs.
 
-3. **Postgres-Backed Fixed-Window Rate Limiting (`public.ai_usage`) over External Redis**
-   - **Decision**: Per-user, per-route rate limiting ([`enforceRateLimit`](lib/api-guard.ts)) is stored in the `public.ai_usage` table keyed by `(user_id, route, window_start)`.
-   - **Trade-off**: Avoids introducing a separate Redis/Upstash dependency and keeps all infrastructure inside Supabase, at the cost of 1–2 extra database round-trips per AI API request.
+3. **Atomic Postgres Fixed-Window Rate Limiting (`public.increment_ai_usage`) over External Redis**
+   - **Decision**: Per-user, per-route rate limiting ([`enforceRateLimit`](lib/api-guard.ts)) calls the `public.increment_ai_usage` PostgreSQL RPC (`INSERT INTO public.ai_usage ... ON CONFLICT (user_id, route, window_start) DO UPDATE SET count = public.ai_usage.count + 1 RETURNING count`).
+   - **Trade-off**: Eliminates race conditions under concurrent requests in a single atomic database round-trip without introducing a separate Redis/Upstash dependency, at the cost of one lightweight Postgres write per AI call.
 
 4. **Template Foreign-Key Normalization (`normalizeTemplateForDb`)**
    - **Decision**: The `resume_templates` table seeds three canonical IDs (`velora-professional`, `modern-minimalist`, `dev-terminal`), while the UI also supports `creative-accent`. [`lib/data/resumes.ts`](lib/data/resumes.ts) stores the exact UI template ID in `theme_config.__templateId` and maps unseeded template IDs to a valid FK value on `resumes.template_id`.
@@ -302,13 +301,13 @@ sequenceDiagram
 ## ⚠️ Known Limitations & What I'd Change at 100x Scale
 
 ### Current Limitations
-1. **Non-Atomic Read-Then-Write in Rate Limiter**: [`enforceRateLimit`](lib/api-guard.ts) performs a `SELECT` followed by an `INSERT` or `UPDATE` on `ai_usage`. Concurrent requests from the same user within a few milliseconds can race and slightly exceed the window count.
+1. **Fixed-Window Boundary Bursts**: [`enforceRateLimit`](lib/api-guard.ts) uses an atomic 60-second fixed window (`increment_ai_usage`). A user can send 10 requests right before a minute boundary and 10 more immediately after the boundary.
 2. **Synchronous AI Route Execution**: `/api/ai/*` routes await full JSON responses from Gemini before returning, holding serverless function invocations open for 2–15 seconds.
 3. **Client-Side PDF Rendering**: PDF export in the Resume Studio and Cover Letters uses `html2pdf.js` (`html2canvas` + `jsPDF`) in the browser, which rasterizes DOM nodes rather than producing selectable vector text or compiling LaTeX server-side.
-4. **Secondary Modules Using Static/Mock Data**: Core flows (Resumes, Career Tracks, Job Applications, and all `/api/ai/*` routes) are backed by Supabase, but several secondary views—such as the public share preview ([`app/resume/[shareId]/page.tsx`](app/resume/[shareId]/page.tsx)), the Company Research directory, and dashboard summary widgets ([`components/dashboard/widgets/CareerTracks.tsx`](components/dashboard/widgets/CareerTracks.tsx))—still read from static mock arrays in [`lib/mock-data.ts`](lib/mock-data.ts).
+4. **Full-Document JSONB Resume Updates**: Autosave writes the full `resumes.content` JSONB document on each debounced save rather than section-level diffs.
 
 ### What Would Change at 100x Scale
-1. **Atomic Sliding-Window Rate Limiting**: Replace the `SELECT` + `UPDATE` on `ai_usage` with either a single PostgreSQL RPC (`INSERT INTO ai_usage ... ON CONFLICT (user_id, route, window_start) DO UPDATE SET count = ai_usage.count + 1 RETURNING count`) or an edge Redis/Upstash sliding-window limiter in `middleware.ts`.
+1. **Edge Sliding-Window Rate Limiting**: Move rate limiting to an edge Redis/Upstash sliding-window limiter in `middleware.ts` to smooth boundary bursts and shed excess traffic before invoking serverless functions or Postgres.
 2. **Streaming & Background Queue for AI Workloads**: Switch long-running Gemini prompts (resume tailoring, deep resume review, company insights) to streaming responses (`generateContentStream`) or enqueue jobs via a worker queue (e.g., BullMQ / Inngest / Trigger.dev) with Supabase Realtime progress notifications.
 3. **Server-Side Vector PDF & TeX Compilation**: Offload PDF generation to an isolated worker running headless Chromium (Playwright) for HTML templates and a sandboxed `tectonic` / `pdflatex` container for the LaTeX editor so exported PDFs contain selectable text for ATS parsers.
 4. **Section-Level Diffs & Cursor Pagination**: Split large `resumes.content` JSONB updates into section-level patches and add keyset pagination (`(updated_at, id)`) on `listResumes` and `listApplications`.

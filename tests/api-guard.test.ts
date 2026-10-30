@@ -13,7 +13,7 @@ vi.mock('@/utils/supabase/server', () => ({
 
 import { enforceRateLimit, requireUser } from '@/lib/api-guard';
 
-describe('api-guard: requireUser & enforceRateLimit', () => {
+describe('api-guard: requireUser & atomic enforceRateLimit', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -38,24 +38,14 @@ describe('api-guard: requireUser & enforceRateLimit', () => {
     });
   });
 
-  it('returns 429 RATE_LIMITED with Retry-After header when user is over the rate limit', async () => {
-    const maybeSingle = vi.fn().mockResolvedValue({
-      data: { count: 10 },
+  it('returns 429 RATE_LIMITED with Retry-After header when atomic increment_ai_usage exceeds limit', async () => {
+    const rpcMock = vi.fn().mockResolvedValue({
+      data: 11, // 11th request in a 10-request window
       error: null,
     });
 
     const mockSupabase = {
-      from: vi.fn(() => ({
-        select: vi.fn(() => ({
-          eq: vi.fn(() => ({
-            eq: vi.fn(() => ({
-              eq: vi.fn(() => ({
-                maybeSingle,
-              })),
-            })),
-          })),
-        })),
-      })),
+      rpc: rpcMock,
     } as unknown as SupabaseClient;
 
     const response = await enforceRateLimit(
@@ -65,6 +55,13 @@ describe('api-guard: requireUser & enforceRateLimit', () => {
       { limit: 10, windowSeconds: 60 }
     );
 
+    expect(rpcMock).toHaveBeenCalledWith(
+      'increment_ai_usage',
+      expect.objectContaining({
+        p_route: 'analyze-resume',
+        p_window_start: expect.any(String),
+      })
+    );
     expect(response).not.toBeNull();
     expect(response!.status).toBe(429);
     const retryAfter = Number(response!.headers.get('Retry-After'));
@@ -76,33 +73,14 @@ describe('api-guard: requireUser & enforceRateLimit', () => {
     expect(payload.error.message).toContain('analyze-resume');
   });
 
-  it('allows under-limit requests and increments the counter in ai_usage', async () => {
-    const maybeSingle = vi.fn().mockResolvedValue({
-      data: { count: 3 },
+  it('allows under-limit requests when atomic increment_ai_usage returns count <= limit', async () => {
+    const rpcMock = vi.fn().mockResolvedValue({
+      data: 4,
       error: null,
     });
-    const updateEqWindow = vi.fn().mockResolvedValue({ error: null });
-    const updateMock = vi.fn(() => ({
-      eq: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          eq: updateEqWindow,
-        })),
-      })),
-    }));
 
     const mockSupabase = {
-      from: vi.fn(() => ({
-        select: vi.fn(() => ({
-          eq: vi.fn(() => ({
-            eq: vi.fn(() => ({
-              eq: vi.fn(() => ({
-                maybeSingle,
-              })),
-            })),
-          })),
-        })),
-        update: updateMock,
-      })),
+      rpc: rpcMock,
     } as unknown as SupabaseClient;
 
     const response = await enforceRateLimit(
@@ -113,6 +91,6 @@ describe('api-guard: requireUser & enforceRateLimit', () => {
     );
 
     expect(response).toBeNull();
-    expect(updateMock).toHaveBeenCalledWith({ count: 4 });
+    expect(rpcMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,39 +1,146 @@
 "use client";
 
-import { motion } from "framer-motion";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { 
-  Building2, Globe, MapPin, ExternalLink, Bot, CheckSquare, FileText, 
-  Lightbulb, ShieldAlert, Zap, Loader2, Save, AlignLeft, RefreshCw
+import {
+  Globe,
+  MapPin,
+  ExternalLink,
+  Bot,
+  CheckSquare,
+  FileText,
+  Lightbulb,
+  ShieldAlert,
+  Zap,
+  Loader2,
+  Save,
+  AlignLeft,
+  RefreshCw,
 } from "lucide-react";
-import { mockApplications, mockResumes } from "@/lib/mock-data";
+import { mockCompanies } from "@/lib/mock-data";
+import { isValidUuid } from "@/lib/data";
+import { useUserApplications, useUserResumes } from "@/lib/user-data-store";
+import { createClient } from "@/utils/supabase/client";
 import { useDebounce } from "@/hooks/use-debounce";
 
-export function CompanyDetailClient({ company }: { company: any }) {
+export function CompanyDetailClient({
+  companyId,
+  company: initialCompany,
+}: {
+  companyId?: string;
+  company?: any;
+}) {
+  const applications = useUserApplications();
+  const resumes = useUserResumes();
+
+  const [company, setCompany] = useState<any>(
+    initialCompany ||
+      mockCompanies.find((c) => c.id === companyId) ||
+      mockCompanies[0]
+  );
   const [notes, setNotes] = useState("");
+  const [noteId, setNoteId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // AI Insights State
   const [insights, setInsights] = useState<any>(null);
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
 
-  // Link ecosystem
-  const relatedApps = useMemo(() => 
-    mockApplications.filter(a => a.companyName.toLowerCase() === company?.name.toLowerCase()),
-    [company?.name]
+  useEffect(() => {
+    if (!companyId || !isValidUuid(companyId)) return;
+    let cancelled = false;
+
+    async function loadCompanyFromSupabase() {
+      try {
+        const supabase = createClient();
+        const { data: compRow } = await supabase
+          .from("companies")
+          .select("*")
+          .eq("id", companyId)
+          .maybeSingle();
+
+        if (!cancelled && compRow) {
+          setCompany({
+            id: compRow.id,
+            name: compRow.name,
+            industry: compRow.industry || "Technology",
+            location: compRow.location || "Remote",
+            overview: compRow.overview || "",
+            website: compRow.website || "",
+            careersUrl: compRow.careers_url || compRow.website || "",
+          });
+        }
+
+        const { data: noteRow } = await supabase
+          .from("company_notes")
+          .select("id, content")
+          .eq("company_id", companyId)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!cancelled && noteRow) {
+          setNoteId(noteRow.id);
+          setNotes(noteRow.content || "");
+        }
+      } catch {
+        // Ignore in logged-out demo mode
+      }
+    }
+
+    loadCompanyFromSupabase();
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId]);
+
+  const relatedApps = useMemo(
+    () =>
+      applications.filter(
+        (a) => a.companyName.toLowerCase() === (company?.name || "").toLowerCase()
+      ),
+    [applications, company?.name]
   );
 
   const debouncedNotes = useDebounce(notes, 1000);
 
-  // Auto-save effect
+  const persistNotes = useCallback(
+    async (text: string) => {
+      setIsSaving(true);
+      try {
+        if (company?.id && isValidUuid(company.id)) {
+          const supabase = createClient();
+          if (noteId) {
+            await supabase
+              .from("company_notes")
+              .update({ content: text })
+              .eq("id", noteId);
+          } else {
+            const { data } = await supabase
+              .from("company_notes")
+              .insert({
+                company_id: company.id,
+                type: "research",
+                content: text,
+              })
+              .select("id")
+              .single();
+            if (data?.id) setNoteId(data.id);
+          }
+        }
+      } catch {
+        // Fallback in demo mode
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [company?.id, noteId]
+  );
+
   useEffect(() => {
     if (debouncedNotes) {
-      setIsSaving(true);
-      // Simulate API call
-      const timer = setTimeout(() => setIsSaving(false), 800);
-      return () => clearTimeout(timer);
+      persistNotes(debouncedNotes);
     }
-  }, [debouncedNotes]);
+  }, [debouncedNotes, persistNotes]);
 
   const generateInsights = useCallback(async () => {
     if (!company) return;
@@ -42,58 +149,76 @@ export function CompanyDetailClient({ company }: { company: any }) {
       const res = await fetch("/api/ai/company-insights", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          companyName: company.name, 
+        body: JSON.stringify({
+          companyName: company.name,
           industry: company.industry,
-          notes: notes
-        })
+          notes,
+        }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setInsights(data);
+      const payload = await res.json();
+      if (!res.ok) {
+        throw new Error(payload?.error?.message || "Failed to generate insights.");
+      }
+      setInsights(payload.data || payload);
     } catch (err) {
       console.error(err);
-      alert("Failed to generate insights.");
     } finally {
       setIsGeneratingInsights(false);
     }
   }, [company, notes]);
 
-  const saveNotes = useCallback(() => {
-    setIsSaving(true);
-    setTimeout(() => setIsSaving(false), 800);
-  }, []);
+  if (!company) {
+    return <div className="text-white p-8">Company not found.</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto pb-24">
       {/* Header Profile */}
       <div className="bg-surface border border-white/5 rounded-3xl p-8 mb-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        
+
         <div className="flex flex-col md:flex-row gap-6 relative z-10">
           <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border border-primary/20 shrink-0">
-            <span className="text-primary font-bold text-4xl">{company.name.charAt(0)}</span>
+            <span className="text-primary font-bold text-4xl">
+              {company.name.charAt(0)}
+            </span>
           </div>
-          
+
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-white tracking-tight">{company.name}</h1>
+              <h1 className="text-3xl font-bold text-white tracking-tight">
+                {company.name}
+              </h1>
               <span className="px-3 py-1 bg-white/5 rounded-full text-xs font-medium text-text-muted border border-white/10">
                 {company.industry}
               </span>
             </div>
-            
+
             <p className="text-text-secondary text-sm leading-relaxed max-w-3xl mb-4">
               {company.overview}
             </p>
-            
+
             <div className="flex flex-wrap gap-4 text-xs font-medium">
-              <a href={`https://${company.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-text-muted hover:text-white transition-colors">
-                <Globe className="w-4 h-4" /> {company.website}
-              </a>
-              <a href={`https://${company.careersUrl}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors">
-                <ExternalLink className="w-4 h-4" /> Careers Page
-              </a>
+              {company.website && (
+                <a
+                  href={`https://${company.website}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 text-text-muted hover:text-white transition-colors"
+                >
+                  <Globe className="w-4 h-4" /> {company.website}
+                </a>
+              )}
+              {company.careersUrl && (
+                <a
+                  href={`https://${company.careersUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" /> Careers Page
+                </a>
+              )}
               <div className="flex items-center gap-1.5 text-text-muted">
                 <MapPin className="w-4 h-4" /> {company.location}
               </div>
@@ -103,30 +228,35 @@ export function CompanyDetailClient({ company }: { company: any }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
         {/* Left Column: Intelligence & Ecosystem */}
         <div className="space-y-8">
-          
           {/* Application Ecosystem */}
           <section className="bg-surface border border-white/5 rounded-3xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <CheckSquare className="w-5 h-5 text-primary" />
               Application Ecosystem
             </h2>
-            
+
             {relatedApps.length > 0 ? (
               <div className="space-y-3">
-                {relatedApps.map(app => (
-                  <div key={app.id} className="p-4 bg-white/5 border border-white/10 rounded-xl">
+                {relatedApps.map((app) => (
+                  <div
+                    key={app.id}
+                    className="p-4 bg-white/5 border border-white/10 rounded-xl"
+                  >
                     <div className="flex justify-between items-start mb-2">
-                      <div className="fontsemibold text-sm text-white">{app.roleTitle}</div>
+                      <div className="font-semibold text-sm text-white">
+                        {app.roleTitle}
+                      </div>
                       <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
                         {app.status}
                       </span>
                     </div>
                     <div className="text-xs text-text-muted flex items-center gap-2 mt-3">
                       <FileText className="w-3.5 h-3.5" />
-                      Linked Resume: {mockResumes.find(r => r.id === app.resumeId)?.name || 'Default Resume'}
+                      Linked Resume:{" "}
+                      {resumes.find((r) => r.id === app.resumeId)?.name ||
+                        "Default Resume"}
                     </div>
                   </div>
                 ))}
@@ -143,7 +273,7 @@ export function CompanyDetailClient({ company }: { company: any }) {
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <Bot className="w-24 h-24" />
             </div>
-            
+
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
               <Zap className="w-5 h-5 text-primary" />
               AI Prep Insights
@@ -152,14 +282,19 @@ export function CompanyDetailClient({ company }: { company: any }) {
             {!insights ? (
               <div className="relative z-10">
                 <p className="text-sm text-text-secondary mb-6">
-                  Generate deep recruiter-level insights on {company.name}'s technical expectations, cultural focus, and interview red flags.
+                  Generate deep recruiter-level insights on {company.name}&apos;s
+                  technical expectations, cultural focus, and interview red flags.
                 </p>
-                <button 
+                <button
                   onClick={generateInsights}
                   disabled={isGeneratingInsights}
                   className="w-full py-2.5 bg-primary text-background font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 transition-all hover:shadow-glow-primary/20"
                 >
-                  {isGeneratingInsights ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bot className="w-4 h-4" />}
+                  {isGeneratingInsights ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Bot className="w-4 h-4" />
+                  )}
                   {isGeneratingInsights ? "Analyzing Company..." : "Generate Insights"}
                 </button>
               </div>
@@ -170,8 +305,11 @@ export function CompanyDetailClient({ company }: { company: any }) {
                     <AlignLeft className="w-3.5 h-3.5" /> Tech Stack Focus
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {insights.techStack.map((tech: string, i: number) => (
-                      <span key={i} className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-white">
+                    {(insights.techStack || []).map((tech: string, i: number) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-white"
+                      >
                         {tech}
                       </span>
                     ))}
@@ -183,11 +321,16 @@ export function CompanyDetailClient({ company }: { company: any }) {
                     <Lightbulb className="w-3.5 h-3.5" /> Cultural Values
                   </h3>
                   <ul className="space-y-1.5">
-                    {insights.culturalFocus.map((culture: string, i: number) => (
-                      <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
-                        <span className="text-emerald-400 mt-0.5">•</span> {culture}
-                      </li>
-                    ))}
+                    {(insights.culturalFocus || []).map(
+                      (culture: string, i: number) => (
+                        <li
+                          key={i}
+                          className="text-sm text-text-secondary flex items-start gap-2"
+                        >
+                          <span className="text-emerald-400 mt-0.5">•</span> {culture}
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
 
@@ -196,15 +339,18 @@ export function CompanyDetailClient({ company }: { company: any }) {
                     <ShieldAlert className="w-3.5 h-3.5" /> Interview Red Flags
                   </h3>
                   <ul className="space-y-1.5">
-                    {insights.redFlags.map((flag: string, i: number) => (
-                      <li key={i} className="text-sm text-text-secondary flex items-start gap-2">
+                    {(insights.redFlags || []).map((flag: string, i: number) => (
+                      <li
+                        key={i}
+                        className="text-sm text-text-secondary flex items-start gap-2"
+                      >
                         <span className="text-orange-400 mt-0.5">•</span> {flag}
                       </li>
                     ))}
                   </ul>
                 </div>
-                
-                <button 
+
+                <button
                   onClick={generateInsights}
                   className="w-full py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors border border-white/10"
                 >
@@ -213,7 +359,6 @@ export function CompanyDetailClient({ company }: { company: any }) {
               </div>
             )}
           </section>
-
         </div>
 
         {/* Right Column: Research Notes Workspace */}
@@ -224,15 +369,19 @@ export function CompanyDetailClient({ company }: { company: any }) {
                 <AlignLeft className="w-5 h-5 text-text-muted" />
                 Interview Notes
               </h2>
-              <button 
-                onClick={saveNotes}
+              <button
+                onClick={() => persistNotes(notes)}
                 className="flex items-center gap-2 px-4 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-colors text-white"
               >
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin text-primary" /> : <Save className="w-4 h-4 text-text-muted" />}
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                ) : (
+                  <Save className="w-4 h-4 text-text-muted" />
+                )}
                 {isSaving ? "Saving..." : "Save"}
               </button>
             </div>
-            
+
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -241,7 +390,6 @@ export function CompanyDetailClient({ company }: { company: any }) {
             />
           </div>
         </div>
-
       </div>
     </div>
   );
