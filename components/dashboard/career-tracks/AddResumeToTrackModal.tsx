@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Check, Search } from "lucide-react";
 import { useState, useMemo } from "react";
-import { Resume, mockResumes } from "@/lib/mock-data";
+import { Resume } from "@/lib/mock-data";
+import { useUserResumes } from "@/lib/user-data-store";
 
 interface AddResumeToTrackModalProps {
   isOpen: boolean;
@@ -14,15 +15,16 @@ interface AddResumeToTrackModalProps {
 
 export function AddResumeToTrackModal({ isOpen, onClose, onSelect, existingResumeIds }: AddResumeToTrackModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const resumes = useUserResumes();
 
   const availableResumes = useMemo(() => {
-    return mockResumes
+    return resumes
       .filter(r => !existingResumeIds.includes(r.id))
       .filter(r => 
         (r.name || "").toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (r.content?.roleTitle || "").toLowerCase().includes(searchQuery.toLowerCase())
+        (r.content?.personalInfo?.summary || "").toLowerCase().includes(searchQuery.toLowerCase())
       );
-  }, [searchQuery, existingResumeIds]);
+  }, [resumes, searchQuery, existingResumeIds]);
 
   if (!isOpen) return null;
 
@@ -86,7 +88,7 @@ export function AddResumeToTrackModal({ isOpen, onClose, onSelect, existingResum
                     </div>
                   </div>
                   <h3 className="font-semibold text-text-primary text-sm line-clamp-1">{resume.name}</h3>
-                  <p className="text-xs text-text-muted mt-1 line-clamp-1">{resume.content.roleTitle}</p>
+                  <p className="text-xs text-text-muted mt-1 line-clamp-1">{resume.content?.personalInfo?.summary || ""}</p>
                   
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5 w-full">
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${resume.atsScore >= 90 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>

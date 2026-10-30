@@ -4,6 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Link as LinkIcon, Building2, Briefcase, DollarSign, Calendar, MapPin, Save } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ApplicationStatus, JobApplication } from "@/lib/mock-data";
+import { useUserResumes } from "@/lib/user-data-store";
+
+interface ApplicationFormState extends Partial<JobApplication> {
+  salaryCurrency?: string;
+  salaryAmount?: string;
+  salaryUnit?: string;
+}
 
 interface ApplicationModalProps {
   isOpen: boolean;
@@ -13,7 +20,8 @@ interface ApplicationModalProps {
 }
 
 export function ApplicationModal({ isOpen, onClose, onSave, initialData }: ApplicationModalProps) {
-  const [formData, setFormData] = useState<Partial<JobApplication>>({
+  const userResumes = useUserResumes();
+  const [formData, setFormData] = useState<ApplicationFormState>({
     companyName: "",
     roleTitle: "",
     status: "wishlist",
@@ -274,8 +282,11 @@ export function ApplicationModal({ isOpen, onClose, onSave, initialData }: Appli
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer"
                   >
                     <option value="" className="bg-surface">None</option>
-                    <option value="1" className="bg-surface">Backend Engineer - Google Tailored</option>
-                    <option value="2" className="bg-surface">Frontend UI/UX</option>
+                    {userResumes.map((res) => (
+                      <option key={res.id} value={res.id} className="bg-surface">
+                        {res.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

@@ -65,18 +65,25 @@ export default function NewResumeFlow() {
     }
   };
 
-  const handleNextBuild = () => {
-    if (step === "TRACK" && selectedTrack) {
+  const handleNextBuild = async () => {
+    if (step === "TRACK") {
       setStep("TEMPLATE");
     } else if (step === "TEMPLATE" && selectedTemplate) {
-      const trackObj = userTracks.find(t => t.id === selectedTrack);
-      const newResume = importResumeFromText(
-        "Professional Summary\nExperienced candidate seeking technological roles.",
-        `${trackObj?.name || 'Career'} Resume`,
-        selectedTrack || "track-1",
-        selectedTemplate || "velora-professional"
-      );
-      router.push(`/dashboard/resume-studio/${newResume.id}`);
+      setIsParsing(true);
+      setParseError(null);
+      try {
+        const trackObj = userTracks.find(t => t.id === selectedTrack);
+        const newResume = await importResumeFromText(
+          "Professional Summary\nExperienced candidate seeking technological roles.",
+          `${trackObj?.name || 'Career'} Resume`,
+          selectedTrack || "",
+          selectedTemplate || "velora-professional"
+        );
+        router.push(`/dashboard/resume-studio/${newResume.id}`);
+      } catch (err: any) {
+        setParseError(err.message || "Failed to create resume.");
+        setIsParsing(false);
+      }
     }
   };
 
@@ -103,10 +110,10 @@ export default function NewResumeFlow() {
 
       const preParsed = payload.data?.content;
 
-      const importedResume = importResumeFromText(
+      const importedResume = await importResumeFromText(
         importRawText || "Imported Resume Content",
         importTitle.trim() || preParsed?.personalInfo?.fullName || "Imported Resume",
-        selectedTrack || "track-1",
+        selectedTrack || "",
         selectedTemplate || "velora-professional",
         preParsed
       );
@@ -254,10 +261,10 @@ export default function NewResumeFlow() {
 
             <button 
               onClick={handleNextBuild}
-              disabled={(step === "TRACK" && !selectedTrack) || (step === "TEMPLATE" && !selectedTemplate)}
+              disabled={(step === "TRACK" && userTracks.length > 0 && !selectedTrack) || (step === "TEMPLATE" && !selectedTemplate) || isParsing}
               className="btn-glow px-8 py-2.5 rounded-xl flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {step === "TEMPLATE" ? "Create & Open Studio" : "Continue"} <ArrowRight className="w-4 h-4" />
+              {step === "TEMPLATE" ? (isParsing ? "Creating..." : "Create & Open Studio") : "Continue"} <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>

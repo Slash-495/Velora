@@ -54,6 +54,7 @@ export interface ResumeContent {
 }
 
 import { ResumeThemeConfig, defaultThemeConfig } from "./templates";
+export { defaultThemeConfig };
 
 export interface Resume {
   id: string;
@@ -64,10 +65,19 @@ export interface Resume {
   themeConfig: ResumeThemeConfig;
   updatedAt: string;
   content: ResumeContent;
+  version?: number;
   isDemo?: boolean;
+  isAIGenerated?: boolean;
 }
 
-export type ApplicationStatus = "wishlist" | "applied" | "oa" | "interview" | "offer" | "rejected";
+export type ApplicationStatus =
+  | "wishlist"
+  | "applied"
+  | "oa"
+  | "interview"
+  | "final_round"
+  | "offer"
+  | "rejected";
 
 export interface JobApplication {
   id: string;
@@ -81,6 +91,8 @@ export interface JobApplication {
   salaryRange?: string;
   notes?: string;
   jobUrl?: string;
+  applicationLink?: string;
+  jobDescription?: string;
   isDemo?: boolean;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { mockResumes } from "@/lib/mock-data";
+import { useUserResumes } from "@/lib/user-data-store";
 import { ChevronDown, FileText, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,8 +12,9 @@ interface ResumeSelectorProps {
 
 export function ResumeSelector({ selectedId, onSelect }: ResumeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const resumes = useUserResumes();
   
-  const selectedResume = mockResumes.find(r => r.id === selectedId);
+  const selectedResume = resumes.find(r => r.id === selectedId);
 
   return (
     <div className="flex flex-col gap-2 relative">
@@ -57,7 +58,7 @@ export function ResumeSelector({ selectedId, onSelect }: ResumeSelectorProps) {
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               className="absolute top-full left-0 right-0 mt-2 bg-surface border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto custom-scrollbar"
             >
-              {mockResumes.map(resume => (
+              {resumes.map(resume => (
                 <button
                   key={resume.id}
                   onClick={() => {

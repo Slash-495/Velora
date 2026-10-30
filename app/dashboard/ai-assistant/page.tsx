@@ -7,9 +7,10 @@ import { ATSAnalysisScore } from "@/components/dashboard/ai-assistant/ATSAnalysi
 import { AISuggestionsPanel } from "@/components/dashboard/ai-assistant/AISuggestionsPanel";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { mockResumes } from "@/lib/mock-data";
+import { useUserResumes } from "@/lib/user-data-store";
 
 export default function AIAssistantPage() {
+  const resumes = useUserResumes();
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
@@ -25,7 +26,7 @@ export default function AIAssistantPage() {
     setCurrentJdData(jd);
 
     try {
-      const selectedResume = mockResumes.find(r => r.id === selectedResumeId);
+      const selectedResume = resumes.find(r => r.id === selectedResumeId);
       
       const response = await fetch('/api/ai/analyze-resume', {
         method: 'POST',

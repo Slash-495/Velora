@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { Download, Save, Sparkles, ArrowRight, Wand2 } from "lucide-react";
 import { useState } from "react";
-import { mockResumes, ResumeContent, Resume } from "@/lib/mock-data";
+import { ResumeContent, Resume, defaultThemeConfig } from "@/lib/mock-data";
+import { useUserResumes, saveUserResume } from "@/lib/user-data-store";
 import { LivePreview } from "@/components/resume-studio/LivePreview";
 
 interface AISuggestionsPanelProps {
@@ -13,6 +14,7 @@ interface AISuggestionsPanelProps {
 }
 
 export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISuggestionsPanelProps) {
+  const resumes = useUserResumes();
   const [isTailoring, setIsTailoring] = useState(false);
   const [tailoredContent, setTailoredContent] = useState<ResumeContent | null>(null);
   const [changesMade, setChangesMade] = useState<string[]>([]);
@@ -20,13 +22,14 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
 
   if (!analysisResult) return null;
 
+  const selectedResume = resumes.find(r => r.id === resumeId);
+
   const handleTailor = async () => {
     if (!resumeId) return;
     setIsTailoring(true);
     setTailorError(null);
     
     try {
-      const selectedResume = mockResumes.find(r => r.id === resumeId);
       
       const response = await fetch('/api/ai/tailor-resume', {
         method: 'POST',
@@ -63,16 +66,20 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
         setTailoredContent(mergedContent);
         setChangesMade(data.changesMade || []);
 
-        // Automatically save to Resume Studio (in-memory)
+        // Persist tailored resume via user-data-store
         const newResume: Resume = {
           id: `res-${Date.now()}`,
-          title: `${jdData?.role || "Tailored"} - ${jdData?.company || "Company"}`,
+          name: `${jdData?.role || "Tailored"} - ${jdData?.company || "Company"}`,
+          trackId: selectedResume?.trackId || "",
+          template: selectedResume?.template || "velora-professional",
+          themeConfig: selectedResume?.themeConfig || defaultThemeConfig,
           atsScore: data.score || 85,
           updatedAt: new Date().toISOString(),
+          version: 1,
           content: mergedContent,
           isAIGenerated: true,
         };
-        mockResumes.push(newResume);
+        await saveUserResume(newResume);
       }
     } catch (error: any) {
       console.error(error);
@@ -193,7 +200,7 @@ export function AISuggestionsPanel({ resumeId, analysisResult, jdData }: AISugge
             )}
           
           <div className="h-[700px] w-full rounded-2xl overflow-hidden border border-white/10 relative shadow-2xl">
-            <LivePreview content={tailoredContent} templateId={mockResumes.find(r => r.id === resumeId)?.template || "velora-professional"} themeConfig={mockResumes.find(r => r.id === resumeId)?.themeConfig || {}} />
+            <LivePreview content={tailoredContent} templateId={selectedResume?.template || "velora-professional"} themeConfig={selectedResume?.themeConfig || defaultThemeConfig} />
           </div>
         </motion.div>
       )}

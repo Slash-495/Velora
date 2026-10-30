@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowLeft, FileText, CheckCircle2, MoreHorizontal, Edit3, Download, Copy, Plus, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { mockTracks, mockResumes, Resume } from "@/lib/mock-data";
+import { useState } from "react";
+import { useUserTracks, useUserResumes, saveUserResume, deleteUserResume } from "@/lib/user-data-store";
 
 export default function TrackDetailsPage() {
   const params = useParams();
@@ -13,15 +13,14 @@ export default function TrackDetailsPage() {
   const trackId = params.trackId as string;
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   
-  // Load track data
-  const track = mockTracks.find(t => t.id === trackId);
-  
-  // Local state for resumes in this track
-  const [trackResumes, setTrackResumes] = useState<Resume[]>([]);
+  const tracks = useUserTracks();
+  const allResumes = useUserResumes();
 
-  useEffect(() => {
-    setTrackResumes(mockResumes.filter(r => r.trackId === trackId));
-  }, [trackId]);
+  // Load track data
+  const track = tracks.find(t => t.id === trackId);
+  
+  // Resumes in this track
+  const trackResumes = allResumes.filter(r => r.trackId === trackId);
 
   if (!track) {
     return (
@@ -131,17 +130,17 @@ export default function TrackDetailsPage() {
                         <button 
                           onClick={() => {
                             setOpenMenuId(null);
-                            router.push(`/dashboard/resume-studio`);
+                            router.push(`/dashboard/resume-studio/${resume.id}`);
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left"
                         >
                           <Edit3 className="w-4 h-4" /> Edit Resume
                         </button>
                         <button 
-                          onClick={() => {
+                          onClick={async () => {
                             setOpenMenuId(null);
-                            const copy = { ...resume, id: `res-${Date.now()}`, name: `${resume.name} (Copy)` };
-                            setTrackResumes(prev => [...prev, copy]);
+                            const copy = { ...resume, id: `res-${Date.now()}`, name: `${resume.name} (Copy)`, version: 1, updatedAt: new Date().toISOString() };
+                            await saveUserResume(copy);
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors text-left"
                         >
@@ -149,9 +148,9 @@ export default function TrackDetailsPage() {
                         </button>
                         <div className="h-px bg-white/5 my-1 mx-2" />
                         <button 
-                          onClick={() => {
+                          onClick={async () => {
                             setOpenMenuId(null);
-                            setTrackResumes(prev => prev.filter(r => r.id !== resume.id));
+                            await deleteUserResume(resume.id);
                           }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left"
                         >

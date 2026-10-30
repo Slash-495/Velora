@@ -41,10 +41,16 @@ export function KanbanBoard({ applications, onUpdateApplication, onEdit, onDelet
 
   const handleDrop = (e: React.DragEvent, columnId: ApplicationStatus) => {
     e.preventDefault();
-    if (!draggedId) return;
-
-    onUpdateApplication(draggedId, { status: columnId });
+    const id = draggedId || e.dataTransfer.getData('text/plain');
     setDraggedId(null);
+    if (!id) return;
+
+    const currentApp = applications.find((a) => a.id === id);
+    if (currentApp && currentApp.status === columnId) {
+      return;
+    }
+
+    onUpdateApplication(id, { status: columnId });
   };
 
   return (

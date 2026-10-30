@@ -26,10 +26,14 @@ export default function ResumeStudioPage() {
     return matchesSearch && matchesTab;
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this resume?")) {
-      deleteUserResume(id);
       setOpenMenuId(null);
+      try {
+        await deleteUserResume(id);
+      } catch (err: any) {
+        alert(err.message || "Failed to delete resume.");
+      }
     }
   };
 

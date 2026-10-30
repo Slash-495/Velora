@@ -4,17 +4,19 @@ import { motion } from "framer-motion";
 import { Plus, Search, Briefcase, FileText, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { CareerTrack, mockTracks, mockResumes } from "@/lib/mock-data";
+import { CareerTrack } from "@/lib/mock-data";
+import { useUserTracks, useUserResumes, saveUserTrack } from "@/lib/user-data-store";
 import { TrackModal } from "@/components/dashboard/career-tracks/TrackModal";
 
 export default function CareerTracksPage() {
-  const [tracks, setTracks] = useState<CareerTrack[]>(mockTracks);
+  const tracks = useUserTracks();
+  const resumes = useUserResumes();
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Calculate stats for each track
   const tracksWithStats = tracks.map(track => {
-    const trackResumes = mockResumes.filter(r => r.trackId === track.id);
+    const trackResumes = resumes.filter(r => r.trackId === track.id);
     const avgScore = trackResumes.length > 0 
       ? Math.round(trackResumes.reduce((acc, curr) => acc + curr.atsScore, 0) / trackResumes.length)
       : 0;
@@ -35,9 +37,8 @@ export default function CareerTracksPage() {
     return track.name.toLowerCase().includes(searchQuery.toLowerCase()) || track.role.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  const handleSaveTrack = (newTrack: CareerTrack) => {
-    mockTracks.push(newTrack);
-    setTracks(prev => [newTrack, ...prev]);
+  const handleSaveTrack = async (newTrack: CareerTrack) => {
+    await saveUserTrack(newTrack);
   };
 
   return (

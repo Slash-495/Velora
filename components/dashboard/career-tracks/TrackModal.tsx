@@ -42,6 +42,7 @@ export function TrackModal({ isOpen, onClose, onSave }: TrackModalProps) {
       role: formData.role,
       status: "Active",
       color: formData.color,
+      updatedAt: new Date().toISOString(),
     };
 
     onSave(newTrack);

@@ -6,7 +6,12 @@ import { Plus, Search, Filter, X, Sparkles } from "lucide-react";
 import { KanbanBoard } from "@/components/dashboard/applications/KanbanBoard";
 import { ApplicationModal } from "@/components/dashboard/applications/ApplicationModal";
 import { JobApplication } from "@/lib/mock-data";
-import { useUserApplications, saveUserApplication, deleteUserApplication } from "@/lib/user-data-store";
+import {
+  useUserApplications,
+  saveUserApplication,
+  deleteUserApplication,
+  updateUserApplicationStatus,
+} from "@/lib/user-data-store";
 
 export default function ApplicationsPage() {
   const applications = useUserApplications();
@@ -14,6 +19,7 @@ export default function ApplicationsPage() {
   const [editingApp, setEditingApp] = useState<JobApplication | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
   
   // Filter states
   const [filterRole, setFilterRole] = useState("");
@@ -36,21 +42,40 @@ export default function ApplicationsPage() {
     });
   }, [applications, searchQuery, filterRole, filterCompany, filterLocation]);
 
-  const handleUpdateApplication = (id: string, updates: Partial<JobApplication>) => {
-    const existing = applications.find(a => a.id === id);
-    if (existing) {
-      saveUserApplication({ ...existing, ...updates, isDemo: false });
+  const handleUpdateApplication = async (id: string, updates: Partial<JobApplication>) => {
+    setActionError(null);
+    try {
+      if (updates.status && Object.keys(updates).length === 1) {
+        await updateUserApplicationStatus(id, updates.status);
+        return;
+      }
+      const existing = applications.find(a => a.id === id);
+      if (existing) {
+        await saveUserApplication({ ...existing, ...updates, isDemo: false });
+      }
+    } catch (err: any) {
+      setActionError(err.message || "Failed to update application.");
     }
   };
 
-  const handleDeleteApplication = (id: string) => {
-    deleteUserApplication(id);
+  const handleDeleteApplication = async (id: string) => {
+    setActionError(null);
+    try {
+      await deleteUserApplication(id);
+    } catch (err: any) {
+      setActionError(err.message || "Failed to delete application.");
+    }
   };
 
-  const handleSaveApplication = (appToSave: JobApplication) => {
-    saveUserApplication({ ...appToSave, isDemo: false });
-    setIsModalOpen(false);
-    setEditingApp(null);
+  const handleSaveApplication = async (appToSave: JobApplication) => {
+    setActionError(null);
+    try {
+      await saveUserApplication({ ...appToSave, isDemo: false });
+      setIsModalOpen(false);
+      setEditingApp(null);
+    } catch (err: any) {
+      setActionError(err.message || "Failed to save application.");
+    }
   };
 
   const openAddModal = () => {
@@ -186,13 +211,19 @@ export default function ApplicationsPage() {
         )}
       </AnimatePresence>
 
+      {(actionError || applications.error) && (
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+          {actionError || applications.error}
+        </div>
+      )}
+
       {/* Kanban Board View */}
       <div className="pt-2">
         <KanbanBoard
           applications={filteredApplications}
           onUpdateApplication={handleUpdateApplication}
-          onEditApplication={openEditModal}
-          onDeleteApplication={handleDeleteApplication}
+          onEdit={openEditModal}
+          onDelete={handleDeleteApplication}
         />
       </div>
 
@@ -204,7 +235,7 @@ export default function ApplicationsPage() {
           setEditingApp(null);
         }}
         onSave={handleSaveApplication}
-        editingApplication={editingApp}
+        initialData={editingApp}
       />
     </div>
   );
