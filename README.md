@@ -1,5 +1,7 @@
 # 🚀 Velora — AI-Powered Career Intelligence & Resume Studio
 
+[![CI](https://github.com/Slash-495/Velora/actions/workflows/ci.yml/badge.svg)](https://github.com/Slash-495/Velora/actions/workflows/ci.yml)
+
 **Velora** is an all-in-one AI career workspace designed to accelerate your job search. It seamlessly combines an intelligent ATS Resume Studio, Job Application Tracker, Interactive Mock Interview Simulator, Company Research Library, and dynamic GitHub-style Career Activity Analytics.
 
 ---
@@ -126,6 +128,8 @@ Velora/
 - `npm run build` — Create an optimized production build.
 - `npm run start` — Start the Next.js production server.
 - `npm run lint` — Run ESLint checks.
+- `npm run typecheck` — Run TypeScript type checking (`tsc --noEmit`).
+- `npm test` — Run the Vitest unit test suite.
 
 ---
 

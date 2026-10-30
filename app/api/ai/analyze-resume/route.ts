@@ -1,6 +1,10 @@
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import { callWithRetry } from '@/lib/ai-retry-cache';
 import {
+  buildAtsAnalysisPrompt,
+  parseAndNormalizeAtsAnalysis,
+} from '@/lib/ats-analyzer';
+import {
   apiError,
   apiSuccess,
   enforceRateLimit,
@@ -79,28 +83,18 @@ export async function POST(request: Request) {
       }
     });
 
-    const prompt = `
-      You are an expert ATS (Applicant Tracking System) and technical recruiter.
-      Analyze the provided Resume Content against the Job Description.
-
-      Job Description Context:
-      Role: ${role || 'Not specified'}
-      Company: ${company || 'Not specified'}
-      JD Text: ${jdText}
-
-      Resume Content:
-      ${JSON.stringify(resumeContent, null, 2)}
-
-      Task: Return a strict JSON analysis containing the ATS score, missing keywords, strong areas, and weak areas.
-      Be highly critical and accurate. Ensure keywords are specific technologies or skills.
-    `;
+    const prompt = buildAtsAnalysisPrompt({
+      resumeContent,
+      jdText,
+      company,
+      role,
+    });
 
     const analysis = await callWithRetry(async () => {
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const jsonText = response.text();
-      const cleanJson = jsonText.replace(/```(?:json)?/gi, '').trim();
-      return JSON.parse(cleanJson);
+      return parseAndNormalizeAtsAnalysis(jsonText);
     });
 
     return apiSuccess(analysis);

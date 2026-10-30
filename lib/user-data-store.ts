@@ -10,6 +10,7 @@ import {
   ResumeContent,
 } from "./mock-data";
 import { defaultThemeConfig } from "./templates";
+import { calculateBaselineAtsScore } from "./ats-analyzer";
 import {
   createApplication,
   createResume,
@@ -673,7 +674,7 @@ export async function importResumeFromText(
     id: `user-res-${Date.now()}`,
     trackId,
     name: resumeTitle || content.personalInfo.fullName || "Imported Resume",
-    atsScore: 90,
+    atsScore: calculateBaselineAtsScore(content),
     template: templateId,
     themeConfig: defaultThemeConfig,
     updatedAt: new Date().toISOString(),
