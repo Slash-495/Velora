@@ -1,7 +1,8 @@
-import { ResumeContent } from "./mock-data";
+// Resume LaTeX Templates
+
+// Resume LaTeX Templates
 
 import { ResumeContent } from "./mock-data";
-
 export function generateDefaultLatex(content: ResumeContent, templateId: string = "velora-professional"): string {
   if (templateId === "dev-terminal") {
     return `%------------------------
@@ -360,13 +361,13 @@ Privateering ~•~ Bucaneering ~•~ Parler ~•~ Rum
 \\section*{Publications}
 \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.7\\textwidth}}
     1729 & \\emph{How I almost got killed by Lady Swan}, Tortuga Printing Press. \\\\
-    1720 & ``Privateering for Beginners'', in: \\emph{The Pragmatic Pirate} (1/1720).
+    1720 & \`\`Privateering for Beginners'', in: \\emph{The Pragmatic Pirate} (1/1720).
 \\end{tabular}
 \\bigskip
 
 \\section*{Talks}
 \\begin{tabular}{>{\\footnotesize\\bfseries}r >{\\footnotesize}p{0.6\\textwidth}}
-    Nov. 1726 & ``How I lost my ship (\\& and how to get it back)'', at: \\emph{Annual Pirate's Conference} in Tortuga, Nov. 1726.
+    Nov. 1726 & \`\`How I lost my ship (\\& and how to get it back)'', at: \\emph{Annual Pirate's Conference} in Tortuga, Nov. 1726.
 \\end{tabular}
 \\end{minipage}
 

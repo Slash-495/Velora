@@ -10,7 +10,7 @@ interface TemplateProps {
 
 export function ModernMinimalist({ content, themeConfig }: TemplateProps) {
   // Extract accent color to use it dynamically or fallback to a default grey/blue
-  const accentColor = themeConfig.accentColor || "#00b4d8";
+  const accentColor = themeConfig?.colors?.accent || "#00b4d8";
   
   return (
     <div className="w-full h-full bg-white text-gray-800 font-sans text-xs flex flex-col relative" style={{ fontFamily: "Raleway, sans-serif" }}>

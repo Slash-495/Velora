@@ -4,7 +4,7 @@ import { VeloraProfessional } from "@/components/resume-studio/templates/VeloraP
 import { DevTerminal } from "@/components/resume-studio/templates/DevTerminal";
 import { CreativeAccent } from "@/components/resume-studio/templates/CreativeAccent";
 import { ModernMinimalist } from "@/components/resume-studio/templates/ModernMinimalist";
-import { mockResumes } from "@/lib/mock-data";
+import { mockResumes, defaultThemeConfig } from "@/lib/mock-data";
 import { Download, Share2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -23,17 +23,16 @@ export default function PublicResumePage() {
   const handleDownloadPDF = async () => {
     setIsExporting(true);
     try {
-      // @ts-ignore
       const html2pdf = (await import('html2pdf.js')).default;
-      const element = document.querySelector('.resume-print-document');
+      const element = document.querySelector<HTMLElement>('.resume-print-document');
       
       if (element) {
         const opt = {
           margin:       0,
           filename:     `${resume.name || 'resume'}.pdf`,
-          image:        { type: 'jpeg', quality: 1 },
+          image:        { type: 'jpeg' as const, quality: 1 },
           html2canvas:  { scale: 2, useCORS: true },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          jsPDF:        { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
         };
         
         await html2pdf().set(opt).from(element).save();
@@ -47,14 +46,14 @@ export default function PublicResumePage() {
   const renderTemplate = () => {
     switch(resume.template) {
       case 'dev-terminal':
-        return <DevTerminal content={resume.content} themeConfig={resume.themeConfig || {}} />;
+        return <DevTerminal content={resume.content} themeConfig={resume.themeConfig || defaultThemeConfig} />;
       case 'creative-accent':
-        return <CreativeAccent content={resume.content} themeConfig={resume.themeConfig || {}} />;
+        return <CreativeAccent content={resume.content} themeConfig={resume.themeConfig || defaultThemeConfig} />;
       case 'modern-minimalist':
-        return <ModernMinimalist content={resume.content} themeConfig={resume.themeConfig || {}} />;
+        return <ModernMinimalist content={resume.content} themeConfig={resume.themeConfig || defaultThemeConfig} />;
       case 'velora-professional':
       default:
-        return <VeloraProfessional content={resume.content} themeConfig={resume.themeConfig || {}} />;
+        return <VeloraProfessional content={resume.content} themeConfig={resume.themeConfig || defaultThemeConfig} />;
     }
   };
 

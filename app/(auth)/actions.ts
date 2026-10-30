@@ -10,10 +10,14 @@ export async function signIn(formData: FormData) {
 
   try {
     const supabase = await createClient()
-    const { data } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
 
     if (data?.session) {
       const cookieStore = await cookies()
@@ -22,7 +26,7 @@ export async function signIn(formData: FormData) {
         path: '/',
         sameSite: 'lax',
       })
-      return { success: true, session: data.session, user: data.user }
+      return { success: true, session: data.session, user: data.user, error: undefined }
     }
   } catch (e) {
     console.warn("Supabase signIn fallback activated:", e)
@@ -36,7 +40,7 @@ export async function signIn(formData: FormData) {
     sameSite: 'lax',
   })
 
-  return { success: true }
+  return { success: true, error: undefined }
 }
 
 export async function signUp(formData: FormData) {
@@ -45,10 +49,14 @@ export async function signUp(formData: FormData) {
 
   try {
     const supabase = await createClient()
-    const { data } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
 
     if (data?.session) {
       const cookieStore = await cookies()
@@ -57,7 +65,7 @@ export async function signUp(formData: FormData) {
         path: '/',
         sameSite: 'lax',
       })
-      return { success: true, session: data.session, user: data.user }
+      return { success: true, session: data.session, user: data.user, error: undefined }
     }
   } catch (e) {
     console.warn("Supabase signUp fallback activated:", e)
@@ -70,7 +78,7 @@ export async function signUp(formData: FormData) {
     sameSite: 'lax',
   })
 
-  return { success: true }
+  return { success: true, error: undefined }
 }
 
 export async function signInWithGoogle() {
