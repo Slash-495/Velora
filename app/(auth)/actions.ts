@@ -1,12 +1,43 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { headers, cookies } from 'next/headers'
+import { headers } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
+async function resolveOrigin(): Promise<string> {
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  if (configuredSiteUrl) {
+    return configuredSiteUrl.replace(/\/+$/, '')
+  }
+
+  const headersList = await headers()
+  const forwardedHost = headersList.get('x-forwarded-host')
+  const host = forwardedHost || headersList.get('host')
+  const forwardedProto = headersList.get('x-forwarded-proto')
+
+  if (host) {
+    const isLocalhost =
+      host.startsWith('localhost') || host.startsWith('127.0.0.1')
+    const protocol = forwardedProto || (isLocalhost ? 'http' : 'https')
+    return `${protocol}://${host}`
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3000'
+  }
+
+  throw new Error(
+    'Unable to determine site origin. Set NEXT_PUBLIC_SITE_URL in your environment.'
+  )
+}
+
 export async function signIn(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const email = (formData.get('email') as string | null)?.trim() || ''
+  const password = (formData.get('password') as string | null) || ''
+
+  if (!email || !password) {
+    return { success: false, error: 'Email and password are required.' }
+  }
 
   try {
     const supabase = await createClient()
@@ -19,118 +50,107 @@ export async function signIn(formData: FormData) {
       return { success: false, error: error.message }
     }
 
-    if (data?.session) {
-      const cookieStore = await cookies()
-      cookieStore.set('velora_remember_user', 'true', {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/',
-        sameSite: 'lax',
-      })
-      return { success: true, session: data.session, user: data.user, error: undefined }
+    if (!data?.session || !data?.user) {
+      return {
+        success: false,
+        error: 'Unable to establish an authenticated session.',
+      }
     }
-  } catch (e) {
-    console.warn("Supabase signIn fallback activated:", e)
+
+    return {
+      success: true,
+      session: data.session,
+      user: data.user,
+      error: undefined,
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Sign-in failed.',
+    }
   }
-
-  // Set 7-day persistent session cookie on production domain as well
-  const cookieStore = await cookies()
-  cookieStore.set('velora_remember_user', 'true', {
-    maxAge: 60 * 60 * 24 * 7,
-    path: '/',
-    sameSite: 'lax',
-  })
-
-  return { success: true, error: undefined }
 }
 
 export async function signUp(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const email = (formData.get('email') as string | null)?.trim() || ''
+  const password = (formData.get('password') as string | null) || ''
+
+  if (!email || !password) {
+    return { success: false, error: 'Email and password are required.' }
+  }
 
   try {
     const supabase = await createClient()
+    const origin = await resolveOrigin()
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${origin}/api/auth/callback`,
+      },
     })
 
     if (error) {
       return { success: false, error: error.message }
     }
 
-    if (data?.session) {
-      const cookieStore = await cookies()
-      cookieStore.set('velora_remember_user', 'true', {
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/',
-        sameSite: 'lax',
-      })
-      return { success: true, session: data.session, user: data.user, error: undefined }
+    if (data?.user && !data?.session) {
+      return {
+        success: true,
+        checkEmail: true,
+        message:
+          'Check your email to confirm your account before signing in.',
+        error: undefined,
+      }
     }
-  } catch (e) {
-    console.warn("Supabase signUp fallback activated:", e)
+
+    if (!data?.session || !data?.user) {
+      return {
+        success: false,
+        error: 'Sign-up failed to create an active session.',
+      }
+    }
+
+    return {
+      success: true,
+      checkEmail: false,
+      session: data.session,
+      user: data.user,
+      error: undefined,
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Sign-up failed.',
+    }
   }
-
-  const cookieStore = await cookies()
-  cookieStore.set('velora_remember_user', 'true', {
-    maxAge: 60 * 60 * 24 * 7,
-    path: '/',
-    sameSite: 'lax',
-  })
-
-  return { success: true, error: undefined }
 }
 
 export async function signInWithGoogle() {
-  try {
-    const supabase = await createClient()
-    const headersList = await headers()
-    const host = headersList.get('host')
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
-    const origin = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${origin}/api/auth/callback`,
-        queryParams: {
-          prompt: 'select_account'
-        }
-      },
-    })
+  const supabase = await createClient()
+  const origin = await resolveOrigin()
 
-    if (data?.url && !error) {
-      redirect(data.url)
-    }
-  } catch (e) {
-    console.warn("OAuth redirect fallback activated:", e)
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${origin}/api/auth/callback`,
+      queryParams: {
+        prompt: 'select_account',
+      },
+    },
+  })
+
+  if (error || !data?.url) {
+    const message = error?.message || 'Unable to start Google sign-in.'
+    redirect(`/sign-in?error=${encodeURIComponent(message)}`)
   }
 
-  const cookieStore = await cookies()
-  cookieStore.set('velora_remember_user', 'true', {
-    maxAge: 60 * 60 * 24 * 7,
-    path: '/',
-    sameSite: 'lax',
-  })
-  redirect('/dashboard')
+  redirect(data.url)
 }
 
 export async function signOut() {
-  try {
-    const supabase = await createClient()
-    await supabase.auth.signOut()
-  } catch (e) {}
-
-  // Clean up residual cookies
-  const cookieStore = await cookies()
-  const allCookies = cookieStore.getAll()
-  for (const c of allCookies) {
-    if (c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user') {
-      try {
-        cookieStore.delete(c.name)
-      } catch (e) {}
-    }
-  }
-
+  const supabase = await createClient()
+  await supabase.auth.signOut()
   redirect('/sign-in')
 }

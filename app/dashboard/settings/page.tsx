@@ -10,7 +10,7 @@ import { signOut } from "@/app/(auth)/actions";
 export default function SettingsPage() {
   const router = useRouter();
   const supabase = createClient();
-  const [email, setEmail] = useState("user@velora.ai");
+  const [email, setEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,
@@ -47,11 +47,6 @@ export default function SettingsPage() {
   };
 
   const handleLogout = async () => {
-    // Clear mock user data
-    localStorage.removeItem("velora_user_name");
-    localStorage.removeItem("velora_user_avatar");
-    
-    // Sign out via server action to flush server cookies
     await signOut();
   };
 

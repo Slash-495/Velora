@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -13,6 +13,10 @@ interface EditProfileModalProps {
 
 export function EditProfileModal({ isOpen, onClose, currentName, onSave }: EditProfileModalProps) {
   const [name, setName] = useState(currentName);
+
+  useEffect(() => {
+    setName(currentName);
+  }, [currentName, isOpen]);
 
   const handleSave = () => {
     if (name.trim()) {

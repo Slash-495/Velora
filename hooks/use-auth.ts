@@ -2,92 +2,107 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 
-export function useAuth(initialUser?: any) {
-  const [user, setUser] = useState<any>(initialUser || null);
-  const [isClientLoggedIn, setIsClientLoggedIn] = useState<boolean>(() => {
-    if (typeof window === "undefined") return !!initialUser;
-    const hasCookie = (
-      document.cookie.includes("velora_remember_user=true") ||
-      document.cookie.includes("sb-") ||
-      document.cookie.includes("auth-token")
-    );
-    const hasLocalStorage = localStorage.getItem("velora_user_logged_in") === "true";
-    return hasCookie || hasLocalStorage || !!initialUser;
-  });
-  const [loading, setLoading] = useState(true);
+export interface DerivedUserProfile {
+  displayName: string;
+  avatarUrl: string | null;
+}
+
+/**
+ * Pure helper to derive displayName and avatarUrl from a real Supabase User.
+ * Never fabricates a fallback user when `user` is null/undefined.
+ */
+export function deriveUserProfile(user: User | null | undefined): DerivedUserProfile {
+  if (!user) {
+    return {
+      displayName: "",
+      avatarUrl: null,
+    };
+  }
+
+  const meta = user.user_metadata ?? {};
+  const emailPrefix = user.email ? user.email.split("@")[0] : "";
+
+  const displayName =
+    (typeof meta.full_name === "string" && meta.full_name.trim()) ||
+    (typeof meta.name === "string" && meta.name.trim()) ||
+    emailPrefix ||
+    "";
+
+  const avatarUrl =
+    (typeof meta.avatar_url === "string" && meta.avatar_url.trim()) ||
+    (typeof meta.picture === "string" && meta.picture.trim()) ||
+    null;
+
+  return {
+    displayName,
+    avatarUrl,
+  };
+}
+
+/**
+ * Resolves the authenticated user strictly from the Supabase response.
+ * Never reads cookies/localStorage or returns a fabricated demo user.
+ */
+export function resolveAuthenticatedUser(
+  supabaseUser: User | null | undefined
+): User | null {
+  if (!supabaseUser || !supabaseUser.id) {
+    return null;
+  }
+  return supabaseUser;
+}
+
+export function useAuth(initialUser?: User | null) {
+  const [user, setUser] = useState<User | null>(() =>
+    resolveAuthenticatedUser(initialUser)
+  );
+  const [loading, setLoading] = useState<boolean>(!initialUser);
   const router = useRouter();
 
   useEffect(() => {
+    let isMounted = true;
     const supabase = createClient();
 
-    const checkLoggedInState = () => {
-      if (typeof window === "undefined") return false;
-      const hasCookie = (
-        document.cookie.includes("velora_remember_user=true") ||
-        document.cookie.includes("sb-") ||
-        document.cookie.includes("auth-token")
-      );
-      const hasLocalStorage = localStorage.getItem("velora_user_logged_in") === "true";
-      return hasCookie || hasLocalStorage;
-    };
-
-    async function checkUser() {
+    async function fetchUser() {
       try {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser) {
-          setUser(currentUser);
-          setIsClientLoggedIn(true);
-          if (typeof window !== "undefined") {
-            localStorage.setItem("velora_user_logged_in", "true");
-          }
-        } else {
-          const fallbackLogged = checkLoggedInState();
-          setIsClientLoggedIn(fallbackLogged || !!initialUser);
-          if (fallbackLogged && !user) {
-            setUser(initialUser || { email: "user@example.com", id: "demo-user" });
-          }
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+        if (isMounted) {
+          setUser(resolveAuthenticatedUser(currentUser));
         }
-      } catch (err) {
-        const fallbackLogged = checkLoggedInState();
-        setIsClientLoggedIn(fallbackLogged || !!initialUser);
-        if (fallbackLogged && !user) {
-          setUser(initialUser || { email: "user@example.com", id: "demo-user" });
+      } catch {
+        if (isMounted) {
+          setUser(null);
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
-    checkUser();
+    fetchUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        setIsClientLoggedIn(true);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("velora_user_logged_in", "true");
-        }
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-        setIsClientLoggedIn(false);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("velora_user_logged_in");
-        }
-      } else {
-        const fallbackLogged = checkLoggedInState();
-        setIsClientLoggedIn(fallbackLogged || !!initialUser);
-      }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isMounted) return;
+      setUser(resolveAuthenticatedUser(session?.user ?? null));
       setLoading(false);
     });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
-  }, [initialUser]);
+  }, []);
 
-  const isLoggedIn = !!user || isClientLoggedIn;
+  const isLoggedIn = Boolean(user);
+  const { displayName, avatarUrl } = deriveUserProfile(user);
 
   const navigateProtected = (targetPath: string) => {
     if (isLoggedIn) {
@@ -98,9 +113,11 @@ export function useAuth(initialUser?: any) {
   };
 
   return {
-    user: user || (isLoggedIn ? { email: "user@example.com", id: "demo-user" } : null),
+    user,
     isLoggedIn,
     loading,
+    displayName,
+    avatarUrl,
     navigateProtected,
   };
 }

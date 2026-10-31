@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/app/(auth)/actions";
 import { Mail, Lock, ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 export function SignInForm() {
   const router = useRouter();
@@ -14,26 +13,21 @@ export function SignInForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     setLoading(true);
     setError(null);
     try {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("velora_user_logged_in", "true");
-        document.cookie = "velora_remember_user=true; path=/; max-age=604800; SameSite=Lax";
-      }
-      
       const res = await signIn(formData);
-      if (res?.error) {
-        console.warn("[Sign In Server Notice]:", res.error);
+      if (!res?.success || res?.error) {
+        setError(res?.error || "Invalid email or password.");
+        setLoading(false);
+        return;
       }
       router.push("/dashboard");
+      router.refresh();
     } catch (err: any) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("velora_user_logged_in", "true");
-        document.cookie = "velora_remember_user=true; path=/; max-age=604800; SameSite=Lax";
-      }
-      router.push("/dashboard");
+      setError(err instanceof Error ? err.message : "Failed to sign in.");
+      setLoading(false);
     }
   }
 
@@ -54,12 +48,13 @@ export function SignInForm() {
           <input
             className="w-full bg-black/20 border border-white/10 rounded-xl px-10 py-3 text-sm placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all text-white"
             name="email"
+            type="email"
             placeholder="you@example.com"
             required
           />
         </div>
       </div>
-      
+
       <div className="space-y-1">
         <div className="flex items-center justify-between ml-1">
           <label className="text-xs font-medium text-text-secondary" htmlFor="password">
@@ -81,7 +76,7 @@ export function SignInForm() {
         </div>
       </div>
 
-      <button 
+      <button
         disabled={loading}
         className="btn-glow group w-full flex items-center justify-center mt-2 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >

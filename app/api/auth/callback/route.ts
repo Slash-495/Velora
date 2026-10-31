@@ -1,38 +1,43 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import { sanitizeNextPath } from '@/lib/auth-redirect'
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams, origin } = new URL(request.url)
-    const code = searchParams.get('code')
-    const next = searchParams.get('next') ?? '/dashboard'
-    const targetPath = next.startsWith('/') ? next : '/' + next
+  const { searchParams, origin } = new URL(request.url)
 
-    if (code) {
-      try {
-        const supabase = await createClient()
-        await supabase.auth.exchangeCodeForSession(code)
-      } catch (e) {
-        console.warn("[Auth Callback Exchange Warning]:", e)
-      }
+  const oauthError =
+    searchParams.get('error_description') || searchParams.get('error')
+  if (oauthError) {
+    return NextResponse.redirect(
+      `${origin}/sign-in?error=${encodeURIComponent(oauthError)}`
+    )
+  }
+
+  const code = searchParams.get('code')
+  if (!code) {
+    return NextResponse.redirect(
+      `${origin}/sign-in?error=${encodeURIComponent('Missing authorization code')}`
+    )
+  }
+
+  const targetPath = sanitizeNextPath(searchParams.get('next'))
+
+  try {
+    const supabase = await createClient()
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (error) {
+      return NextResponse.redirect(
+        `${origin}/sign-in?error=${encodeURIComponent(error.message || 'Authentication failed')}`
+      )
     }
 
-    const response = NextResponse.redirect(`${origin}${targetPath}`)
-    response.cookies.set('velora_remember_user', 'true', {
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/',
-      sameSite: 'lax',
-    })
-    return response
+    return NextResponse.redirect(`${origin}${targetPath}`)
   } catch (err: any) {
-    console.error("[Auth Callback Exception]:", err)
-    const { origin } = new URL(request.url)
-    const response = NextResponse.redirect(`${origin}/dashboard`)
-    response.cookies.set('velora_remember_user', 'true', {
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/',
-      sameSite: 'lax',
-    })
-    return response
+    const message =
+      err instanceof Error ? err.message : 'Authentication failed'
+    return NextResponse.redirect(
+      `${origin}/sign-in?error=${encodeURIComponent(message)}`
+    )
   }
 }

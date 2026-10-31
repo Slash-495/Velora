@@ -108,12 +108,7 @@ export function Navbar({ user: initialUser }: { user?: any }) {
               <Link href="/dashboard" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
                 Dashboard
               </Link>
-              <form action={signOut} onSubmit={() => {
-                if (typeof window !== "undefined") {
-                  localStorage.removeItem("velora_user_logged_in");
-                  document.cookie = "velora_remember_user=; path=/; max-age=0; SameSite=Lax";
-                }
-              }}>
+              <form action={signOut}>
                 <button type="submit" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
                   Logout
                 </button>

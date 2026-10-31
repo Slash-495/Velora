@@ -7,10 +7,12 @@ import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler'
 
 export default async function SignInPage(
   props: {
-    searchParams: Promise<{ message: string }>
+    searchParams: Promise<{ message?: string; error?: string }>
   }
 ) {
   const searchParams = await props.searchParams;
+  const errorNotice = searchParams?.error || searchParams?.message;
+
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden py-24">
       <AuthRedirectHandler />
@@ -31,9 +33,9 @@ export default async function SignInPage(
             <p className="text-sm text-text-muted">Enter your details to access your workspace</p>
           </div>
 
-          {searchParams?.message && (
+          {errorNotice && (
             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg mb-6 text-center">
-              <p className="text-xs text-red-400 font-medium">{searchParams.message}</p>
+              <p className="text-xs text-red-400 font-medium">{errorNotice}</p>
             </div>
           )}
 
@@ -63,4 +65,3 @@ export default async function SignInPage(
     </main>
   )
 }
-

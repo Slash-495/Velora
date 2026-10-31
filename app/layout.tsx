@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { createClient } from "@/utils/supabase/server";
 import { LayoutWrapper } from "@/components/LayoutWrapper";
-import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -35,20 +34,12 @@ export default async function RootLayout({
   let user = null;
 
   try {
-    const cookieStore = await cookies();
-    const allCookies = cookieStore.getAll();
-    const hasAuthCookie = allCookies.some(c => c.name.startsWith('sb-') || c.name.includes('auth-token') || c.name === 'velora_remember_user');
-
-    if (hasAuthCookie) {
-      const supabase = await createClient();
-      const userPromise = supabase.auth.getUser();
-      const timeoutPromise = new Promise<{ data: { user: null } }>((resolve) => 
-        setTimeout(() => resolve({ data: { user: null } }), 2500)
-      );
-      const res = await Promise.race([userPromise, timeoutPromise]);
-      user = res.data?.user || null;
-    }
-  } catch (e) {
+    const supabase = await createClient();
+    const {
+      data: { user: currentUser },
+    } = await supabase.auth.getUser();
+    user = currentUser || null;
+  } catch {
     user = null;
   }
 

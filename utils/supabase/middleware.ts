@@ -1,6 +1,24 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PROTECTED_PREFIXES = [
+  '/dashboard',
+  '/workspace',
+  '/applications',
+  '/interview-prep',
+  '/cover-letter',
+]
+
+function isProtectedPath(pathname: string): boolean {
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  )
+}
+
+function isAuthPage(pathname: string): boolean {
+  return pathname === '/sign-in' || pathname === '/sign-up'
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -20,19 +38,32 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, {
-              ...options,
-              maxAge: 60 * 60 * 24 * 7, // Remember user for at least 7 days
-              path: '/',
-              sameSite: 'lax',
-            })
+            supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const pathname = request.nextUrl.pathname
+
+  if (isProtectedPath(pathname) && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/sign-in'
+    url.searchParams.set('next', pathname)
+    return NextResponse.redirect(url)
+  }
+
+  if (isAuthPage(pathname) && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    url.search = ''
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }

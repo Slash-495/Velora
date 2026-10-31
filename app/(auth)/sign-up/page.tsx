@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles, ArrowRight } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
 import { SignUpForm } from '@/components/auth/SignUpForm'
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
@@ -7,10 +7,12 @@ import { AuthRedirectHandler } from '@/components/auth/AuthRedirectHandler'
 
 export default async function SignUpPage(
   props: {
-    searchParams: Promise<{ message: string }>
+    searchParams: Promise<{ message?: string; error?: string }>
   }
 ) {
   const searchParams = await props.searchParams;
+  const errorNotice = searchParams?.error || searchParams?.message;
+
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden py-24">
       <AuthRedirectHandler />
@@ -31,9 +33,9 @@ export default async function SignUpPage(
             <p className="text-sm text-text-muted">Start organizing your career journey today</p>
           </div>
 
-          {searchParams?.message && (
+          {errorNotice && (
             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg mb-6 text-center">
-              <p className="text-xs text-red-400 font-medium">{searchParams.message}</p>
+              <p className="text-xs text-red-400 font-medium">{errorNotice}</p>
             </div>
           )}
 
@@ -63,4 +65,3 @@ export default async function SignUpPage(
     </main>
   )
 }
-
