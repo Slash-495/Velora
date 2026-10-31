@@ -357,7 +357,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 # Google Gemini AI API Key
 GEMINI_API_KEY=your-gemini-api-key
 
-# Site URL (Optional for OAuth callback)
+# Site URL (Optional — used only for server-side links like email confirmation; browser OAuth uses window.location.origin)
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 

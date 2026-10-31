@@ -5,13 +5,17 @@ import type { User } from '@supabase/supabase-js';
 const mockExchangeCodeForSession = vi.fn();
 const mockMiddlewareGetUser = vi.fn();
 
-vi.mock('@/utils/supabase/server', () => ({
-  createClient: vi.fn(async () => ({
-    auth: {
-      exchangeCodeForSession: mockExchangeCodeForSession,
-    },
-  })),
-}));
+vi.mock('@/utils/supabase/server', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/utils/supabase/server')>();
+  return {
+    ...actual,
+    createClient: vi.fn(async () => ({
+      auth: {
+        exchangeCodeForSession: mockExchangeCodeForSession,
+      },
+    })),
+  };
+});
 
 vi.mock('@supabase/ssr', () => ({
   createServerClient: vi.fn(() => ({
@@ -22,20 +26,31 @@ vi.mock('@supabase/ssr', () => ({
 }));
 
 import { GET as authCallbackGet } from '@/app/api/auth/callback/route';
-import { sanitizeNextPath } from '@/lib/auth-redirect';
+import {
+  sanitizeNextPath,
+  PKCE_MISMATCH_FRIENDLY_MESSAGE,
+} from '@/lib/auth-redirect';
+import { normalizeSupabaseCookieOptions } from '@/utils/supabase/server';
 import { middleware } from '@/middleware';
 import { deriveUserProfile, resolveAuthenticatedUser } from '@/hooks/use-auth';
 
-describe('Authentication hardening: OAuth callback, middleware, and useAuth', () => {
+describe('Authentication hardening: OAuth callback, cookie handling, middleware, and useAuth', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe('/api/auth/callback', () => {
-    it('redirects to /sign-in?error=... and sets no cookie when exchangeCodeForSession fails', async () => {
+    it('maps a missing PKCE code verifier error to the friendly message and sets no cookie', async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
       mockExchangeCodeForSession.mockResolvedValueOnce({
         data: { session: null, user: null },
-        error: { message: 'Invalid PKCE code verifier' },
+        error: {
+          message:
+            'invalid request: both auth code and code verifier should be non-empty (PKCE code verifier not found in storage)',
+        },
       });
 
       const req = new Request(
@@ -46,9 +61,38 @@ describe('Authentication hardening: OAuth callback, middleware, and useAuth', ()
       expect(res.status).toBe(307);
       const location = res.headers.get('location');
       expect(location).toBe(
-        'https://velora.example.com/sign-in?error=Invalid%20PKCE%20code%20verifier'
+        `https://velora.example.com/sign-in?error=${encodeURIComponent(
+          PKCE_MISMATCH_FRIENDLY_MESSAGE
+        )}`
       );
       expect(res.headers.get('set-cookie')).toBeNull();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('redirects to /sign-in?error=... and sets no cookie on other exchangeCodeForSession errors', async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      mockExchangeCodeForSession.mockResolvedValueOnce({
+        data: { session: null, user: null },
+        error: { message: 'Flow state has expired' },
+      });
+
+      const req = new Request(
+        'https://velora.example.com/api/auth/callback?code=expired-code&next=/dashboard'
+      );
+      const res = await authCallbackGet(req);
+
+      expect(res.status).toBe(307);
+      expect(res.headers.get('location')).toBe(
+        'https://velora.example.com/sign-in?error=Flow%20state%20has%20expired'
+      );
+      expect(res.headers.get('set-cookie')).toBeNull();
+
+      consoleErrorSpy.mockRestore();
     });
 
     it('redirects to /sign-in?error=... and sets no cookie when code is missing', async () => {
@@ -90,6 +134,53 @@ describe('Authentication hardening: OAuth callback, middleware, and useAuth', ()
     });
   });
 
+  describe('utils/supabase/server setAll cookie normalization', () => {
+    it('preserves maxAge: 0 and past expires for cookie deletions (code_verifier & signOut)', () => {
+      const deletedByMaxAge = normalizeSupabaseCookieOptions('', {
+        maxAge: 0,
+        httpOnly: true,
+      });
+      expect(deletedByMaxAge).toEqual({
+        maxAge: 0,
+        httpOnly: true,
+        path: '/',
+        sameSite: 'lax',
+      });
+
+      const pastDate = new Date(0);
+      const deletedByExpires = normalizeSupabaseCookieOptions('', {
+        expires: pastDate,
+      });
+      expect(deletedByExpires.expires).toBe(pastDate);
+      expect(deletedByExpires.maxAge).toBeUndefined();
+      expect(deletedByExpires.path).toBe('/');
+      expect(deletedByExpires.sameSite).toBe('lax');
+    });
+
+    it('applies the 7-day maxAge default only when value is non-empty and no maxAge/expires was provided', () => {
+      const defaultSessionCookie = normalizeSupabaseCookieOptions(
+        'session-token-value',
+        { httpOnly: true }
+      );
+      expect(defaultSessionCookie).toEqual({
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+        sameSite: 'lax',
+      });
+
+      const customMaxAgeCookie = normalizeSupabaseCookieOptions(
+        'pkce-verifier-value',
+        { maxAge: 300 }
+      );
+      expect(customMaxAgeCookie).toEqual({
+        maxAge: 300,
+        path: '/',
+        sameSite: 'lax',
+      });
+    });
+  });
+
   describe('middleware', () => {
     it('ignores a bare velora_remember_user cookie and redirects unauthenticated /dashboard requests to /sign-in', async () => {
       mockMiddlewareGetUser.mockResolvedValueOnce({
@@ -122,7 +213,6 @@ describe('Authentication hardening: OAuth callback, middleware, and useAuth', ()
       );
       const res = await middleware(req);
 
-      // Should pass through to /sign-in rather than redirecting to /dashboard
       expect(res.headers.get('location')).toBeNull();
     });
   });

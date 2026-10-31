@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { sanitizeNextPath } from '@/lib/auth-redirect'
+import { sanitizeNextPath, formatAuthCallbackError } from '@/lib/auth-redirect'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -27,17 +27,21 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (error) {
+      console.error('[Auth Callback] exchangeCodeForSession failed:', error)
+      const friendlyMessage = formatAuthCallbackError(error.message)
       return NextResponse.redirect(
-        `${origin}/sign-in?error=${encodeURIComponent(error.message || 'Authentication failed')}`
+        `${origin}/sign-in?error=${encodeURIComponent(friendlyMessage)}`
       )
     }
 
     return NextResponse.redirect(`${origin}${targetPath}`)
   } catch (err: any) {
-    const message =
+    console.error('[Auth Callback] Unexpected exception:', err)
+    const rawMessage =
       err instanceof Error ? err.message : 'Authentication failed'
+    const friendlyMessage = formatAuthCallbackError(rawMessage)
     return NextResponse.redirect(
-      `${origin}/sign-in?error=${encodeURIComponent(message)}`
+      `${origin}/sign-in?error=${encodeURIComponent(friendlyMessage)}`
     )
   }
 }

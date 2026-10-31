@@ -5,11 +5,6 @@ import { headers } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
 async function resolveOrigin(): Promise<string> {
-  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
-  if (configuredSiteUrl) {
-    return configuredSiteUrl.replace(/\/+$/, '')
-  }
-
   const headersList = await headers()
   const forwardedHost = headersList.get('x-forwarded-host')
   const host = forwardedHost || headersList.get('host')
@@ -20,6 +15,11 @@ async function resolveOrigin(): Promise<string> {
       host.startsWith('localhost') || host.startsWith('127.0.0.1')
     const protocol = forwardedProto || (isLocalhost ? 'http' : 'https')
     return `${protocol}://${host}`
+  }
+
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  if (configuredSiteUrl) {
+    return configuredSiteUrl.replace(/\/+$/, '')
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -125,28 +125,6 @@ export async function signUp(formData: FormData) {
       error: err instanceof Error ? err.message : 'Sign-up failed.',
     }
   }
-}
-
-export async function signInWithGoogle() {
-  const supabase = await createClient()
-  const origin = await resolveOrigin()
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${origin}/api/auth/callback`,
-      queryParams: {
-        prompt: 'select_account',
-      },
-    },
-  })
-
-  if (error || !data?.url) {
-    const message = error?.message || 'Unable to start Google sign-in.'
-    redirect(`/sign-in?error=${encodeURIComponent(message)}`)
-  }
-
-  redirect(data.url)
 }
 
 export async function signOut() {
