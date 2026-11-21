@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { signUp } from "@/app/(auth)/actions";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 
 export function SignUpForm() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,8 +32,7 @@ export function SignUpForm() {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      window.location.assign("/dashboard");
     } catch (err: any) {
       setError(err instanceof Error ? err.message : "Failed to sign up.");
       setLoading(false);

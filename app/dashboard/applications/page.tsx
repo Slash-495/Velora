@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search, Filter, X, Sparkles } from "lucide-react";
 import { KanbanBoard } from "@/components/dashboard/applications/KanbanBoard";
 import { ApplicationModal } from "@/components/dashboard/applications/ApplicationModal";
+import { JobSearchPanel } from "@/components/dashboard/applications/JobSearchPanel";
 import { JobApplication } from "@/lib/mock-data";
 import {
   useUserApplications,
@@ -117,6 +118,11 @@ export default function ApplicationsPage() {
           <Plus className="w-4 h-4" /> Log Application
         </button>
       </motion.div>
+
+      {/* Feature-gated Semantic Job Search panel */}
+      {process.env.NEXT_PUBLIC_ENABLE_JOB_SEARCH === "true" && (
+        <JobSearchPanel />
+      )}
 
       {/* Toolbar: Search & Filter Toggle */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">

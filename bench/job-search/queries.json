@@ -1,0 +1,2420 @@
+{
+  "generatedAt": "2026-11-20T06:07:20.460Z",
+  "generatorModel": "gemini-flash-latest",
+  "corpusFile": "bench/job-search/.cache/sample-480.jsonl",
+  "corpusSize": 480,
+  "totalQueries": 200,
+  "styleCounts": {
+    "keyword": 67,
+    "paraphrase": 67,
+    "resume": 66
+  },
+  "categoryPrecisionCount": 50,
+  "prompts": {
+    "keyword": "For each job posting below, extract 6 to 10 concise technical skills, tools, frameworks, or domain keywords copied directly from the job description (no company name, no full sentences, space-separated keyword query). Return ONLY a JSON array of objects [{\"source_id\": \"...\", \"query\": \"...\"}].",
+    "paraphrase": "For each job posting below, rewrite it as a 2 to 3 sentence candidate profile describing someone who fits this role. STRICT RULES: Do NOT include the job title verbatim, do NOT include the company name, and paraphrase responsibilities/concepts rather than copying rare sentences verbatim. Return ONLY a JSON array of objects [{\"source_id\": \"...\", \"query\": \"...\"}].",
+    "resume": "For each job posting below, write a realistic 3 to 4 sentence resume summary plus a short \"Skills: ...\" line for a strong candidate targeting this role. STRICT RULES: Do NOT mention the company name or copy the exact job title verbatim. Return ONLY a JSON array of objects [{\"source_id\": \"...\", \"query\": \"...\"}]."
+  },
+  "queries": [
+    {
+      "id": "q-001",
+      "style": "keyword",
+      "query": "Java Kotlin RxJava Retrofit okhttp Dagger 2 Gradle Git WebRTC",
+      "goldSourceIds": [
+        "90cc72f1-5d69-51b6-b615-b38b060c51b1"
+      ],
+      "sourceTitle": "Android developer",
+      "sourceCompany": "HumanLab",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-002",
+      "style": "paraphrase",
+      "query": "This candidate is an experienced data specialist skilled in aggregating information from diverse workplace tools to build central databases, data apps, and performance dashboards. They possess a strong background in tracking business metrics like recurring revenue and user activity, while also designing quantitative models for internal operations. Their technical toolkit includes automation, metric monitoring, and turning operational data into actionable visibility.",
+      "goldSourceIds": [
+        "1729a696-6c54-51df-9b9e-056a35e47847"
+      ],
+      "sourceTitle": "Analytics Engineer",
+      "sourceCompany": "Railsware",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-003",
+      "style": "resume",
+      "query": "Creative digital illustrator with over three years of experience designing original characters, props, and environments for commercial gaming projects. Proven track record of adapting quickly to established artistic styles while delivering production-ready assets under tight production schedules. Possesses a strong academic foundation in fine arts and visual design, supplemented by experience in slot and casino visual development.\nSkills: Character Concept Art, Digital Illustration, Photoshop, Style Matching, Visual Design, Asset Pipeline.",
+      "goldSourceIds": [
+        "1f0313f7-89f4-588a-8599-0febf2d60b6b"
+      ],
+      "sourceTitle": "2D Artist (Cyprus)",
+      "sourceCompany": "BrainRocket",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-004",
+      "style": "keyword",
+      "query": "solution architecture web applications web services Java .NET Node.js modern frameworks",
+      "goldSourceIds": [
+        "47f6ec4e-208e-5e16-9fdc-2b7a11fbec02"
+      ],
+      "sourceTitle": "Architect DevOps Engineer",
+      "sourceCompany": "Customertimes Corp.",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-005",
+      "style": "paraphrase",
+      "query": "An empathetic talent development specialist with a deep understanding of IT industry dynamics and modern recruiting frameworks. They excel at facilitating reflective coaching conversations, creating personalized professional roadmaps, and collaborating with internal talent teams to maximize individual potential. With strong communication and motivational capabilities, they guide technology professionals through strategic career advancement.",
+      "goldSourceIds": [
+        "c4701994-9d8a-5986-8787-7e9287498fbd"
+      ],
+      "sourceTitle": "Career Advisor",
+      "sourceCompany": "GlobalLogic",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-006",
+      "style": "resume",
+      "query": "Senior software engineer with six years of focused enterprise experience architecting custom extensions, OSGi services, and scalable web solutions within modern digital experience environments. Deep technical expertise in Java backends, Sling, Jackrabbit Oak, and containerized cloud deployment topologies. Demonstrated success troubleshooting JVM memory utilization, garbage collection parameters, and complex cloud infrastructure issues.\nSkills: Java 11/17, OSGi, Apache Sling, Jackrabbit Oak, JVM Tuning, Docker, Cloud Architecture.",
+      "goldSourceIds": [
+        "8b17ee41-c1b1-58cd-b5b9-70cb3c4bb835"
+      ],
+      "sourceTitle": "AEM Cloud Developer",
+      "sourceCompany": "SalesNash",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-007",
+      "style": "keyword",
+      "query": "JavaScript Node.js front-end frameworks APIs backend services QA Dev-Ops",
+      "goldSourceIds": [
+        "97343de7-6bbe-5c28-9b84-7cd221d248f7"
+      ],
+      "sourceTitle": "Advanced Fullstack Developer (REACT.JS )",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-008",
+      "style": "paraphrase",
+      "query": "This professional offers solid relationship management experience within the iGaming sector, backed by a strong grasp of player behavior and market trends. They are adept at resolving complex partner concerns, analyzing performance analytics, and multitasking across high-priority accounts in an on-site setting. Their strengths center on negotiation, client retention, and translating product solutions into business value.",
+      "goldSourceIds": [
+        "61c8df66-307e-5efb-bca5-f5d8487c9687"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "BOSS. Gaming Solutions",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-009",
+      "style": "resume",
+      "query": "Dynamic product strategist with over four years of experience driving user-centric Web3 and fintech applications from inception to scale. Proven ability to translate complex distributed ledger architectures into intuitive consumer workflows through iterative prototyping and rigorous hypothesis testing. Experienced in leading agile engineering teams of 6+ while leveraging product analytics to optimize transaction volume and user retention.\nSkills: Web3 Product Management, DeFi, Agile/Scrum, User Journey Mapping, Data Analytics, Cross-functional Leadership.",
+      "goldSourceIds": [
+        "de6f4022-eb86-5678-a7ff-a2c620b66fd1"
+      ],
+      "sourceTitle": "Blockchain Product Manager",
+      "sourceCompany": "Allbridge",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-010",
+      "style": "keyword",
+      "query": "AWS neural networks Python Java C++ TensorFlow PyTorch Keras",
+      "goldSourceIds": [
+        "7b840d58-0e8b-576a-83c9-495dd03606f6"
+      ],
+      "sourceTitle": "AI programming specialist",
+      "sourceCompany": "Codeware.Digital",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-011",
+      "style": "paraphrase",
+      "query": "A seasoned software quality engineer with deep expertise in building automated extraction and verification tools for desktop interfaces, web applications, and backend services. Proficient in C# and Selenium, they bring multiple years of hands-on experience driving automated test design within Agile delivery frameworks. Their background highlights robust analytical reasoning and comprehensive UI scraping knowledge.",
+      "goldSourceIds": [
+        "03ee1fb9-8ac1-5118-9b63-bc021fb59c33"
+      ],
+      "sourceTitle": "AQA C# Desktop",
+      "sourceCompany": "Glorium Technologies",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-012",
+      "style": "resume",
+      "query": "Results-oriented enterprise sales professional with five years of experience closing complex SaaS and CRM software solutions across European territories. Native-level German speaker skilled in building territory pipeline from scratch, managing multi-stakeholder evaluations, and aligning executive priorities. Consistently exceeds annual quotas through strategic account mapping, consultative demonstrations, and robust outbound prospecting.\nSkills: Enterprise SaaS Sales, German Business Fluency, Territory Planning, Pipeline Generation, Complex Negotiations, Solution Selling.",
+      "goldSourceIds": [
+        "8236dcab-537f-5a19-a8d1-d4f61f9709ae"
+      ],
+      "sourceTitle": "Account Executive (German Language)",
+      "sourceCompany": "Terrasoft",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-013",
+      "style": "keyword",
+      "query": "Android SDK Java Kotlin RxJava Dagger2 Room Retrofit Android Jetpack",
+      "goldSourceIds": [
+        "f2d017cb-1f8e-5c1b-9fb7-edcc11c56478"
+      ],
+      "sourceTitle": "Android developer",
+      "sourceCompany": "ANODA",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-014",
+      "style": "paraphrase",
+      "query": "A data professional with a quantitative degree and proven proficiency utilizing SQL, Python libraries, and BI tools for deep analytical tasks. They possess strong presentation skills suited for client interactions, alongside expertise in managing database systems and transforming large datasets. Experience with distributed processing or language models further enhances their technical profile.",
+      "goldSourceIds": [
+        "2bdbb694-6b89-557e-8221-80a1a01124e2"
+      ],
+      "sourceTitle": "Analytics Engineer",
+      "sourceCompany": "Omilia Natural Language Solutions UA Ltd",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-015",
+      "style": "resume",
+      "query": "Versatile game artist with four years of production experience crafting 2D assets, atmospheric environments, and dynamic real-time visual effects for mobile and desktop titles. Adept at navigating diverse art directions ranging from stylized cartoon to realistic rendering, alongside preparing technical textures for real-time engine integration. Recognized for strong collaborative synergy with technical designers to optimize art pipelines within platform performance constraints.\nSkills: 2D Animation, Visual Effects (VFX), Game UI Design, Environment Art, Real-time Engines, Texture Mapping.",
+      "goldSourceIds": [
+        "92eb0c6f-30fa-511e-8294-3c4044f9a984"
+      ],
+      "sourceTitle": "2D Artist/Animator",
+      "sourceCompany": "adkings.agency",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-016",
+      "style": "keyword",
+      "query": "Azure AWS Kubernetes Istio Consul DevOps cloud infrastructure deployment automation",
+      "goldSourceIds": [
+        "0d5c8d55-6b6f-5003-89d0-f29aab13c64c"
+      ],
+      "sourceTitle": "Architect DevOps (Azure + AWS)",
+      "sourceCompany": "Grid Dynamics",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-017",
+      "style": "paraphrase",
+      "query": "A people development practitioner experienced in guiding tech specialists through professional growth paths and retention initiatives. They excel at diagnosing employee satisfaction, building customized developmental plans, and navigating human resources frameworks within technology environments. Their skillset combines active mentorship, individual coaching, and organizational process improvement.",
+      "goldSourceIds": [
+        "27abaa1a-08ff-5669-a3f0-fcd80e69fa46"
+      ],
+      "sourceTitle": "Career Advisor",
+      "sourceCompany": "GlobalLogic",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-018",
+      "style": "resume",
+      "query": "Fullstack enterprise engineer with extensive experience building scalable financial portals and content architectures using Java and modern JavaScript frameworks. Adept at architecting maintainable backend services, custom HTL templates, and responsive React frontend components integrated with enterprise CI/CD systems. Dedicated to code quality, system performance optimization, and cross-team alignment on complex investment platform deliverables.\nSkills: Java 8/11, React.js, HTL/Sightly, Webpack, CI/CD Pipelines, RESTful Services, Enterprise CMS.",
+      "goldSourceIds": [
+        "b222ef96-44ae-5003-91f3-eabf5ab95b79"
+      ],
+      "sourceTitle": "AEM Backend/Fullstack Developer (Investment portal), Portfolio Management System",
+      "sourceCompany": "DataArt",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-019",
+      "style": "keyword",
+      "query": "React TypeScript GraphQL Next.js Jest Cypress Material UI GIT",
+      "goldSourceIds": [
+        "23e8ed6a-b30a-54e2-a4b9-e8c172b372b9"
+      ],
+      "sourceTitle": "Advanced Front-End Engineer - React.js",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-020",
+      "style": "paraphrase",
+      "query": "This candidate brings direct business development and relationship management experience from the cryptocurrency and blockchain ecosystem. They have a proven track record of onboarding institutional partners, affiliates, and exchanges to expand networks and boost partner profitability. Skilled in cross-departmental collaboration, they excel at troubleshooting operational challenges and nurturing high-value partnerships.",
+      "goldSourceIds": [
+        "2aebb502-c6a6-59eb-b9de-4a2555858180"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "3commas.io",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-021",
+      "style": "resume",
+      "query": "Innovative Web3 technical lead and researcher experienced in conceiving and launching utility-driven decentralized products and community tooling. Possesses deep technical and conceptual understanding of EVM smart contracts, token standards, and emerging digital collectible ecosystems. Passionate about uncovering intrinsic utility mechanics that enhance user engagement and drive sustainable long-term value for digital asset holders.\nSkills: Smart Contract Architecture, Ethereum/EVM, Community Utility Design, Research & Development, Product Ideation, Web3 Protocols.",
+      "goldSourceIds": [
+        "f34a0026-1a17-509e-8ef0-5ebd6b6b70bb"
+      ],
+      "sourceTitle": "Blockchain Developer/PM/RND (NFT)",
+      "sourceCompany": "NFT Arts",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-022",
+      "style": "keyword",
+      "query": "Python deep neural networks machine learning NLP computer vision deep learning data architecture",
+      "goldSourceIds": [
+        "7b643574-69f4-5d0f-b76e-8c7bcf974aa4"
+      ],
+      "sourceTitle": "AI / Neural Networks Team Lead",
+      "sourceCompany": "Deep Knowledge Group",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-023",
+      "style": "paraphrase",
+      "query": "A test automation developer skilled in C# with extensive experience crafting test suites for desktop, web, and API integration environments using WinAppDriver and Selenium. They have worked in distributed Agile settings, analyzing test run failures, managing CI/CD pipelines in cloud ecosystems, and validating complex data transfer architectures. Their expertise covers API validations, Postman collections, and robust desktop UI testing.",
+      "goldSourceIds": [
+        "fdbfe5d5-25c2-5502-a4c7-17790dcb1de6"
+      ],
+      "sourceTitle": "AQA C#",
+      "sourceCompany": "Luxoft",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-024",
+      "style": "resume",
+      "query": "Client-focused fintech sales and partnerships specialist with a proven history of managing merchant relationships and accelerating payment volume growth. Skilled in leveraging acquiring metrics, data reporting, and risk management insights to identify upsell opportunities and enhance transaction conversion. Adept at navigating complex integrations and aligning technical stakeholders to optimize partner operations.\nSkills: Fintech Sales, Merchant Acquiring, Payment Gateway Solutions, CRM Management, Client Retention, Revenue Optimization.",
+      "goldSourceIds": [
+        "98cc5254-8f62-58f6-a2a2-c735b4a00522"
+      ],
+      "sourceTitle": "Account Executive (fintech product)",
+      "sourceCompany": "Solid",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-025",
+      "style": "keyword",
+      "query": "Android Java Kotlin Git Gitflow UI Flutter cryptocurrency",
+      "goldSourceIds": [
+        "d9f10be3-f2c4-55ee-9c43-799781bdbbd5"
+      ],
+      "sourceTitle": "Android Develope",
+      "sourceCompany": "Devico",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-026",
+      "style": "paraphrase",
+      "query": "An enterprise data professional experienced in architecting centralized cloud repositories such as operational data lakes and analytic hubs. Proficient with modern business intelligence platforms like Power BI, they specialize in large-scale data transformation, access governance, and cloud-native storage patterns. They also excel at communicating complex technical architectures through clear, actionable data storytelling.",
+      "goldSourceIds": [
+        "fa34cfa0-df09-507a-9890-efa90abbaff0"
+      ],
+      "sourceTitle": "Analytic developer",
+      "sourceCompany": "Raiffeisen Bank",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-027",
+      "style": "resume",
+      "query": "Talented digital visual artist with three years of dedicated experience illustrating stylized game assets, character cards, and detailed props for tabletop and trading card mechanics. Expert in digital sketching and rapid visual iteration within Photoshop, complemented by hands-on exposure to 2D skeletal animation and Unity engine pipelines. Thrives in dynamic creative environments with a focus on delivering polished, game-ready assets on schedule.\nSkills: Digital Painting, Photoshop, Card Illustration, Rapid Sketching, Unity 2D Integration, Spine Basics.",
+      "goldSourceIds": [
+        "d79a0030-5ddc-570f-b584-3cb05f921050"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "E-WIN",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-028",
+      "style": "keyword",
+      "query": "Cloud containers orchestration machine learning deep learning IaC Network Storage Security",
+      "goldSourceIds": [
+        "0a4ccf1e-ab2c-58c1-9a69-13e25ba7fb1b"
+      ],
+      "sourceTitle": "Applied Materials / DevOps Engineer (Azure)",
+      "sourceCompany": "SD Solutions",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-029",
+      "style": "paraphrase",
+      "query": "A detail-oriented administrative professional experienced in cross-departmental operations, contract tracking, and document workflows in an IT setting. They are skilled at managing invoices, tracking payment approvals, and coordinating official correspondence across finance and procurement teams. Their organized approach ensures seamless operational compliance and structured internal records.",
+      "goldSourceIds": [
+        "80fd7961-294d-5460-aeab-b55da327ef18"
+      ],
+      "sourceTitle": "Business process support specialist",
+      "sourceCompany": "Luxoft",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-030",
+      "style": "resume",
+      "query": "Accomplished backend software engineer with over five years of enterprise experience building robust content delivery platforms and international investor portals. Specialized in modular component architecture, OSGi service design, and integrating modern decoupled frontend solutions like React. Highly proactive communicator adept at driving cross-functional development across distributed teams to deliver unified user experiences.\nSkills: Java Backend Development, Modular Architecture, OSGi, REST APIs, ReactJS Integration, Cloud Content Systems.",
+      "goldSourceIds": [
+        "6aab9737-117e-5d53-be28-38c0b3f55046"
+      ],
+      "sourceTitle": "AEM Backend Developer (Investment portal), Portfolio Management System",
+      "sourceCompany": "DataArt",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-031",
+      "style": "keyword",
+      "query": "React Front-end Custom Software Development digitalization web development",
+      "goldSourceIds": [
+        "826e7f65-c220-5e43-ae8e-1197d7176a73"
+      ],
+      "sourceTitle": "Advanced Front-End Engineer (React)",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-032",
+      "style": "paraphrase",
+      "query": "A proactive client strategist with extensive experience handling multi-platform digital marketing campaigns across major social and search networks. They excel at aligning operational execution with high-level advertising objectives to ensure consistent campaign performance and client satisfaction. Known for effective communication, they serve as the central bridge between creative marketing teams and external stakeholders.",
+      "goldSourceIds": [
+        "e2f4a04f-fb90-591e-821b-15c21fd53d6d"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "ADSH",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-033",
+      "style": "resume",
+      "query": "Analytics-driven product owner with a track record of scaling enterprise business intelligence tools and predictive analytics engines. Skilled in translating machine learning capabilities into intuitive visual dashboards, client-facing reports, and clear strategic roadmaps. Collaborative leader experienced in aligning engineering, data science, and commercial executives around unified product outcomes.\nSkills: Business Intelligence (BI), Tableau, Machine Learning Integration, Product Roadmapping, Data Visualization, Agile Delivery.",
+      "goldSourceIds": [
+        "874e96b3-186b-5a7f-8638-3dd6298651b3"
+      ],
+      "sourceTitle": "BI Product Manager in London company",
+      "sourceCompany": "Data Science UA",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-034",
+      "style": "keyword",
+      "query": "Machine Learning Deep Learning PoC algorithms prototypes modeling raw data",
+      "goldSourceIds": [
+        "0c106fae-d81e-5f4c-9a55-5df19b021d73"
+      ],
+      "sourceTitle": "AI/ML Research Scientist",
+      "sourceCompany": "Roosh",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-035",
+      "style": "paraphrase",
+      "query": "A software testing specialist experienced in designing end-to-end automated frameworks using C# and Selenium alongside relational databases and ORMs. Working comfortably in Agile squads, they have a strong command of unit testing, mocking libraries, and source control pipelines. They are skilled at prioritizing technical test coverage and mentoring junior teammates in automation practices.",
+      "goldSourceIds": [
+        "b033b371-0cd6-5baa-8c0f-9479e0062994"
+      ],
+      "sourceTitle": "AQA (C#)",
+      "sourceCompany": "MIRA",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-036",
+      "style": "resume",
+      "query": "International business development professional with four years of experience expanding conversational AI and enterprise automation software across European markets. Adept at driving multi-stakeholder consultative sales cycles, pitching complex natural language solutions to public and private sector leadership. Recognized for strong cross-cultural communication and achieving aggressive pipeline targets within distributed remote environments.\nSkills: AI/SaaS Sales, Enterprise Account Management, Solution Demos, Cross-Cultural Communication, Territory Growth, Pipeline Forecasting.",
+      "goldSourceIds": [
+        "e3da2d9f-e276-5768-a0c4-5bffb3299026"
+      ],
+      "sourceTitle": "Account Executive - Europe Account",
+      "sourceCompany": "Proto",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-037",
+      "style": "keyword",
+      "query": "Java Kotlin Android SDK MVC MVP MVVM REST Socket multithreading",
+      "goldSourceIds": [
+        "bb9d37a7-591a-5624-a9d5-66819b765edf"
+      ],
+      "sourceTitle": "Android Develoepr",
+      "sourceCompany": "Breonika Hunters",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-038",
+      "style": "paraphrase",
+      "query": "An analytical professional skilled in aggregating, structuring, and synthesizing industry data from disparate sources into centralized repositories and executive presentations. They possess advanced MS Excel and PowerPoint capabilities, alongside a track record of handling concurrent projects and preparing formal bilingual reports. Their strength lies in methodical research, project coordination, and precise written documentation.",
+      "goldSourceIds": [
+        "d0766936-b413-5edf-8df8-1efc684319bf"
+      ],
+      "sourceTitle": "Analyst",
+      "sourceCompany": "Асоціація газовидобувних компаній України",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-039",
+      "style": "resume",
+      "query": "Skilled gaming illustrator with more than three years of experience creating visual concepts, slot machine assets, and thematic illustrations from sketch to final render. Demonstrates a strong mastery of lighting, perspective, color theory, and rapid digital mockups in high-velocity production pipelines. An enthusiastic and adaptable team player experienced in collaborating through Agile tools to incorporate creative feedback seamlessly.\nSkills: Concept Art, Digital Painting, Adobe Photoshop, Symbol Hierarchy, Rapid Prototyping, Visual Storytelling.",
+      "goldSourceIds": [
+        "2939d428-8c28-59e1-bf9a-4131e5e56a16"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "RubyPlay",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-040",
+      "style": "keyword",
+      "query": "data systems IBOR Global Analytics data management DevOps technical support",
+      "goldSourceIds": [
+        "e94370c0-2e00-5850-a346-3fa33932114f"
+      ],
+      "sourceTitle": "Application Support Engineer / SRE, Investment Management Solution (Poland)",
+      "sourceCompany": "DataArt",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-041",
+      "style": "paraphrase",
+      "query": "A seasoned human capital specialist focused on process optimization, operational KPI tracking, and workflow automation in mid-sized enterprises. They bring extensive experience deploying HRMS and ERP platforms, managing regulatory compliance, and aligning organizational workflows with broader business strategies. Known for analytical problem-solving, they excel at coaching stakeholders to build scalable organizational systems.",
+      "goldSourceIds": [
+        "15c57022-ca78-5d2e-bd48-5b1c8e465135"
+      ],
+      "sourceTitle": "Business Process Coordinator with HR Management Experience",
+      "sourceCompany": "Sombra",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-042",
+      "style": "resume",
+      "query": "Backend web engineer with three years of enterprise experience supporting and developing high-traffic digital commerce and loyalty platforms. Proficient in Java, REST/SOAP web services, Maven project configurations, and Apache server administration. Experienced with end-to-end version control best practices and data interchange standards across distributed e-commerce architectures.\nSkills: Java Web Development, REST/SOAP APIs, Apache HTTP Server, Maven, Git, JSON/XML, E-Commerce Systems.",
+      "goldSourceIds": [
+        "38148253-5300-5d2a-9282-39b333bdad68"
+      ],
+      "sourceTitle": "AEM Backend Developer",
+      "sourceCompany": "Intellias",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-043",
+      "style": "keyword",
+      "query": "React Front-End B2B solutions dynamic RFP route guides",
+      "goldSourceIds": [
+        "157b765e-58a7-5df3-8d49-d2d46271f9fe"
+      ],
+      "sourceTitle": "Advanced Front-End Engineer (React)",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-044",
+      "style": "paraphrase",
+      "query": "A results-focused professional experienced in commercial negotiations, digital traffic analysis, and client portfolio growth. They bring strong capabilities in tracking account metrics, managing billing cycles, and driving proactive outreach to expand business partnerships. Fluent in English, they combine persuasive communication skills with meticulous attention to account performance.",
+      "goldSourceIds": [
+        "a81a4c1b-7bdc-5c94-adae-d403fc303a2e"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "TapMedia",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-045",
+      "style": "resume",
+      "query": "Strategic product manager with over four years of experience specializing in high-volume payment processing, betting platforms, and monetization pipelines. Expert in designing frictionless deposit and withdrawal user experiences while maintaining rigorous regulatory and partner integration standards. Proven ability to lead cross-functional development sprints and leverage funnel metrics to maximize retention and platform revenue.\nSkills: Payment Processing, Fintech Product Strategy, Retention Metrics, Partner Integrations, Monetization, Agile Development.",
+      "goldSourceIds": [
+        "54dbd900-d253-5c3b-8ca4-4d2581812c5f"
+      ],
+      "sourceTitle": "Billing Product Manager for Parimatch International",
+      "sourceCompany": "Parimatch Tech",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-046",
+      "style": "keyword",
+      "query": "ML DL malware detection classification behavioral modeling sentimental analysis named entity recognition",
+      "goldSourceIds": [
+        "f990a4a1-e7c3-5624-9297-b977a5e2ebf1"
+      ],
+      "sourceTitle": "AI/ML for Malware Analysis",
+      "sourceCompany": "Samsung R&D Institute Ukraine",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-047",
+      "style": "paraphrase",
+      "query": "A quality assurance specialist experienced in C# automation, proficient in testing enterprise software that processes large-scale data and multimedia streams. They thrive in distributed international teams, ensuring high reliability for complex systems handling surveillance, recording, or business intelligence functions. Their focus centers on robust test architecture and verifying high-volume data processing applications.",
+      "goldSourceIds": [
+        "7d8c9db4-48d9-5a7c-8071-2a7b1c562326"
+      ],
+      "sourceTitle": "AQA (c#)",
+      "sourceCompany": "Sunvery",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-048",
+      "style": "resume",
+      "query": "Relationship-driven sales professional with four years of experience acquiring and expanding mid-market and enterprise technology accounts across Europe. Exceptional networker adept at representing software services at industry conferences, initiating trust-based partnerships, and conducting thorough client needs assessments. Proven success in managing complete sales funnels from prospecting to long-term contract execution.\nSkills: B2B Relationship Building, Territory Expansion, Consultative Selling, Client Onboarding, Presentation Skills, Sales Forecasting.",
+      "goldSourceIds": [
+        "9f61926f-bb78-53d6-8dd7-75f6fc2448d8"
+      ],
+      "sourceTitle": "Account Executive, Europe",
+      "sourceCompany": "Beetroot",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-049",
+      "style": "keyword",
+      "query": "Android Jetpack MVVM Dagger 2 Kotlin SQLite OkHttp Retrofit 2 Git",
+      "goldSourceIds": [
+        "0b3ba26b-e198-5753-8ee7-d7923f254aa6"
+      ],
+      "sourceTitle": "Android Dev",
+      "sourceCompany": "ANODA",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-050",
+      "style": "paraphrase",
+      "query": "An analytical specialist experienced in e-commerce ecosystems, market trend discovery, and spreadsheet modeling using Google Sheets and Data Studio. They have a proven history of auditing commercial accounts, evaluating niche growth opportunities, and supplying actionable insights to performance marketing teams. With strong communication abilities and numerical agility, they turn market metrics into clear tactical strategies.",
+      "goldSourceIds": [
+        "c9722538-7f4e-5fa8-bade-5ff356f967ab"
+      ],
+      "sourceTitle": "Analyst",
+      "sourceCompany": "Profit Whales",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-051",
+      "style": "resume",
+      "query": "Creative digital illustrator with three years of professional experience producing visual assets for desktop and mobile gaming interfaces. Highly proficient in Adobe Creative Cloud tools, with demonstrated expertise in composition, storyboarding, character design, and visual motion principles. Recognized for managing multiple artistic deadlines independently while maintaining strict consistency with thematic guidelines.\nSkills: Adobe Photoshop, Illustrator, UI/2D Asset Design, Storyboarding, Visual Hierarchy, Digital Drawing.",
+      "goldSourceIds": [
+        "aba04ef2-f13c-590a-adad-088d830313da"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Stakelogic",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-052",
+      "style": "keyword",
+      "query": "Atlassian Tools Oracle MSSQL L2 application support SQL Linux OS RHEL",
+      "goldSourceIds": [
+        "f4899e49-d83a-588e-a3c0-03203baae64d"
+      ],
+      "sourceTitle": "Application Support Engineer",
+      "sourceCompany": "EPAM",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-053",
+      "style": "paraphrase",
+      "query": "A versatile startup enthusiast with foundational experience across human resources, marketing, and commercial growth within healthtech or fast-paced digital environments. Adaptable and multilingual, they thrive in ambiguous, multidisciplinary settings where they can balance multiple strategic operational tasks. They bring a mission-driven mindset combined with strong problem-solving agility.",
+      "goldSourceIds": [
+        "1be543a4-9815-5794-8d3b-4f1be2045bbd"
+      ],
+      "sourceTitle": "Business Associate",
+      "sourceCompany": "Raccoon World",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-054",
+      "style": "resume",
+      "query": "Java software developer with three years of experience implementing and maintaining backend services for large-scale digital commerce ecosystems. Well-versed in modern API integration via REST/SOAP, JSON/XML data formats, and Apache web server configurations. Collaborative engineer experienced in agile workflows, automated build tools, and integrating backend data pipelines with rich omnichannel experiences.\nSkills: Java, RESTful Web Services, Apache Configuration, Maven, Git, Full-Stack Fundamentals, E-Commerce Integrations.",
+      "goldSourceIds": [
+        "6c3416a9-43bd-50cd-8053-7299a523539b"
+      ],
+      "sourceTitle": "AEM Backend Developer",
+      "sourceCompany": "Intellias",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-055",
+      "style": "keyword",
+      "query": "Front-End Developer React web applications tech stack digital transformation",
+      "goldSourceIds": [
+        "72285a17-373f-5252-9213-4b0fbec48ca2"
+      ],
+      "sourceTitle": "Advanced Front-End Developer (React)",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-056",
+      "style": "paraphrase",
+      "query": "A communicative client specialist skilled in overseeing digital product portfolios, CRM workflows, and campaign performance analytics. Comfortable handling real-time partner inquiries and cross-departmental coordination with finance teams, they leverage statistical methods to produce regular performance reporting. They offer strong multitasking skills, high attention to detail, and a dependable work ethic.",
+      "goldSourceIds": [
+        "40e177e3-ec04-57d4-84bb-8b9329a0a94e"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "Apomedical",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-057",
+      "style": "resume",
+      "query": "Analytical payments product specialist with extensive experience managing payment gateway configurations, card brand rules, and acquirer relationships. Skilled in evaluating transaction performance data, optimizing approval rates, and integrating third-party subscription billing engines. Proven background in risk assessment, fraud prevention methodologies, and cross-functional project execution to maximize financial workflow efficiency.\nSkills: Payment Processing, Billing Integrations, Advanced Excel, Card Scheme Rules (Visa/MC), Risk Mitigation, Conversion Optimization.",
+      "goldSourceIds": [
+        "722586aa-baf5-5426-82c4-ca7a3a3aebb6"
+      ],
+      "sourceTitle": "Billing Product Manager",
+      "sourceCompany": "Brainstack",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-058",
+      "style": "keyword",
+      "query": "computer vision C++ Python OpenCV Tensorflow Pytorch Keras Qt PyQt",
+      "goldSourceIds": [
+        "128ec991-5479-5346-a8e4-4d09084d77a3"
+      ],
+      "sourceTitle": "AI/ML Developer with experience in computer vision",
+      "sourceCompany": "Volya Software Corporation",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-059",
+      "style": "paraphrase",
+      "query": "A versatile automation engineer with a solid background in full-stack quality testing utilizing Python or JavaScript, alongside cloud familiarity in AWS. They are adept at constructing functional, scalable, and performance test suites covering complex software pipelines, including machine learning workflows. With strong analytical skills, they translate platform requirements into comprehensive, automated end-to-end validation flows.",
+      "goldSourceIds": [
+        "cda65cce-1f7e-512e-8897-e52449f950ca"
+      ],
+      "sourceTitle": "AQA| BeyondMinds",
+      "sourceCompany": "SD Solutions",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-060",
+      "style": "resume",
+      "query": "Energetic enterprise sales specialist with three years of demonstrated achievement selling SaaS and mobile marketing analytics platforms. Fluent in Russian and English with strong expertise in navigating complex, multi-stakeholder technical evaluations across the CIS and EMEA regions. Proven track record of consistently exceeding revenue quotas through consultative pitching, executive engagement, and disciplined pipeline management.\nSkills: Mobile AdTech, SaaS Sales, CIS Territory Management, Bilingual (Russian/English), Enterprise Prospecting, Closing Deals.",
+      "goldSourceIds": [
+        "d2b97323-eeb2-5de8-81a4-0ac39a7195b8"
+      ],
+      "sourceTitle": "Account Executive (CIS Market)",
+      "sourceCompany": "UnionFlame",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-061",
+      "style": "keyword",
+      "query": "Java Kotlin Android SDK Jetpack Rxjava Coroutines MVVM Realm Room",
+      "goldSourceIds": [
+        "e12fd5b0-94f5-5abd-b417-a662c13bcba1"
+      ],
+      "sourceTitle": "Android Dev",
+      "sourceCompany": "Ezlogz",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-062",
+      "style": "paraphrase",
+      "query": "An ambitious machine learning practitioner who thrives as an autonomous builder and technical owner in the financial technology domain. They possess comprehensive end-to-end modeling skills capable of designing algorithms that automate transaction monitoring, compliance, and large-scale data processing. Confident in driving architectural strategy, they turn advanced intelligence concepts into production-ready software solutions.",
+      "goldSourceIds": [
+        "4e2b4112-29e4-50b9-b5fe-8280b6965cc3"
+      ],
+      "sourceTitle": "Ambitious AI/ML/DS specialist",
+      "sourceCompany": "FlashFX",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-063",
+      "style": "resume",
+      "query": "Senior visual designer and concept artist with four years of game studio experience creating polished mobile and desktop art assets, backgrounds, and user interfaces. Specializes in establishing visual clarity and compelling symbol hierarchies for casino and casual gaming titles. Proactive collaborator who works closely with tech artists and animators to ensure production assets are organized, optimized, and ready for engine handoff.\nSkills: Casual & Slot Art, Game UI/UX Design, Photoshop, Asset Optimization, Concept Art, Production Handoff.",
+      "goldSourceIds": [
+        "549164f9-0338-5bf2-ad2c-4f2e4f2c41e4"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "GSN games",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-064",
+      "style": "keyword",
+      "query": "Infrastructure Support Networking Clustering Load Balancing Java core troubleshooting server operations",
+      "goldSourceIds": [
+        "2b99cce0-8375-589b-8e70-d59facaf4756"
+      ],
+      "sourceTitle": "Application Support Analyst",
+      "sourceCompany": "EPAM",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-065",
+      "style": "paraphrase",
+      "query": "A multifaceted corporate communications expert experienced in crafting organizational messaging, managing stakeholder relationships, and tracking campaign effectiveness within tech-driven spaces. They combine project management capabilities with a sharp aesthetic sense for content presentation and persuasive storytelling. Adept at navigating dynamic environments, they easily build trust with cross-functional leaders.",
+      "goldSourceIds": [
+        "3620e35d-2116-59c1-b015-4dbeebf0946b"
+      ],
+      "sourceTitle": "Brand & Communications Manager",
+      "sourceCompany": "SPD-Ukraine",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-066",
+      "style": "resume",
+      "query": "Senior Java engineer with over six years of experience designing and scaling distributed, high-concurrency systems and multimedia data applications. Strong background in modern microservices architectures, data streaming pipelines, and full-stack integration for mission-critical platforms. Collaborative problem solver committed to mentorship, clean code principles, and partnering across global delivery teams to deploy high-impact software.\nSkills: Java/Spring Boot, Microservices Architecture, Distributed Systems, API Design, Scalable Backends, Cloud Services.",
+      "goldSourceIds": [
+        "cce50b3e-c11b-50f5-a761-a9fd65f3596d"
+      ],
+      "sourceTitle": "Advanced Software Java Engineer",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-067",
+      "style": "keyword",
+      "query": "Angular Front End Engineer web application components front end",
+      "goldSourceIds": [
+        "334a79e1-e0f4-5e62-b12d-892673e4855c"
+      ],
+      "sourceTitle": "Advanced Angular Developer",
+      "sourceCompany": "Innovecs",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-068",
+      "style": "paraphrase",
+      "query": "An internationally oriented commercial professional skilled in sourcing, negotiating with, and onboarding digital advertising publishers and advertisers. They possess strong contract negotiation abilities and a solid understanding of online traffic ecosystems such as programmatic and RTB channels. Bilingual and relationship-oriented, they excel at managing technical partner integrations and driving commercial growth.",
+      "goldSourceIds": [
+        "8adcbc24-04ae-53c4-b94b-06729ab7436e"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "Ad Experts Media",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-069",
+      "style": "resume",
+      "query": "Payment operations and product strategist with deep expertise in global transaction processing, acquiring integrations, and conversion rate optimization. Thorough knowledge of PSD2 protocols, velocity rule design, anti-fraud architectures, and chargeback reduction strategies. Dedicated to eliminating operational friction in checkout funnels and building high-trust merchant billing infrastructure at scale.\nSkills: Payment Gateway Optimization, Fraud & Risk Prevention, PSD2/SCA Compliance, Billing Infrastructure, Data Analytics, Checkout UX.",
+      "goldSourceIds": [
+        "587c71b5-2ad6-56d5-906a-b2ca30d12f55"
+      ],
+      "sourceTitle": "Billing Product Manager",
+      "sourceCompany": "Brainstack",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-070",
+      "style": "keyword",
+      "query": "AI language model natural language processing NLP model training datasets model architectures",
+      "goldSourceIds": [
+        "c51ebbec-ea9a-53cc-9154-a15142b3b230"
+      ],
+      "sourceTitle": "AI/ML Developer",
+      "sourceCompany": "EvaCodes.",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-071",
+      "style": "paraphrase",
+      "query": "A specialized quality automation engineer proficient in Java, focused on testing complex enterprise cloud orchestration, 5G, and IoT systems. They have substantial expertise in verifying service lifecycle automations, policy-based workload allocations, and multi-tenant security frameworks. Their background highlights a focus on telecommunications infrastructure, cloud scalability, and robust continuous integration.",
+      "goldSourceIds": [
+        "89599834-cb01-5952-959e-29c7904ed96b"
+      ],
+      "sourceTitle": "AQA- Automation Test Engineer (Java)",
+      "sourceCompany": "GlobalLogic",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-072",
+      "style": "resume",
+      "query": "High-performing technology sales professional with three years of experience driving new customer acquisition within the mobile advertising and analytics sectors. Skilled at translating complex mobile attribution and marketing ROI concepts into compelling executive business cases. Proven success prospecting, conducting consultative discovery, and closing long-term software contracts across fast-moving mobile app developers.\nSkills: Mobile Attribution, Consultative Sales, New Business Acquisition, Deal Negotiation, Client Discovery, Account Planning.",
+      "goldSourceIds": [
+        "f3e9f93b-b326-58c6-a973-e3f9748c6fdc"
+      ],
+      "sourceTitle": "Account Executive- / Cis Market",
+      "sourceCompany": "AppsFlyer",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-073",
+      "style": "keyword",
+      "query": "BSP Android SIP Bluetooth Networking OpenSSL CA Android Keystore",
+      "goldSourceIds": [
+        "99d5f6e3-f20d-5a18-8be6-2bd18d818d8b"
+      ],
+      "sourceTitle": "Android BSP Developer (BSP is mandatory)",
+      "sourceCompany": "Luxoft",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-074",
+      "style": "paraphrase",
+      "query": "An advanced degree candidate in computer science with a passion for training speech recognition and natural language processing architectures on massive datasets. They are proficient with Python scientific stacks and interactive environments, eager to experiment with cutting-edge prototypes and contribute to C++ production systems. Collaborative and hands-on, they enjoy turning machine learning research into functional products.",
+      "goldSourceIds": [
+        "03864a9a-2c4b-5b25-8688-0264b140c286"
+      ],
+      "sourceTitle": "AL/ML Summer Intern",
+      "sourceCompany": "Outloud",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-075",
+      "style": "resume",
+      "query": "Concept artist and game asset creator with three years of experience building vibrant 2D game worlds, isometric environments, and interface elements from scratch. Experienced working within lean, early-stage development teams, contributing to art pipelines alongside 3D artists and creative leads. Deep understanding of perspective, lighting, and platform optimization constraints for engaging interactive entertainment.\nSkills: Isometric Art, Concept Development, UI Illustration, Asset Creation, Photoshop, Cross-Discipline Pipeline.",
+      "goldSourceIds": [
+        "53bcfeec-a3b7-5eb4-a8bd-4da9c35079b2"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Blackwood Games",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-076",
+      "style": "keyword",
+      "query": "Penetration Testing JIRA burp STRIDE AWS GCP",
+      "goldSourceIds": [
+        "84f3cc8b-a48a-5a80-8fd1-6142afa2c944"
+      ],
+      "sourceTitle": "Application Security Expert  Middle/Senior",
+      "sourceCompany": "Сapgemini",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-077",
+      "style": "paraphrase",
+      "query": "This professional possesses strong organizational and communication abilities with experience coordinating employee initiatives, equipment distribution, and international gift vendors. They are skilled in managing corporate perks, preparing regular human resources documentation, and facilitating seamless onboarding touchpoints for distributed teams.",
+      "goldSourceIds": [
+        "43e66c02-46a5-5dcf-ba7e-00c15b8c48b4"
+      ],
+      "sourceTitle": "Benefits Specialist",
+      "sourceCompany": "Turnkey Labs",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-078",
+      "style": "resume",
+      "query": "Accomplished Backend Developer with over 6 years of experience building resilient, scalable enterprise applications in distributed environments. Expert in applying object-oriented design patterns, concurrency mechanisms, and robust unit testing frameworks to optimize system performance. Proven track record of collaborating across Agile Scrum teams to troubleshoot production environments and translate complex product requirements into reliable software components.\nSkills: Java 8+, Concurrency Patterns, OOP, Multithreading, Agile/Scrum, Debugging & Profiling, Unit Testing",
+      "goldSourceIds": [
+        "b0249a46-306e-5991-aa3a-0fb48bd6fbdd"
+      ],
+      "sourceTitle": "Advanced Software Engineer – JAVA",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-079",
+      "style": "keyword",
+      "query": "Adobe Commerce Magento PWA Javascript React.js Redux GraphQL Webpack",
+      "goldSourceIds": [
+        "2774da4a-dc17-514b-84dc-63ae18682359"
+      ],
+      "sourceTitle": "Adobe Commerce (Magento) PWA Frontend Developer (Middle, Senior)",
+      "sourceCompany": "Valtech",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-080",
+      "style": "paraphrase",
+      "query": "This candidate is an upper-intermediate English speaker with a background in customer care, client success, or sales within the digital promotion sector. They excel at cultivating long-term advertiser partnerships, resolving operational inquiries, and overseeing basic financial workflows.",
+      "goldSourceIds": [
+        "f3b81ae4-4c02-53da-8cc7-79f9f1e3d83c"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "Gravity",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-081",
+      "style": "resume",
+      "query": "Detail-oriented Payments Operations Specialist with over 4 years of experience optimizing transaction workflows and payment conversion funnels. Demonstrated success integrating local payment gateways, conducting A/B experiments to enhance page usability, and mitigating fraud risks. Skilled at maintaining high accuracy in financial accounting while delivering exceptional operational support to resolve account discrepancies.\nSkills: Payment Gateway Integration, Transaction Monitoring, A/B Testing, Conversion Rate Optimization (CRO), Anti-Fraud Controls, Accounting Reconciliation",
+      "goldSourceIds": [
+        "30a29983-530b-5707-9075-9e1e646d7f0b"
+      ],
+      "sourceTitle": "Billing Manager",
+      "sourceCompany": "SimplBit",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-082",
+      "style": "keyword",
+      "query": "Python Java C++ PyTorch TensorFlow AllenNLP spaCy Gensim",
+      "goldSourceIds": [
+        "f8f26c4e-4235-534b-b0ab-8993329d429f"
+      ],
+      "sourceTitle": "AI/Machine learning developer",
+      "sourceCompany": "Beemster",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-083",
+      "style": "paraphrase",
+      "query": "An experienced quality engineer with over three years designing and executing test automation scripts across the software development lifecycle in Agile settings. Proficient with Selenium, Postman, and CI tools, they excel at delivering end-to-end functional and regression testing with minimal supervision.",
+      "goldSourceIds": [
+        "2bc9b097-7bdb-5662-870f-439073c220a1"
+      ],
+      "sourceTitle": "AQA Automation Engineer",
+      "sourceCompany": "Sunvery",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-084",
+      "style": "resume",
+      "query": "High-integrity B2B Sales Professional with over 5 years of experience leading full-cycle sales across US and European markets. Adept at transforming qualified inbound inquiries into long-term enterprise contracts through transparent, value-oriented negotiation frameworks. Proven capability in pipeline forecasting, consultative discovery, and aligning modern sales technologies to consistently exceed quarterly quota targets.\nSkills: Full-Cycle Sales, Consultative Selling, B2B SaaS, CRM Management, Contract Negotiation, International Client Acquisition",
+      "goldSourceIds": [
+        "e0c63160-dadc-5c40-a8d5-80678ccd4e12"
+      ],
+      "sourceTitle": "Account Executive at «White Sales»",
+      "sourceCompany": "White Sales",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-085",
+      "style": "keyword",
+      "query": "Android Android Automotive OS AAOS Google Automotive Services HTTP Jetpack Compose AOSP",
+      "goldSourceIds": [
+        "55aa00fb-8152-578c-bb6c-5c152e8e2cc5"
+      ],
+      "sourceTitle": "Android Automotive OS Developer",
+      "sourceCompany": "intive",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-086",
+      "style": "paraphrase",
+      "query": "This technical leader specializes in functional programming and algorithmic design to power intelligent cloud solutions for financial services. They collaborate seamlessly with data science and document extraction specialists to optimize parsing, data enrichment, and automated workflows.",
+      "goldSourceIds": [
+        "bacb75b0-c7b6-564a-8473-8632fe929a4e"
+      ],
+      "sourceTitle": "Algorithms & Functional Programming Developer / Lead",
+      "sourceCompany": "Zoral",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-087",
+      "style": "resume",
+      "query": "Creative Game Visual Designer with 3+ years of experience crafting visually captivating 2D art assets for casual mobile titles. Proficient in designing polished user interfaces, popups, iconography, and high-impact marketing creatives optimized for digital and social channels. Dedicated to maintaining aesthetic consistency, strict technical specifications, and rapid prototyping workflows in fast-paced studio environments.\nSkills: 2D Digital Illustration, Mobile Game Assets, Adobe Photoshop, Adobe Illustrator, UI Elements, Marketing Creatives, Composition & Color Theory",
+      "goldSourceIds": [
+        "4e3f2ae9-edb6-5acf-9fbd-fad7f8170040"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Live Play Mobile",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-088",
+      "style": "keyword",
+      "query": "SAST SCA DAST CI/CD cloud compliance QA automation DevOps",
+      "goldSourceIds": [
+        "c217aa8c-a7bf-526e-ae8f-5933d9e39aeb"
+      ],
+      "sourceTitle": "Application Security Engineer / DevSecOps",
+      "sourceCompany": "DataArt",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-089",
+      "style": "paraphrase",
+      "query": "A European-based operational professional with expertise in employee adaptation, talent platforms, and team coordination within enterprise digital initiatives. They act as a central point of contact to guide personnel through complex corporate frameworks and support continuous workflow improvements.",
+      "goldSourceIds": [
+        "38870ae8-1158-50a7-9197-544f761d9050"
+      ],
+      "sourceTitle": "Backoffice and Operation Manager (only for candidates in EU)",
+      "sourceCompany": "Intellias",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-090",
+      "style": "resume",
+      "query": "Senior Server-Side Developer with 6+ years of experience architecting high-throughput backend systems for high-traffic media and video streaming platforms. Skilled in building distributed architectures, optimizing database transactions, and implementing efficient concurrency handling. Recognized for collaborative teamwork within cross-functional squads to deliver clean, maintainable code on tight delivery timelines.\nSkills: Java 11/17, Spring Boot, Microservices Architecture, RESTful APIs, High-Load Systems, SQL Tuning, Git",
+      "goldSourceIds": [
+        "c6e9c833-e8f2-5a23-a1c1-98b93ec2111f"
+      ],
+      "sourceTitle": "Advanced Software Engineer - Java",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-091",
+      "style": "keyword",
+      "query": "Javascript jQuery RequireJS Knockout HTML CSS Magento 2 Sass Less",
+      "goldSourceIds": [
+        "b4dc410d-4e63-52ed-8141-27293ee564f8"
+      ],
+      "sourceTitle": "Adobe Commerce (Magento) Front-End Developer",
+      "sourceCompany": "Valtech",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-092",
+      "style": "paraphrase",
+      "query": "This candidate brings over two years of commercial experience in programmatic ecosystems, including deep familiarity with SSPs, DSPs, and real-time bidding protocols. They combine strong analytical acumen with excellent partner management skills to resolve technical issues and maximize revenue.",
+      "goldSourceIds": [
+        "7c7024b0-32cb-5398-919e-2990e7f99cc1"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "IT-Rex",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-093",
+      "style": "resume",
+      "query": "Results-driven Digital Product Specialist with 5+ years of experience leading analytics and data-intensive solutions serving millions of active users. Expert at bridging business strategy and advanced data engineering to translate analytical models into high-value commercial features. Proven track record managing discovery, roadmapping, and cross-functional go-to-market strategies within large telecommunications and tech ecosystems.\nSkills: Product Strategy, Big Data Platforms, Agile Product Delivery, Roadmapping, Data Analytics, Cross-Functional Team Leadership",
+      "goldSourceIds": [
+        "2ca7ebce-0845-5ab8-9ac6-451f12fd9e9a"
+      ],
+      "sourceTitle": "Big Data Product Manager",
+      "sourceCompany": "Kyivstar",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-094",
+      "style": "keyword",
+      "query": "Elasticsearch NLP LLM Machine Learning Python search algorithms big data",
+      "goldSourceIds": [
+        "25f1c092-40fd-519b-bf5b-f26be78c5497"
+      ],
+      "sourceTitle": "AI Expert in NLP/LLM",
+      "sourceCompany": "Fluvius",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-095",
+      "style": "paraphrase",
+      "query": "A test automation professional with more than three years of focused experience creating mobile test suites using Appium and JavaScript. Skilled in API validation, relational database queries, and test case management, they ensure reliable test tracking and reporting.",
+      "goldSourceIds": [
+        "d0e9259c-1def-5628-b70a-5c371854a3fb"
+      ],
+      "sourceTitle": "AQA Appium ( 4-8 month project, can be longer) 3+",
+      "sourceCompany": "ITSOFT",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-096",
+      "style": "resume",
+      "query": "Client-focused B2B Relationship Manager with 4+ years of proven success expanding client portfolios and driving upsell revenue in creative and technical outsourcing sectors. Exceptional communicator with extensive experience conducting high-stakes presentations and negotiations across North American and European markets. Dedicated to maximizing customer lifetime value, preventing churn, and delivering customized service proposals.\nSkills: B2B Account Management, Upselling & Retention, Contract Negotiation, Proposal Development, Client Presentations, Fluent English (C1/C2)",
+      "goldSourceIds": [
+        "8428412f-16bb-5930-97fb-69ce0d0deac6"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "Wow-How Studio",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-097",
+      "style": "keyword",
+      "query": "Android AutomotiveOS Automotive IVI systems C/C++ Java Linux kernel Android OS",
+      "goldSourceIds": [
+        "c721f754-4117-5174-916c-12cca186773e"
+      ],
+      "sourceTitle": "Android Automotive Expert",
+      "sourceCompany": "protonmail.com",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-098",
+      "style": "paraphrase",
+      "query": "This quantitative finance specialist has extensive background in market making and automated strategy implementation across foreign exchange or digital asset markets. Skilled in managing currency pegs, stress testing liquidity, and building custom trading systems, they offer strong mathematical and execution expertise.",
+      "goldSourceIds": [
+        "fd30d27c-e121-590b-9c40-e607a982b378"
+      ],
+      "sourceTitle": "Algorithmic Trading Manager",
+      "sourceCompany": "Jax.Network",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-099",
+      "style": "resume",
+      "query": "Versatile Digital Illustrator with a strong portfolio in character concepting, isometric graphics, and voxel-style gaming art. Skilled at transitioning rough sketch concepts into detailed, vector-perfect assets using modern illustration software. Adept at partnering closely with art directors to maintain distinct aesthetic styles and deliver engaging in-game visual content on schedule.\nSkills: Vector Illustration, Adobe Illustrator, Adobe Photoshop, Character Design, Concept Art, Voxel Art Styles, Game Asset Creation",
+      "goldSourceIds": [
+        "ea3dedf9-9909-512a-a381-ecdbfed0b704"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Upland.me",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-100",
+      "style": "keyword",
+      "query": "DevOps Java PL/SQL Jira Confluence SW applications",
+      "goldSourceIds": [
+        "2488391e-c562-56a9-b1fe-125153afecf2"
+      ],
+      "sourceTitle": "Application Management Engineer",
+      "sourceCompany": "DataJob",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-101",
+      "style": "paraphrase",
+      "query": "An administrative professional experienced in managing candidate vetting, credential verification, and external reference checks in compliance with regulatory standards. They are adept at liaising with third-party verification agencies, maintaining strict data integrity, and compiling audit-ready records.",
+      "goldSourceIds": [
+        "18c38407-e3be-505c-b362-1d3ef426683c"
+      ],
+      "sourceTitle": "Background check Specialist",
+      "sourceCompany": "Luxoft",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-102",
+      "style": "resume",
+      "query": "Lead Server Engineer with over 8 years of expertise in architecting, maintaining, and scaling enterprise microservices ecosystems. Accomplished in providing technical mentorship, enforcing strict SDLC standards, and optimizing relational databases for mission-critical applications. Proven leader in designing robust RESTful APIs, orchestrating continuous delivery pipelines, and driving infrastructure improvements.\nSkills: Modern Java (8+), Spring Ecosystem, Microservices, Hibernate/JPA, Relational Databases (PostgreSQL/MySQL), CI/CD, Technical Leadership",
+      "goldSourceIds": [
+        "245cf363-dccf-5583-a4be-6dc0e1fe5f0d"
+      ],
+      "sourceTitle": "Advanced Software Engineer - Java",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-103",
+      "style": "keyword",
+      "query": "ExtendScript HTML CSS JavaScript Adobe Common Extensibility Platform CEP NodeJS",
+      "goldSourceIds": [
+        "7c5d60a5-f699-574d-b975-6c5b3bea3a3e"
+      ],
+      "sourceTitle": "Adobe After Effects Plugin Developer",
+      "sourceCompany": "P-product",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-104",
+      "style": "paraphrase",
+      "query": "A proactive client relationship specialist who combines sales acumen with customer support to cultivate B2B partnerships within the digital outreach space. They excel at communication, retaining accounts, and aligning campaign strategies with client business objectives.",
+      "goldSourceIds": [
+        "46a297f1-55ea-5f91-8b93-15e9e8dc0188"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "AVA LIMITED",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-105",
+      "style": "resume",
+      "query": "Data Warehouse Engineer with 4 years of experience designing and deploying end-to-end business intelligence solutions on the Microsoft data stack. Proficient in developing high-performance ETL pipelines, multidimensional data models, and complex analytical dashboards. Strong track record of partnering with product stakeholders to integrate disparate data sources while enforcing strict security and performance standards.\nSkills: Microsoft SQL Server, SSIS, SSAS, SSRS, T-SQL Performance Tuning, DWH Modeling, Data Integration & APIs",
+      "goldSourceIds": [
+        "71e0e2a2-1f5f-5b18-b846-28e282d8c005"
+      ],
+      "sourceTitle": "BI Developer (MS Stack)",
+      "sourceCompany": "VITASOFT1",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-106",
+      "style": "keyword",
+      "query": "Python Conversational AI Natural Language Understanding generative AI",
+      "goldSourceIds": [
+        "38a411da-bddf-59ed-9b99-55cbffe99f28"
+      ],
+      "sourceTitle": "AI Engineer (Poland/ Bulgaria)",
+      "sourceCompany": "LINNU",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-107",
+      "style": "paraphrase",
+      "query": "A skilled automation engineer with comprehensive experience testing modern web applications using Cypress and JavaScript frameworks. They have a proven track record of establishing test architectures, embedding automated runs into CI/CD pipelines, and mentoring peers in test design.",
+      "goldSourceIds": [
+        "6ff5a993-16f8-548b-92aa-0cf9303e8998"
+      ],
+      "sourceTitle": "AQA (Angular/JavaScript)",
+      "sourceCompany": "DTeam",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-108",
+      "style": "resume",
+      "query": "Dynamic SaaS Sales Specialist with 3+ years of experience driving full-cycle enterprise software deals across the US financial services market. Skilled in conducting deep discovery calls, delivering tailored technical product demonstrations, and navigating complex commercial negotiations. Proven closer committed to turning inbound and outbound leads into high-retention corporate accounts.\nSkills: Enterprise SaaS Sales, Full-Cycle Pipeline Management, Fintech Solutions, Product Demos, Contract Closing, Lead Qualification",
+      "goldSourceIds": [
+        "d80f3606-835d-5121-a39d-3c9167f2c7f8"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "upSWOT",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-109",
+      "style": "keyword",
+      "query": "Android infotainment system architecture engineering",
+      "goldSourceIds": [
+        "4acaf515-e8a2-587b-85a6-193d1aef4919"
+      ],
+      "sourceTitle": "Android Automotive Architect",
+      "sourceCompany": "Star",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-110",
+      "style": "paraphrase",
+      "query": "This Prague-based researcher holds an advanced technical degree and five-plus years developing complex mathematical models in signal and image processing. Proficient in Python with C/C++ exposure, they bring valuable expertise in lidar sensor data, embedded software, and multi-disciplinary systems integration.",
+      "goldSourceIds": [
+        "4c77b0b8-4337-556a-a914-926a021c326b"
+      ],
+      "sourceTitle": "Algorithm Engineer (Prague only)",
+      "sourceCompany": "MWDN Ltd",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-111",
+      "style": "resume",
+      "query": "Concept and Game Asset Illustrator with over 3 years of production experience in character, environment, and prop creation for social and mobile titles. Deeply grounded in fundamental design principles including anatomy, lighting, color theory, and modular UI layouts. Collaborative team contributor experienced in preparing production-ready visual assets optimized for animation and game engine integration.\nSkills: Adobe Photoshop, Character Concept Art, Environment Design, Game Asset Preparation, Color Theory, UI Art Fundamentals",
+      "goldSourceIds": [
+        "c0a69a82-dc3e-5b1f-8135-b311f07180c1"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "AUG Global",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-112",
+      "style": "keyword",
+      "query": "Linux Jenkins Groovy Git Docker Kubernetes Helm AWS Python",
+      "goldSourceIds": [
+        "a69b2edf-d6d2-55cc-8517-0a89dfffeb8c"
+      ],
+      "sourceTitle": "Application Engineer DevOps",
+      "sourceCompany": "Luxoft",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-113",
+      "style": "paraphrase",
+      "query": "An enthusiastic people operations generalist with proven capability in navigating fast-moving, ambiguous work environments. They excel at resolving daily employee queries, supporting cultural initiatives, and streamlining internal organizational processes with high attention to detail.",
+      "goldSourceIds": [
+        "f5e705ef-5030-540c-92a2-7c6ab9b4c15a"
+      ],
+      "sourceTitle": "Associate People Business Partner",
+      "sourceCompany": "Lyft",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-114",
+      "style": "resume",
+      "query": "Backend Software Specialist with 6+ years of experience designing high-throughput, low-latency architectures for fast-growing financial trading environments. Expert in the Spring ecosystem, relational database optimization, and implementing robust security protocols capable of handling hundreds of thousands of concurrent users. Committed to engineering excellence through comprehensive unit testing, thorough code reviews, and Agile methodologies.\nSkills: Java 8/11, Spring Boot, Spring Security, Hibernate/JPA, FinTech Systems, High-Concurrency Architectures, Gradle/Maven",
+      "goldSourceIds": [
+        "45dff14e-735b-5341-888e-ffd5286852b5"
+      ],
+      "sourceTitle": "Advanced Software Engineer (Java)",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-115",
+      "style": "keyword",
+      "query": "HTML CSS JavaScript ReactJS REST APIs Redux NodeJS npm GIT",
+      "goldSourceIds": [
+        "59f8a33a-b981-5402-8753-af788255564d"
+      ],
+      "sourceTitle": "92 - Front-End Developer",
+      "sourceCompany": "IUP",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-116",
+      "style": "paraphrase",
+      "query": "This candidate is an energetic partnership professional who thrives in B2B service environments centered on client growth and satisfaction. Known for adaptability and collaborative spirit, they ensure exceptional communication, account health, and campaign alignment.",
+      "goldSourceIds": [
+        "f650d38f-f6aa-5df4-add6-835be046e295"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "Belkins",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-117",
+      "style": "resume",
+      "query": "Strategic Sportsbook Product Leader with 4+ years of combined experience across sports trading analytics, risk management, and digital product delivery. Proven expertise in transforming market trends and regulatory requirements into crisp user stories and prioritized technical backlogs. Collaborative facilitator adept at aligning development squads, trading teams, and executive management to roll out high-margin wagering platforms.\nSkills: Sports Betting Systems, Backlog Prioritization, SDLC, User Story Mapping, Trading & Risk Management, Agile Product Delivery, Bilingual (English/Russian)",
+      "goldSourceIds": [
+        "eaa09611-8c66-5e3a-bab9-de0a0909cea2"
+      ],
+      "sourceTitle": "Betting Product Owner",
+      "sourceCompany": "Betby",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-118",
+      "style": "keyword",
+      "query": "Python TensorFlow PyTorch Keras Open3D NumPy pandas scikit-learn",
+      "goldSourceIds": [
+        "c6843c6a-8944-519c-9bb2-0b6ba17e1127"
+      ],
+      "sourceTitle": "AI engineer (3D graphics)",
+      "sourceCompany": "Elementals Studio",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-119",
+      "style": "paraphrase",
+      "query": "A mid-level software quality professional with over two years of experience developing automated test frameworks utilizing Java, Selenium, and Rest Assured. Experienced in Scrum frameworks and AWS environments, they are adept at creating test cases, mentoring juniors, and coordinating with product owners.",
+      "goldSourceIds": [
+        "792df9c7-262b-52f1-b687-bbaaf7bb9d34"
+      ],
+      "sourceTitle": "AQA Analyst - Middle",
+      "sourceCompany": "Intent Solutions Group",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-120",
+      "style": "resume",
+      "query": "Results-focused B2B Sales Executive with 3+ years of experience selling marketing automation, prospecting tools, and SaaS platforms to C-level decision-makers. Skilled at establishing rapport with founders and enterprise department heads to identify outreach friction points and demonstrate measurable software ROI. Consistent top performer proficient in inbound qualification, outbound strategy, and disciplined pipeline execution.\nSkills: SaaS Solution Selling, C-Level Engagement, Pipeline Management, B2B Outbound Strategy, Demo Presentations, Sales Automation Tools",
+      "goldSourceIds": [
+        "8a7b7b01-70aa-5359-a9b5-07740ad5e33f"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "Closely",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-121",
+      "style": "keyword",
+      "query": "HMI agile Scrum SW development",
+      "goldSourceIds": [
+        "948bffe6-45c1-578f-8c0a-0ee6d0b24399"
+      ],
+      "sourceTitle": "Android Automotive",
+      "sourceCompany": "DataJob",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-122",
+      "style": "paraphrase",
+      "query": "An advanced degree holder with at least three years of experience building machine learning models for natural language processing and text analytics. Proficient in Python, modern deep learning frameworks, and evaluating prediction accuracy, they excel at extracting meaningful intelligence from unstructured data.",
+      "goldSourceIds": [
+        "6b4a0d77-3017-5c12-aa46-343b4447a3e3"
+      ],
+      "sourceTitle": "Algorithm Engineer",
+      "sourceCompany": "AllSTARSIT",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-123",
+      "style": "resume",
+      "query": "Versatile Video Game Artist with 3+ years of experience delivering multi-style graphics across PC and mobile development pipelines. Adept at handling end-to-end 2D asset workflows from rough thumbnailing to final rendering of characters, interactive environments, and game GUIs. Recognized for strong discipline, fast execution within tight production sprints, and creating compelling promotional materials.\nSkills: Game Art Production, Adobe Photoshop, UI/GUI Design, Character & Environment Art, Digital Tablet Illustration, Promotional Graphics",
+      "goldSourceIds": [
+        "a9eff21e-a294-5c02-b987-c65c83914e33"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Stepico Games",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-124",
+      "style": "keyword",
+      "query": "CI/CD Linux Ubuntu Jenkins Groovy Git Gerrit GitLab Docker",
+      "goldSourceIds": [
+        "e5a38c41-cf5d-5422-a971-c73947ead918"
+      ],
+      "sourceTitle": "Application Engineer DevOps",
+      "sourceCompany": "Luxoft",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-125",
+      "style": "paraphrase",
+      "query": "A detail-oriented coordinator with experience managing personnel databases, contractor records, and day-to-day administrative documentation. Proficient in office productivity suites and possessing good communication skills, they handle routine internal operations with diligence and autonomy.",
+      "goldSourceIds": [
+        "09019f87-7975-5a43-a10b-743f6944b683"
+      ],
+      "sourceTitle": "Associate HR Manager",
+      "sourceCompany": "Dev.Pro",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-126",
+      "style": "resume",
+      "query": "Senior Java Developer with 5+ years of hands-on expertise building enterprise-grade backend services and robust distributed microservices. Highly proficient across the modern Spring framework, ORM data access layers, and performance profiling for scalable high-load platforms. Experienced in fostering engineering best practices through thorough code reviews, continuous automated testing, and active Agile participation.\nSkills: Java 8+, Spring Boot, Spring Data/Security, JPA/Hibernate, SQL Optimization, Unit Testing (JUnit/Mockito), Agile/Scrum",
+      "goldSourceIds": [
+        "4d0b2d32-53be-51be-9a23-bc3bbffc166f"
+      ],
+      "sourceTitle": "Advanced Software Engineer (Java)",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-127",
+      "style": "keyword",
+      "query": "react continuous integration Agile Scrum debug system design",
+      "goldSourceIds": [
+        "1c950548-3048-5a27-bebb-5708a3e09310"
+      ],
+      "sourceTitle": "92 - Front-End Developer",
+      "sourceCompany": "MimirB2B",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-128",
+      "style": "paraphrase",
+      "query": "A data-driven partnership specialist with expertise in managing client portfolios, leading business reviews, and optimizing publisher integrations. They excel at metric analysis, contract negotiation, and discovering growth strategies to drive incremental revenue.",
+      "goldSourceIds": [
+        "1a10b538-1ffc-5eb2-9ca6-ccb028acd4b7"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "LoopMe",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-129",
+      "style": "resume",
+      "query": "iGaming Product Specialist with 4+ years of industry experience spanning sports betting operations, trading mechanics, and B2B platform development. Adept at market research, competitive analysis, and crafting precise technical specifications that unite commercial objectives with engineering feasibility. Strong communicator with a background in driving end-to-end SDLC processes and presenting feature roadmaps to cross-functional stakeholders.\nSkills: iGaming & Wagering Domain, Agile Product Ownership, Requirements Gathering, Market Analysis, Cross-Functional Leadership, Fluent English & Russian",
+      "goldSourceIds": [
+        "5469a501-3cee-5d48-9a8c-36a136585d0f"
+      ],
+      "sourceTitle": "Betting product owner",
+      "sourceCompany": "Betby",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-130",
+      "style": "keyword",
+      "query": "Python PyTorch Transformers Diffusion RNNs CNNs Computer Vision ML",
+      "goldSourceIds": [
+        "5e6c84d2-3487-5405-a38d-38e520c5ef54"
+      ],
+      "sourceTitle": "AI Engineer",
+      "sourceCompany": "QAtronic",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-131",
+      "style": "paraphrase",
+      "query": "A senior quality engineer with over four years of experience automating web front-ends using Java, OOP principles, and the Page Object model alongside Selenium. They are skilled at diagnosing failures, updating frameworks, and working alongside manual testers to ensure robust release quality.",
+      "goldSourceIds": [
+        "7439fbef-b663-5f50-a1b3-f9438e1de556"
+      ],
+      "sourceTitle": "AQA  5+",
+      "sourceCompany": "itsoft.co.il",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-132",
+      "style": "resume",
+      "query": "Senior Business Development Consultant with over 5 years of experience negotiating high-value software engineering contracts across US, UK, and EMEA regions. Proven track record in orchestrating multi-stakeholder enterprise deals for bespoke fintech, web, and mobile solutions. Skilled in crafting customized commercial bids, pitching technical capabilities, and navigating complete sales lifecycles to consistently exceed revenue quotas.\nSkills: Complex IT Outsourcing Sales, Fintech Sector Deals, Enterprise Contract Negotiation, Commercial Proposal Strategy, Global Client Relations, Fluent English (C1)",
+      "goldSourceIds": [
+        "953ddf43-6b74-514e-b617-27dec5cedc0c"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "ITOMYCH STUDIO",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-133",
+      "style": "keyword",
+      "query": "Android Trusted Execution Environment Java Kotlin system architecture IoT",
+      "goldSourceIds": [
+        "65ac9608-fd83-5553-961b-9c2ad8f6e640"
+      ],
+      "sourceTitle": "Android Architect IRC131917",
+      "sourceCompany": "GlobalLogic",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-134",
+      "style": "paraphrase",
+      "query": "This engineer specializes in computer vision and deep learning inference, offering hands-on experience with C++ and Python in Linux environments. With expertise in convolutional neural networks and autonomous vehicle vision tasks, they are skilled at benchmarking and optimizing visual detection models.",
+      "goldSourceIds": [
+        "a730bd91-25ac-5ef3-93f6-52238141978b"
+      ],
+      "sourceTitle": "Algorithm engineer",
+      "sourceCompany": "Thundersoft",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-135",
+      "style": "resume",
+      "query": "Multidisciplinary Game Asset Artist with 3+ years of experience blending 2D illustration with 3D rendering workflows for mobile and social titles. Experienced in photobashing, texture pattern generation, and compositing renders into polished promotional and in-game event banners. Dedicated to maintaining high visual quality and thematic consistency while managing multifaceted graphic requests simultaneously.\nSkills: 2D/3D Compositing, Adobe Photoshop, Maya/Blender Rendering, Texture & Pattern Design, Marketing Banners, Photobashing, Illustration",
+      "goldSourceIds": [
+        "0409dc79-ca8c-59db-8e5a-3893976739bf"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "TalentIn",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-136",
+      "style": "keyword",
+      "query": "Serverless CI/CD Linux administration Ubuntu Debian",
+      "goldSourceIds": [
+        "83b27be5-e03a-5c52-82a9-54e5adf606db"
+      ],
+      "sourceTitle": "Application Engineer DevOps",
+      "sourceCompany": "Luxoft",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-137",
+      "style": "paraphrase",
+      "query": "An emerging people operations professional dedicated to supporting the full employee lifecycle, onboarding, and internal data maintenance. Organized and proactive, they demonstrate strong interpersonal skills and an eagerness to foster team wellbeing and streamlined workplace processes.",
+      "goldSourceIds": [
+        "71ddb2cb-4f41-5213-b6a3-eabd36c69822"
+      ],
+      "sourceTitle": "Associate HR Manager",
+      "sourceCompany": "Dev.Pro",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-138",
+      "style": "resume",
+      "query": "Senior Backend Architect with 6+ years of experience engineering high-performance server-side architectures for fintech brokerage and equity trading applications. Adept at optimizing throughput, designing real-time API integrations, and partnering with frontend engineers to build responsive financial platforms. Proven ability to guide complex features from initial architectural blueprinting through production deployment with high reliability.\nSkills: Core Java, Spring Boot, Financial Trading Platforms, High-Throughput APIs, Distributed Architecture, Database Optimization, Microservices",
+      "goldSourceIds": [
+        "ace25efe-5d42-569b-ba04-a8192e35396c"
+      ],
+      "sourceTitle": "Advanced Software Engineer (Java)",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-139",
+      "style": "keyword",
+      "query": "HTML CSS JavaScript ReactJS frontend cloud-based",
+      "goldSourceIds": [
+        "d154d1ee-0841-56db-8df2-34ec17d89400"
+      ],
+      "sourceTitle": "92 - Front-End Developer",
+      "sourceCompany": "FirstFive",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-140",
+      "style": "paraphrase",
+      "query": "A performance marketing specialist with a year or more of experience optimizing monetization channels, conversion tracking pixels, and cost-per-action metrics. They rely on analytical reporting and campaign tuning to consistently enhance advertiser returns across diverse ad formats.",
+      "goldSourceIds": [
+        "eed52af9-0b83-5c6c-b849-99ca0f3f5461"
+      ],
+      "sourceTitle": "Account Manager",
+      "sourceCompany": "Yael Acceptic",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-141",
+      "style": "resume",
+      "query": "Agile Business Analyst and Product Lead with 5+ years of experience steering full-lifecycle digital product development from greenfield concept to production release. Skilled in aligning client visions with technical execution through rigorous requirement gathering, user story mapping, and backlog grooming. Strong collaborator with proven success guiding multidisciplinary teams of engineers, designers, and QA specialists to deliver custom client solutions.\nSkills: Agile Product Ownership, Business Analysis, Backlog Prioritization, User Story Mapping, Software Development Life Cycle (SDLC), Stakeholder Management",
+      "goldSourceIds": [
+        "63760448-5e1f-5a75-a94f-957bcac43cbd"
+      ],
+      "sourceTitle": "BA / Product Owner",
+      "sourceCompany": "Hennessey Group",
+      "category": "Product Manager",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-142",
+      "style": "keyword",
+      "query": "3D Time-of-Flight Camera RGB camera microphones accelerometer algorithms sensors",
+      "goldSourceIds": [
+        "e85ea6ee-311c-5364-a8e8-1444933c27d6"
+      ],
+      "sourceTitle": "AI Engineer",
+      "sourceCompany": "Tensill",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-143",
+      "style": "paraphrase",
+      "query": "An automation professional with three-plus years implementing test architectures using Java, object-oriented concepts, and tools like Selenium or Selenide within Agile environments. They are adaptable to modern distributed systems, API layers, and backend database integrations.",
+      "goldSourceIds": [
+        "08aedc1d-c5e3-5bda-bcae-39563709010f"
+      ],
+      "sourceTitle": "AQA",
+      "sourceCompany": "Profit Software",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-144",
+      "style": "resume",
+      "query": "Client Acquisition Specialist with over 3 years of success managing end-to-end B2B software sales targeted at the North American market. Adept at partnering with business analysts and technical teams to craft compelling, client-specific live demonstrations and value proposals. Skilled negotiator committed to transparent communication, closing new accounts, and onboarding clients to drive long-term retention.\nSkills: Full-Cycle SaaS Sales, Product Demonstrations, US Market Prospecting, Customer Relationship Management, Technical Discovery, Contract Closing",
+      "goldSourceIds": [
+        "d7906ac7-f20b-5ffe-8dde-1cb55c7a4110"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "upSWOT",
+      "category": "Sales",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-145",
+      "style": "keyword",
+      "query": "Kotlin Azure Jenkins Logstash React Native Scrum API",
+      "goldSourceIds": [
+        "94bcad7a-249f-5cc0-8e9d-b58ab7d13525"
+      ],
+      "sourceTitle": "Android Architect",
+      "sourceCompany": "Grid Dynamics",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-146",
+      "style": "paraphrase",
+      "query": "An advanced degree holder with strong foundations in Python and deep learning frameworks such as PyTorch or TensorFlow, tailored to signal and speech analysis. Capable of first-principles thinking, they excel at researching and creating novel algorithmic architectures for complex recognition models.",
+      "goldSourceIds": [
+        "87ceff89-a1f6-5982-b7cd-1e0b8f03b081"
+      ],
+      "sourceTitle": "Algorithm Developer - Corsound AI",
+      "sourceCompany": "SD Solutions",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-147",
+      "style": "resume",
+      "query": "Game UI/UX Designer and 2D Visual Artist with over 2 years of experience crafting interactive user interfaces and visual style guides for video games. Strong background in wireframing, motion-driven prototypes, and building production-ready asset libraries based on game mechanics. Passionate gamer skilled in uniting intuitive usability with visually cohesive artistic direction.\nSkills: Game UI/UX Design, Wireframing & Prototyping, Adobe Creative Cloud, Visual Style Guides, Typography & Color Theory, Interactive Mockups",
+      "goldSourceIds": [
+        "4a8403d3-6e9b-5797-8cc2-dee9d43c5787"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Israel IT",
+      "category": "Design",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-148",
+      "style": "keyword",
+      "query": "KeyCloak ELK New Relic Clickhouse Airflow SonarQube Jfrog Kubernetes",
+      "goldSourceIds": [
+        "b0b83d10-2e5c-5fb6-80da-b6731905f322"
+      ],
+      "sourceTitle": "Application DevOps Engineer",
+      "sourceCompany": "Acropolium",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-149",
+      "style": "paraphrase",
+      "query": "An organized support specialist with early career exposure to talent sourcing, candidate coordination, and recruitment workflows. Possessing solid communication skills and intermediate English proficiency, they are eager to track hiring pipelines and assist with fast-paced IT sourcing tasks.",
+      "goldSourceIds": [
+        "efc2a9aa-3d4b-5a6b-8535-0eda93117d79"
+      ],
+      "sourceTitle": "Assistant of Talent Acquisition team",
+      "sourceCompany": "Godel Technologies",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-150",
+      "style": "resume",
+      "query": "Lead Server-Side Engineer with 7+ years of experience architecting distributed backend platforms and leading cross-functional developer teams. Expert in building low-latency, scalable cloud services using modern Java frameworks, containerization tools, and event-driven communication protocols. Proven leader passionate about software quality, test-driven development, and driving collaborative web applications at enterprise scale.\nSkills: Java 11, Spring Framework, gRPC, WebSockets, PostgreSQL, Docker/Kubernetes, AWS Cloud, Technical Team Leadership",
+      "goldSourceIds": [
+        "4f3082ce-6b7f-58ef-b1cb-61b8eda0b0f1"
+      ],
+      "sourceTitle": "Advanced Software Developer (Java)",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": true
+    },
+    {
+      "id": "q-151",
+      "style": "keyword",
+      "query": "frontend cloud R&D QA JavaScript infrastructure management",
+      "goldSourceIds": [
+        "9224daca-7f7d-5188-88c2-2d18b521001a"
+      ],
+      "sourceTitle": "83 - FrontEnd Developer",
+      "sourceCompany": "MimirB2B",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-152",
+      "style": "paraphrase",
+      "query": "An analytical client relations professional with advanced English skills and a foundational understanding of digital marketing and IT. Experienced in fostering long-term partner relationships, handling customer communications across multiple digital channels, and monitoring campaign metrics to optimize performance. Thrives in multitasking environments with high attention to detail.",
+      "goldSourceIds": [
+        "4ef15aed-67c9-5382-b5ca-c89fc0352327"
+      ],
+      "sourceTitle": "Account manager",
+      "sourceCompany": "JBW Soft",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-153",
+      "style": "resume",
+      "query": "Accomplished technical strategist with extensive experience spearheading fintech and POS payment terminal innovations across global markets. Proven track record in bridging business needs with engineering teams to deploy multi-channel e-commerce and hardware-integrated software solutions. Skilled at driving product lifecycles, managing cross-functional dependencies, and expanding international customer footprints.\nSkills: Payment Systems, EMV & NFC, Agile Delivery, Requirements Engineering, Android POS, E-commerce, Cross-functional Leadership",
+      "goldSourceIds": [
+        "56d7be4a-bce2-57b4-8c0c-dbbb107e58d9"
+      ],
+      "sourceTitle": "BA / Product Manager",
+      "sourceCompany": "SPD-Ukraine",
+      "category": "Product Manager",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-154",
+      "style": "keyword",
+      "query": "ML models AI-pipelines cloud providers A/B testing data pipeline architectures data sets",
+      "goldSourceIds": [
+        "371d1b6d-da5b-592d-9dbd-fd19480bbee0"
+      ],
+      "sourceTitle": "AI Engineer",
+      "sourceCompany": "IntellectEU",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-155",
+      "style": "paraphrase",
+      "query": "A quality assurance specialist with over four years of experience focusing on backend API testing and test automation using Java. Proficient in functional, integration, and system verification, with hands-on expertise in creating comprehensive test documentation. Familiarity with message brokers, Linux navigation, and continuous integration workflows is highly valued.",
+      "goldSourceIds": [
+        "a3431f48-aac7-518d-b560-9c804b6623d7"
+      ],
+      "sourceTitle": "AQA",
+      "sourceCompany": "KaaIoT",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-156",
+      "style": "resume",
+      "query": "High-performing enterprise sales professional with over five years of experience driving revenue growth across modern e-commerce ecosystems and marketplace brands. Adept at managing full-cycle sales funnels from cold outreach and pipeline generation to strategic negotiation and closing. Highly skilled in consulting agency partners and top-tier marketplace merchants on performance optimization and scalable go-to-market strategies.\nSkills: E-Commerce Strategy, Full-Cycle Sales, Pipeline Management, B2B Prospecting, Contract Negotiation, Client Relationship Management",
+      "goldSourceIds": [
+        "135c91b7-9c29-5fbf-b0d6-77fee5d7eef8"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "AIW.systems",
+      "category": "Sales",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-157",
+      "style": "keyword",
+      "query": "Android In-Vehicle Infotainment open source continuous integration continuous delivery agile",
+      "goldSourceIds": [
+        "7484409f-ff08-59b5-a336-7608024d5c62"
+      ],
+      "sourceTitle": "Android Application Developer",
+      "sourceCompany": "Luxoft",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-158",
+      "style": "paraphrase",
+      "query": "A research-driven computer vision specialist experienced in developing advanced algorithms for three-dimensional body reconstruction and spatial measurement analysis. Skilled in combining deep learning architectures with geometric modeling to extract precise physical dimensions from mobile imagery. Adept at creating real-world AI applications that drive personalization and data-driven insights.",
+      "goldSourceIds": [
+        "6f4c91df-0d48-51ba-a3d8-d626f8416a53"
+      ],
+      "sourceTitle": "Algorithm Developer, 3D Computer Vision",
+      "sourceCompany": "3DLoook",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-159",
+      "style": "resume",
+      "query": "Versatile game artist with comprehensive experience designing high-impact visual assets and concept illustrations for casino and slot gaming titles. Proficient in digital rendering, rapid wireframing, and preparing layered assets optimized for Spine skeletal animation. Collaborative team contributor dedicated to aligning thematic art styles with core game mechanics under tight sprint deadlines.\nSkills: Concept Art, Adobe Photoshop, Spine Animation, Digital Illustration, Wireframing, Slot Game Art, Asset Production",
+      "goldSourceIds": [
+        "ca6ae30f-dbfa-54a9-be1b-447c5b857225"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Product Madness",
+      "category": "Design",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-160",
+      "style": "keyword",
+      "query": "Microsoft Windows Server PowerShell Solarwinds Active Directory WSUS DNS VMware Citrix",
+      "goldSourceIds": [
+        "ad3333ee-d3b7-51ef-bf3c-171d7d598c53"
+      ],
+      "sourceTitle": "Application Developer",
+      "sourceCompany": "Powercode",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-161",
+      "style": "paraphrase",
+      "query": "An administrative and human resources professional skilled in managing office operations, scheduling, and documentation within international environments. Experienced in coordinating budget allocations, vendor management, and internal HR processes alongside cross-border teams. Demonstrates strong organizational capabilities and solid interpersonal communication.",
+      "goldSourceIds": [
+        "3eb8958f-2361-5288-8f44-54cecbc7252a"
+      ],
+      "sourceTitle": "Assistant manager/HR",
+      "sourceCompany": "Smartline Ltd.",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-162",
+      "style": "resume",
+      "query": "Seasoned full-stack developer with over seven years of experience delivering mission-critical enterprise healthcare applications and EHR platforms. Deep technical proficiency in modern JavaScript frameworks paired with enterprise Java backend services and RESTful architectures. Proven background in implementing healthcare interoperability standards and building scalable, responsive web solutions.\nSkills: Java Enterprise, Angular, TypeScript, REST APIs, HL7 FHIR, JBoss, Oracle SQL, Responsive UX",
+      "goldSourceIds": [
+        "a88b7513-742f-51e0-8565-d4715dcef2db"
+      ],
+      "sourceTitle": "Advanced/Senior Java Full Stack Engineer",
+      "sourceCompany": "Conscensia",
+      "category": "Java",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-163",
+      "style": "keyword",
+      "query": "frontend cloud R&D infrastructure management development services",
+      "goldSourceIds": [
+        "d8e56289-9bd0-58a2-8d74-6d83ef0c50c1"
+      ],
+      "sourceTitle": "64 - frontend developer",
+      "sourceCompany": "MimirB2B",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-164",
+      "style": "paraphrase",
+      "query": "A client relationship specialist with a solid background in the online gambling sector and decentralized technologies. Possesses over two years of experience in product software environments, adept at utilizing CRM platforms and tracking tools to retain users and drive engagement. Skilled in consultative communication and proactive campaign optimization.",
+      "goldSourceIds": [
+        "ddf2b4dd-bee3-5622-991e-650e69e1d34b"
+      ],
+      "sourceTitle": "Account manager",
+      "sourceCompany": "Trueplay",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-165",
+      "style": "resume",
+      "query": "Strategic product leader with deep expertise in optimizing B2B customer journeys, conversion funnels, and enterprise SaaS offerings for global digital content platforms. Skilled at formulating unique value propositions, testing growth hypotheses, and driving cross-functional development across design, engineering, and sales. Proven history of utilizing customer analytics and competitive discovery to maximize recurring revenue.\nSkills: B2B Strategy, Funnel Optimization, Customer Journey Mapping, Hypothesis Testing, Enterprise SaaS, Product Analytics, Revenue Growth",
+      "goldSourceIds": [
+        "f2bf05e5-3a09-57d5-9977-fb4ce3c8abe6"
+      ],
+      "sourceTitle": "B2B Senior Product Manager",
+      "sourceCompany": "VistaCreate and Depositphotos",
+      "category": "Product Manager",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-166",
+      "style": "keyword",
+      "query": "Symphony PHP MySQL Node.js JavaScript Python Telegram API Docker GPT-4",
+      "goldSourceIds": [
+        "034f2483-27c0-5650-ada6-4094612ec6bf"
+      ],
+      "sourceTitle": "AI Engineer",
+      "sourceCompany": "Mysoul",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-167",
+      "style": "paraphrase",
+      "query": "A mobile automated testing professional with at least three years of experience building automation frameworks using JavaScript or Java. Well-versed in software testing life cycles, test case design, and ensuring application stability within complex domains like financial technology. Demonstrates strong English communication and a methodical approach to product quality.",
+      "goldSourceIds": [
+        "ef1ac609-f4c6-599a-8155-33f47448d67f"
+      ],
+      "sourceTitle": "AQA",
+      "sourceCompany": "Whirrcrew",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-168",
+      "style": "resume",
+      "query": "Results-driven sales professional with a track record of driving revenue for cloud communication and SaaS CRM platforms. Skilled in active prospecting, managing end-to-end sales pipelines, and executing compelling product demonstrations for US-based clients. Known for strong consultative selling, deep customer empathy, and accelerating pipeline velocity.\nSkills: SaaS Sales, Outbound Prospecting, CRM Solutions, Discovery Calls, Negotiation, Lead Generation, Pipeline Velocity",
+      "goldSourceIds": [
+        "7be514e6-d9d6-5aec-b78f-3938b2c07e24"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "Smarter Contact",
+      "category": "Sales",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-169",
+      "style": "keyword",
+      "query": "In-Vehicle Infotainment open source continuous integration continuous delivery Android",
+      "goldSourceIds": [
+        "1f3b4ac6-7014-524d-8e7d-56d8283c866b"
+      ],
+      "sourceTitle": "Android Application Developer",
+      "sourceCompany": "DXC",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-170",
+      "style": "paraphrase",
+      "query": "An algorithmic software engineer with advanced training in signal processing and extensive experience bridging Python prototyping with high-performance C++ implementations. Specializes in building and deploying machine learning models integrated with traditional computer vision techniques. Proven ability to handle massive datasets and deliver production-ready code.",
+      "goldSourceIds": [
+        "c195435a-6949-5c19-8c15-7d63f8276152"
+      ],
+      "sourceTitle": "Algo Engineer (Python & С++, Computer Vision, Machine Learning, Deep Learning)",
+      "sourceCompany": "ABCloudZ",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-171",
+      "style": "resume",
+      "query": "Creative visual designer with comprehensive expertise in crafting vector graphics, digital banners, and engaging multimedia marketing collateral. Proficient across the Adobe Creative Suite, bringing balanced experience in photo manipulation, motion editing, and UI design fundamentals. Energetic collaborator adept at transforming brand guidelines into compelling marketing assets across diverse digital channels.\nSkills: Adobe Photoshop, Adobe Illustrator, After Effects, Vector Art, Digital Retouching, UI/UX Design, Motion Graphics",
+      "goldSourceIds": [
+        "a49ceb60-b009-57d6-bdd5-e5703abd7ad2"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Global Teams",
+      "category": "Design",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-172",
+      "style": "keyword",
+      "query": "Hazelcast MQ JMS Web Services Elastic Application Servers WebSphere WebLogic Jboss SAML SSO Nginx Oracle DB MongoDB Kafka",
+      "goldSourceIds": [
+        "4adbdda4-c8df-5197-b540-6e90a600e7f9"
+      ],
+      "sourceTitle": "App DevOps Engineer",
+      "sourceCompany": "IT-компания \"Спільна Справа\"",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-173",
+      "style": "paraphrase",
+      "query": "A talent development and assessment practitioner with more than three years of experience in learning strategies and competency framework design. Proven background within structured corporate environments implementing performance evaluations and career growth pathways. Relevant professional certifications and policy design expertise are strong highlights.",
+      "goldSourceIds": [
+        "0b612740-570e-54a6-99b7-490a7f9ca867"
+      ],
+      "sourceTitle": "Assessment and Growth HR Manager",
+      "sourceCompany": "Alty",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-174",
+      "style": "resume",
+      "query": "Senior backend engineer with solid experience in full lifecycle software engineering, application architecture, and robust enterprise development. Adept at performing deep code analysis, designing scalable backend systems, and mentoring junior engineers through technical evaluations. Strong advocate for clean architecture, automated testing collaboration, and continuous operational improvements.\nSkills: Core Java, Systems Architecture, Code Analysis, RESTful Web Services, Debugging, Software Reliability, Agile Methodologies",
+      "goldSourceIds": [
+        "918ff01d-7049-5502-bacc-0e0d4e142860"
+      ],
+      "sourceTitle": "Advanced JAVA Software Engineer",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-175",
+      "style": "keyword",
+      "query": "JavaScript HTML CSS React AngularJS Vue Bootstrap Material-UI RESTful",
+      "goldSourceIds": [
+        "3a28cf3f-1cab-52aa-871e-153d5e8e9606"
+      ],
+      "sourceTitle": "63 - Frontend Developer",
+      "sourceCompany": "MimirB2B",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-176",
+      "style": "paraphrase",
+      "query": "A client communications specialist fluent in English, skilled at nurturing ongoing partnerships and serving as a bridge between customers and internal delivery teams. Experienced in providing timely operational support via multiple channels and identifying solutions to enhance partner satisfaction. Demonstrates high empathy, diplomacy, and relationship-building capabilities.",
+      "goldSourceIds": [
+        "4ac590c2-11f0-5257-8eff-9d5fbe64f6f2"
+      ],
+      "sourceTitle": "Account manager",
+      "sourceCompany": "Saphira Agency",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-177",
+      "style": "resume",
+      "query": "Product leader with over four years of specialized experience building and scaling B2B SaaS portals and cloud unified communications platforms. Experienced in driving feature discovery, API integrations, and billing workflows alongside multidisciplinary engineering and go-to-market teams. Passionate about translating complex user journeys and enterprise telecom needs into streamlined, high-converting product features.\nSkills: B2B SaaS, API Integrations, Cloud Communications, User Experience Strategy, Billing Workflows, Roadmap Execution, Agile Delivery",
+      "goldSourceIds": [
+        "9dbf45b0-483e-562e-9302-f356cb83b757"
+      ],
+      "sourceTitle": "B2B SaaS Product manager",
+      "sourceCompany": "Wildix",
+      "category": "Product Manager",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-178",
+      "style": "keyword",
+      "query": "Steamship platform AI applications AI tech sprint planning",
+      "goldSourceIds": [
+        "767aa449-b991-5aa6-a365-04baeae2b823"
+      ],
+      "sourceTitle": "AI developer experienced at Steamship platform",
+      "sourceCompany": "Neskoromnaya Digital",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-179",
+      "style": "paraphrase",
+      "query": "A senior test automation engineer with deep technical expertise in Python and Agile software delivery methodologies. Experienced in developing automated test suites, triaging complex technical defects, and collaborating on web application security solutions. Proactive in recommending architectural test improvements to optimize system resilience.",
+      "goldSourceIds": [
+        "8031cf6a-27b3-5eb0-9ddf-d106736a36e1"
+      ],
+      "sourceTitle": "AQA",
+      "sourceCompany": "Customertimes",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-180",
+      "style": "resume",
+      "query": "Dynamic commercial consultant with deep expertise in consultative selling of complex e-commerce platforms and digital agency solutions. Skilled at qualifying prospective enterprise merchants, uncovering operational pain points, and partnering with technical architects to structure high-converting proposals. Proven record in achieving aggressive revenue quotas across North American and European e-commerce retail sectors.\nSkills: Consultative Sales, E-commerce Platforms, Technical Proposal Development, Client Discovery, B2B Closing, Solution Selling",
+      "goldSourceIds": [
+        "77715540-0c9b-5404-9a4c-3b4ec37e95db"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "Magecom",
+      "category": "Sales",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-181",
+      "style": "keyword",
+      "query": "Android Java Kotlin Algorithms data structures C++ Design Patterns OpenGL Vulkan",
+      "goldSourceIds": [
+        "5f4745ab-2c36-5a0f-8336-0b297d149814"
+      ],
+      "sourceTitle": "Android Application developer",
+      "sourceCompany": "Samsung R&D Institute Ukraine",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-182",
+      "style": "paraphrase",
+      "query": "A conversational AI specialist with a strong understanding of natural language datasets and machine learning interactions. Experienced in analyzing dialog flows, tuning user intents, and refining automated virtual assistant behaviors for high customer engagement. Combines analytical data processing with a user-centric design mindset.",
+      "goldSourceIds": [
+        "da21a055-5327-5fd4-ae80-0b2f7199dff8"
+      ],
+      "sourceTitle": "AI trainer (Data/ML)",
+      "sourceCompany": "Master of Code Global",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-183",
+      "style": "resume",
+      "query": "Senior digital illustrator with more than four years of hands-on experience crafting high-fidelity 2D art and concept designs for commercial mobile titles. Expert in lighting, color theory, anatomy, and final rendering of expressive game environments and characters across diverse artistic styles. Proven partner to product managers and tech teams in translating game design briefs into visually polished visual assets.\nSkills: Concept Art, Digital Rendering, Adobe Photoshop, Color Theory, Character Design, Visual Storytelling, Mobile Game Art",
+      "goldSourceIds": [
+        "c14de903-2659-5731-91c4-684542e4d63e"
+      ],
+      "sourceTitle": "2D Artist",
+      "sourceCompany": "Playson",
+      "category": "Design",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-184",
+      "style": "keyword",
+      "query": "NLP APIs Google Cloud Platform Python DevOps infrastructure",
+      "goldSourceIds": [
+        "b19b2837-2c5c-56c7-9c53-6d3338991549"
+      ],
+      "sourceTitle": "API Software Engineer for NLP Project",
+      "sourceCompany": "Bennett Data Science",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-185",
+      "style": "paraphrase",
+      "query": "A recruitment professional with over two years of full-cycle sourcing and hiring experience within the tech and creative digital sectors. Skilled in leveraging diverse talent search strategies, driving offer negotiations, and managing candidate pipelines. Displays exceptional interpersonal abilities, self-direction, and a positive mindset.",
+      "goldSourceIds": [
+        "cd2f2a50-3daf-5cd6-b916-e8c3c03a2362"
+      ],
+      "sourceTitle": "Art Talent Acquisition Specialist | Recruiter",
+      "sourceCompany": "Room 8 Studio",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-186",
+      "style": "resume",
+      "query": "Principal backend software engineer with over six years of expertise constructing distributed, enterprise-grade Java architectures and microservices. Mastery of the Spring ecosystem, relational database optimization, and high-performance server-side tuning for mission-critical applications. Dedicated to driving engineering excellence through rigorous code reviews, automated unit testing, and agile methodologies.\nSkills: Java, Spring Boot, Hibernate/JPA, Relational Databases, Microservices, Performance Tuning, Agile Scrum",
+      "goldSourceIds": [
+        "b759d4ea-67da-595e-9e75-b6d5c5ccbbc2"
+      ],
+      "sourceTitle": "Advanced Java Engineer",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-187",
+      "style": "keyword",
+      "query": "liquid Shopify theme eCommerce system integrations testing plans",
+      "goldSourceIds": [
+        "bf0c3e29-fbeb-5574-8d42-5f5d4fa27609"
+      ],
+      "sourceTitle": "58.3 Shopify Developer",
+      "sourceCompany": "FirstFive",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-188",
+      "style": "paraphrase",
+      "query": "A results-driven marketing partnership specialist with strong communication skills and a solid grasp of digital advertising performance. Experienced in negotiating with media publishers, onboarding new partners, and interpreting campaign analytics to drive profitability. Combines strategic business acumen with effective relationship management.",
+      "goldSourceIds": [
+        "ad6dd3e9-1fa5-5bde-aa61-75db501d6298"
+      ],
+      "sourceTitle": "Account manager",
+      "sourceCompany": "MageticAI",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-189",
+      "style": "resume",
+      "query": "Technical delivery leader with deep domain background in automotive software engineering, compliance standards, and embedded systems development. Adept at managing backlogs, translating complex customer requirements into actionable user stories, and enforcing secure coding practices like MISRA. Experienced in guiding Scrum teams to hit critical engineering milestones on budget and on schedule.\nSkills: Automotive Software, Scrum & SAFe, Backlog Prioritization, Jira, MISRA Guidelines, Requirements Engineering, Milestone Tracking",
+      "goldSourceIds": [
+        "544bff5b-da69-5f5a-919e-1f2663f3f75f"
+      ],
+      "sourceTitle": "Automotive Product owner (or Manager)",
+      "sourceCompany": "GlobalLogic",
+      "category": "Product Manager",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-190",
+      "style": "keyword",
+      "query": "Computer Vision Object Detection Image Classification Python JavaScript XML AI/ML",
+      "goldSourceIds": [
+        "dd690707-c554-5089-85e2-2fc9c35073dd"
+      ],
+      "sourceTitle": "AI Developer - Computer Vision Specialist",
+      "sourceCompany": "Piovis",
+      "category": "Python",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-191",
+      "style": "paraphrase",
+      "query": "A web quality engineer with experience testing modern cloud-native architectures, distributed microservices, and GraphQL interfaces. Well-versed in cross-browser compatibility, API validation, and modern web application standards within fast-paced startup teams. Demonstrates familiarity with automated tooling in JavaScript or TypeScript ecosystems.",
+      "goldSourceIds": [
+        "62da4979-627c-5885-aa2e-9706cf7090f6"
+      ],
+      "sourceTitle": "AQA",
+      "sourceCompany": "O2IT",
+      "category": "QA Automation",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-192",
+      "style": "resume",
+      "query": "Motivated business development specialist with a proven record in inside sales and client acquisition for cybersecurity and compliance solutions. Exceptional communicator skilled at managing complex prospect relationships, assessing risk posture, and articulating technical value to key stakeholders. Highly structured problem-solver experienced in cross-border sales and pipeline management.\nSkills: Cybersecurity Sales, Inside Sales, Compliance Services, Pipeline Management, Technical Discovery, B2B Business Development",
+      "goldSourceIds": [
+        "699aa640-8aa3-55cc-8ac2-d48a9be30992"
+      ],
+      "sourceTitle": "Account Executive",
+      "sourceCompany": "TrustNet",
+      "category": "Sales",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-193",
+      "style": "keyword",
+      "query": "Android SDK Kotlin Java MVVM MVP Dagger2 Room Realm RESTful Git",
+      "goldSourceIds": [
+        "818abb12-b5d5-57f4-89c6-ea17f7fa0f03"
+      ],
+      "sourceTitle": "Android application Developer",
+      "sourceCompany": "Show4me Music Interaction Network",
+      "category": "Android",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-194",
+      "style": "paraphrase",
+      "query": "A software engineer specializing in embedded and edge-based artificial intelligence, with a deep background in visual processing algorithms. Proficient in C, C++, and Python, with a strong understanding of low-level system architectures and operating system fundamentals. Adept at turning complex visual data into real-time intelligent network applications.",
+      "goldSourceIds": [
+        "5620cff7-8fe6-5356-96a0-d250debf6376"
+      ],
+      "sourceTitle": "AI Software Engineer",
+      "sourceCompany": "AllStars-IT",
+      "category": "Data Science",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-195",
+      "style": "resume",
+      "query": "Talented game illustrator with over three years of experience building vibrant 2D assets, isometric scenes, and expressive characters for casual mobile games. Adept at sketch ideation, perspective drawing, and crafting immersive visual narratives that resonate with players. Strong team player skilled at adhering to established visual identities while delivering top-quality assets under tight production deadlines.\nSkills: Isometric Art, 2D Game Illustration, Perspective Drawing, Digital Sketching, Visual Storytelling, Casual Gaming, Adobe Creative Suite",
+      "goldSourceIds": [
+        "3f95cf72-1259-5dc3-b930-70c2be37b44f"
+      ],
+      "sourceTitle": "2D artist",
+      "sourceCompany": "28software",
+      "category": "Design",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-196",
+      "style": "keyword",
+      "query": "DevOps CI/CD automation Ansible Core SAAS artificial intelligence machine learning",
+      "goldSourceIds": [
+        "a5ede6f5-27bd-5e45-b0d7-17e2deb343eb"
+      ],
+      "sourceTitle": "Ansible Automation Engineer (DevOps) – CI/CD Automation",
+      "sourceCompany": "Edvantis Software",
+      "category": "DevOps",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-197",
+      "style": "paraphrase",
+      "query": "A talent acquisition leader experienced in defining recruitment strategies, managing hiring budgets, and leading teams within creative digital entertainment. Proficient in establishing recruiter motivation structures, workload forecasting, and mentoring junior team members. Demonstrates strong cross-departmental stakeholder management and data-driven hiring planning.",
+      "goldSourceIds": [
+        "8a2e0c45-20bc-5c38-8032-f731e1255810"
+      ],
+      "sourceTitle": "ART Recruitment director, Team Lead",
+      "sourceCompany": "Room8Studio",
+      "category": "HR",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-198",
+      "style": "resume",
+      "query": "Senior backend software developer with extensive experience building high-throughput, low-latency distributed systems using advanced Java frameworks. Strong foundation in reactive programming, multithreading, and distributed caching solutions across enterprise environments. Proven ability to architect asynchronous cloud services and scalable microservices capable of processing immense traffic loads.\nSkills: Core Java, Multithreading, Reactive Programming, Asynchronous Systems, NoSQL Databases, Web Services, Distributed Architecture",
+      "goldSourceIds": [
+        "06a1303f-22c4-5c6d-bf02-e143c86e72c7"
+      ],
+      "sourceTitle": "Advanced Java Engineer",
+      "sourceCompany": "Innovecs",
+      "category": "Java",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-199",
+      "style": "keyword",
+      "query": "JavaScript frontend UI frameworks Dashboard Reporting data visualization data sets",
+      "goldSourceIds": [
+        "affe496f-0096-58af-8036-ecbfd396408e"
+      ],
+      "sourceTitle": "54 - Senior JavaScript Frontend Developer (with Analythics)",
+      "sourceCompany": "MimirB2B",
+      "category": "JavaScript",
+      "useForCategoryPrecision": false
+    },
+    {
+      "id": "q-200",
+      "style": "paraphrase",
+      "query": "A client support and campaign optimization specialist with a knack for data interpretation and professional customer communication. Skilled at qualifying prospective leads, configuring digital advertising efforts, and presenting analytical insights to boost client performance. Balances structured numerical evaluation with strong interpersonal resilience.",
+      "goldSourceIds": [
+        "223ca9d4-1e0c-596a-a4bb-2d17f3dd0092"
+      ],
+      "sourceTitle": "Account manager",
+      "sourceCompany": "Adavice media",
+      "category": "Marketing",
+      "useForCategoryPrecision": false
+    }
+  ]
+}

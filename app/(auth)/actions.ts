@@ -59,8 +59,6 @@ export async function signIn(formData: FormData) {
 
     return {
       success: true,
-      session: data.session,
-      user: data.user,
       error: undefined,
     }
   } catch (err: any) {
@@ -115,8 +113,6 @@ export async function signUp(formData: FormData) {
     return {
       success: true,
       checkEmail: false,
-      session: data.session,
-      user: data.user,
       error: undefined,
     }
   } catch (err: any) {
