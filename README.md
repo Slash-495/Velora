@@ -4,7 +4,7 @@
 
 **Velora** is a full-stack AI career workspace built with **Next.js 15**, **Supabase**, and **Google Gemini (`gemini-flash-latest`)**. It combines a live Visual/LaTeX Resume Studio with optimistic concurrency control, ATS resume scoring and job-description tailoring, an idempotent Kanban application tracker, an AI mock interview simulator, cover letter generation, and career activity analytics.
 
-🔗 **Live Demo**: [https://velora-ai.vercel.app](https://velora-ai.vercel.app)
+🔗 **Live Demo**: [https://velora-ai.vercel.app](https://veloraa-blue.vercel.app/)
 
 ---
 
